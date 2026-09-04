@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marketplace — AweSum Brands</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B1B33;
+    --navy-line: rgba(255,255,255,0.12);
+    --orange:#F5820B;
+    --orange-dark:#D96F00;
+    --black:#0A0A0A;
+    --white:#FFFFFF;
+    --muted-on-navy: rgba(255,255,255,0.68);
+    --muted-on-white: rgba(10,10,10,0.55);
+    --line-on-white: rgba(10,10,10,0.1);
+    --radius: 16px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background:var(--white);
+    color:var(--black);
+    -webkit-font-smoothing:antialiased;
+  }
+  img{display:block; max-width:100%; height:auto;}
+  a{text-decoration:none; color:inherit;}
+  ul{list-style:none;}
+  button{font-family:inherit; cursor:pointer;}
+  .wrap{ max-width:1360px; margin:0 auto; padding:0 48px; }
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:14px 26px; border-radius:10px; font-weight:600; font-size:15px;
+    border:1.5px solid transparent; transition:all .15s ease; white-space:nowrap;
+  }
+  .btn-primary{ background:var(--orange); color:var(--white); }
+  .btn-primary:hover{ background:var(--orange-dark); }
+  .btn-sm{ padding:10px 18px; font-size:14px; border-radius:8px; }
+
+  header{ background:var(--navy); position:sticky; top:0; z-index:100; border-bottom:1px solid var(--navy-line); }
+  .nav-row{ display:flex; align-items:center; justify-content:space-between; height:76px; }
+  .logo{ display:flex; align-items:center; gap:10px; }
+  .logo-mark{ width:40px; height:40px; background:var(--white); border-radius:9px; display:flex; align-items:center; justify-content:center; padding:6px; }
+  .logo-mark svg{ display:block; width:100%; height:100%; }
+  .logo-text{ color:var(--white); font-weight:700; font-size:16px; letter-spacing:-0.2px; }
+  .logo-text span{ color:var(--orange); }
+  nav.main-nav{ display:flex; align-items:center; gap:40px; }
+  nav.main-nav a{ color:var(--muted-on-navy); font-size:15px; font-weight:500; transition:color .15s ease; }
+  nav.main-nav a:hover{ color:var(--white); }
+  nav.main-nav a.active{ color:var(--orange); }
+  .nav-right{ display:flex; align-items:center; gap:26px; }
+  .cart-link{ position:relative; display:flex; align-items:center; color:var(--white); }
+  .cart-badge{
+    position:absolute; top:-8px; right:-10px; background:var(--orange); color:var(--white);
+    font-size:11px; font-weight:700; min-width:18px; height:18px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; border:2px solid var(--navy);
+  }
+  .login-link{ color:var(--white); font-size:15px; font-weight:500; }
+  .nav-toggle{ display:none; background:none; border:none; color:var(--white); }
+
+  .page-hero{ background:var(--navy); padding:36px 0 40px; }
+  .eyebrow{ display:block; color:var(--orange); font-size:13px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:8px; }
+  .page-hero h1{ color:var(--white); font-size:38px; font-weight:800; letter-spacing:-0.8px; margin-bottom:8px; }
+  .page-hero p{ color:var(--muted-on-navy); font-size:15px; }
+
+  .browse-section{ padding:36px 0 96px; }
+
+  .search-bar{
+    position:relative;
+    max-width:560px;
+    margin-bottom:20px;
+  }
+  .search-bar svg{
+    position:absolute; left:18px; top:50%; transform:translateY(-50%);
+    width:19px; height:19px; color:var(--muted-on-white);
+  }
+  .search-bar input{
+    width:100%;
+    padding:14px 18px 14px 48px;
+    border:1.5px solid var(--line-on-white);
+    border-radius:10px;
+    font-size:15px;
+    font-family:inherit;
+    color:var(--black);
+  }
+  .search-bar input::placeholder{ color:#9CA0AA; }
+  .search-bar input:focus{
+    outline:none;
+    border-color:var(--orange);
+    box-shadow:0 0 0 3px rgba(245,130,11,0.15);
+  }
+
+  .filter-pills{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:22px; }
+  .pill{
+    padding:9px 20px; border-radius:999px; border:1.5px solid var(--line-on-white);
+    background:var(--white); color:var(--black); font-size:14px; font-weight:600;
+    transition:all .15s ease;
+  }
+  .pill:hover{ border-color:var(--navy); }
+  .pill.active{ background:var(--orange); border-color:var(--orange); color:var(--white); }
+
+  .showing-count{ color:var(--muted-on-white); font-size:14px; margin-bottom:24px; }
+
+  .product-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:24px;
+  }
+  .product-card{
+    border:1px solid var(--line-on-white);
+    border-radius:var(--radius);
+    overflow:hidden;
+    background:var(--white);
+    transition:box-shadow .2s ease, transform .2s ease;
+  }
+  .product-card:hover{ box-shadow:0 16px 32px rgba(11,27,51,0.1); transform:translateY(-3px); }
+  .product-media{ position:relative; aspect-ratio:1/0.82; overflow:hidden; background:#eee; }
+  .product-media img{ width:100%; height:100%; object-fit:cover; }
+  .product-tag{
+    position:absolute; top:14px; left:14px; background:var(--white); color:var(--black);
+    font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em;
+    padding:6px 12px; border-radius:999px;
+  }
+  .product-body{ padding:18px; }
+  .product-body h3{ font-size:16px; font-weight:700; color:var(--black); margin-bottom:8px; }
+  .rating{ display:flex; align-items:center; gap:6px; margin-bottom:14px; }
+  .rating .stars{ color:var(--orange); font-size:14px; letter-spacing:1px; }
+  .rating .count{ font-size:13px; color:var(--muted-on-white); }
+  .price-row{ display:flex; align-items:center; justify-content:space-between; }
+  .price-row .price{ color:var(--orange); font-weight:800; font-size:18px; }
+  .add-btn{
+    width:36px; height:36px; border-radius:9px; background:#F0F1F4; border:none;
+    display:flex; align-items:center; justify-content:center; color:var(--black);
+    transition:background .15s ease, color .15s ease;
+  }
+  .add-btn:hover{ background:var(--orange); color:var(--white); }
+  .add-btn svg{ width:16px; height:16px; }
+  .add-btn.added{ background:var(--navy); color:var(--white); }
+
+  .no-results{ display:none; text-align:center; padding:60px 20px; color:var(--muted-on-white); }
+  .no-results.show{ display:block; }
+
+  footer{ background:var(--navy); padding:72px 0 28px; }
+  .footer-grid{ display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:40px; padding-bottom:48px; }
+  .footer-brand p{ color:var(--muted-on-navy); font-size:14.5px; line-height:1.6; margin-top:16px; max-width:280px; }
+  footer h4{ color:var(--white); font-size:15px; font-weight:700; margin-bottom:18px; }
+  footer ul li{ margin-bottom:12px; }
+  footer ul a{ color:var(--muted-on-navy); font-size:14.5px; transition:color .15s ease; }
+  footer ul a:hover{ color:var(--white); }
+  .footer-bottom{
+    border-top:1px solid var(--navy-line); padding-top:24px; display:flex;
+    justify-content:space-between; flex-wrap:wrap; gap:10px; color:var(--muted-on-navy); font-size:13.5px;
+  }
+
+  @media (max-width:980px){
+    .wrap{ padding:0 24px; }
+    nav.main-nav{ display:none; }
+    .nav-toggle{ display:block; }
+    .product-grid{ grid-template-columns:repeat(2,1fr); }
+    .footer-grid{ grid-template-columns:1fr 1fr; }
+  }
+  @media (max-width:560px){
+    .product-grid{ grid-template-columns:1fr; }
+    .footer-grid{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav-row">
+    <a href="index.html" class="logo">
+      <img src="images/logo.jpg" alt="AweSum Brands logo" style="height:42px; width:auto; display:block;">
+    </a>
+    <nav class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="marketplace.html" class="active">Marketplace</a>
+      <a href="quote.html">Custom Quote</a>
+      <a href="messages.html">Messages</a>
+      <a href="orders.html">Orders</a>
+    </nav>
+    <div class="nav-right">
+      <a href="cart.html" class="cart-link" aria-label="Cart">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="cart-badge" id="cartBadge">3</span>
+      </a>
+      <a href="login.html" class="login-link">Login</a>
+      <a href="signup.html" class="btn btn-primary btn-sm">Sign Up</a>
+    </div>
+    <button class="nav-toggle" aria-label="Menu">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap">
+    <span class="eyebrow">Browse</span>
+    <h1>Marketplace</h1>
+    <p>Professional printing and branding products for your business</p>
+  </div>
+</section>
+
+<section class="browse-section">
+  <div class="wrap">
+
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="Search products...">
+    </div>
+
+    <div class="filter-pills" id="filterPills">
+      <button class="pill active" data-filter="all">All</button>
+      <button class="pill" data-filter="business-cards">Business Cards</button>
+      <button class="pill" data-filter="flyers">Flyers</button>
+      <button class="pill" data-filter="t-shirts">T-Shirts</button>
+      <button class="pill" data-filter="caps">Caps</button>
+      <button class="pill" data-filter="posters">Posters</button>
+      <button class="pill" data-filter="signage">Signage</button>
+      <button class="pill" data-filter="banners">Banners</button>
+      <button class="pill" data-filter="brochures">Brochures</button>
+    </div>
+
+    <p class="showing-count" id="showingCount">Showing 8 products</p>
+
+    <div class="product-grid" id="productGrid">
+      <article class="product-card" data-category="business-cards" data-name="premium business cards">
+        <div class="product-media">
+          <span class="product-tag">Business Cards</span>
+          <img src="https://picsum.photos/seed/mp-bizcard/700/574" alt="Premium Business Cards">
+        </div>
+        <div class="product-body">
+          <h3>Premium Business Cards</h3>
+          <div class="rating"><span class="stars">★★★★☆</span><span class="count">(124)</span></div>
+          <div class="price-row"><span class="price">R 299</span><button class="add-btn" aria-label="Add to cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button></div>
+        </div>
+      </article>
+
+      <article class="product-card" data-category="flyers" data-name="a5 flyers full colour">
+        <div class="product-media">
+          <span class="product-tag">Flyers</span>
+          <img src="https://picsum.photos/seed/mp-flyer/700/574" alt="A5 Flyers Full Colour">
+        </div>
+        <div class="product-body">
+          <h3>A5 Flyers Full Colour</h3>
+          <div class="rating"><span class="stars">★★★★☆</span><span class="count">(89)</span></div>
+          <div class="price-row"><span class="price">R 450</span><button class="add-btn" aria-label="Add to cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button></div>
+        </div>
+      </article>
+
+      <article class="product-card" data-category="t-shirts" data-name="custom t-shirt printing">
+        <div class="product-media">
+          <span class="product-tag">T-Shirts</span>
+          <img src="https://picsum.photos/seed/mp-tshirt/700/574" alt="Custom T-Shirt Printing">
+        </div>
+        <div class="product-body">
+          <h3>Custom T-Shirt Printing</h3>
+          <div class="rating"><span class="stars">★★★★☆</span><span class="count">(213)</span></div>
+          <div class="price-row"><span class="price">R 180</span><button class="add-btn" aria-label="Add to cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button></div>
+        </div>
+      </article>
+
+      <article class="product-card" data-category="caps" data-name="branded cap printing">
+        <div class="product-media">
+          <span class="product-tag">Caps</span>
+          <img src="https://picsum.photos/seed/mp-cap/700/574" alt="Branded Cap Printing">
+        </div>
+        <div class="product-body">
+          <h3>Branded Cap Printing</h3>
+          <div class="rating"><span class="stars">★★★★☆</span><span class="count">(67)</span></div>
+          <div class="price-row"><span class="price">R 220</span><button class="add-btn" aria-label="Add to cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button></div>
+        </div>
+      </article>
+
+      <article class="product-card" data-category="posters" data-name="a1 poster printing">
+        <div class="product-media">
+          <span class="product-tag">Posters</span>
+          <img src="https://picsum.photos/seed/mp-poster/700/574" alt="A1 Poster Printing">
+        </div>
+        <div class="product-body">
+          <h3>A1 Poster Printing</h3>
+          <div class="rating"><span class="stars">★★★★☆</span><span class="count">(41)</span></div>
+          <div class="price-row"><span class="price">R 380</span><button class="add-btn" aria-label="Add to cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button></div>
+        </div>
+      </article>
+
+      <article class="product-card" data-category="signage" data-name="outdoor vinyl signage">
+        <div class="product-media">
+          <span class="product-tag">Signage</span>
+          <img src="https://picsum.photos/seed/mp-signage/700/574" alt="Outdoor Vinyl Signage">
+        </div>
+        <div class="product-body">
+          <h3>Outdoor Vinyl Signage</h3>
+          <div class="rating"><span class="stars">★★★★☆</span><span class="count">(58)</span></div>
+          <div class="price-row"><span class="price">R 1200</span><button class="add-btn" aria-label="Add to cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button></div>
+        </div>
+      </article>
+
+      <article class="product-card" data-category="banners" data-name="pull-up banner 2m">
+        <div class="product-media">
+          <span class="product-tag">Banners</span>
+          <img src="https://picsum.photos/seed/mp-banner/700/574" alt="Pull-Up Banner 2m">
+        </div>
+        <div class="product-body">
+          <h3>Pull-Up Banner 2m</h3>
+          <div class="rating"><span class="stars">★★★★☆</span><span class="count">(92)</span></div>
+          <div class="price-row"><span class="price">R 850</span><button class="add-btn" aria-label="Add to cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button></div>
+        </div>
+      </article>
+
+      <article class="product-card" data-category="brochures" data-name="tri-fold brochure">
+        <div class="product-media">
+          <span class="product-tag">Brochures</span>
+          <img src="https://picsum.photos/seed/mp-brochure/700/574" alt="Tri-Fold Brochure">
+        </div>
+        <div class="product-body">
+          <h3>Tri-Fold Brochure</h3>
+          <div class="rating"><span class="stars">★★★★☆</span><span class="count">(33)</span></div>
+          <div class="price-row"><span class="price">R 520</span><button class="add-btn" aria-label="Add to cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button></div>
+        </div>
+      </article>
+    </div>
+
+    <p class="no-results" id="noResults">No products match your search.</p>
+
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo">
+          <span class="logo-mark">
+            <svg width="22" height="22" viewBox="0 0 92 72" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <clipPath id="footBTop"><rect x="0" y="0" width="92" height="30"/></clipPath>
+                <clipPath id="footBBot"><rect x="0" y="30" width="92" height="42"/></clipPath>
+              </defs>
+              <text x="0" y="54" font-family="Georgia, 'Times New Roman', serif" font-size="58" fill="#28308C">A</text>
+              <g clip-path="url(#footBTop)"><text x="34" y="54" font-family="Georgia, 'Times New Roman', serif" font-size="58" fill="#F5820B">B</text></g>
+              <g clip-path="url(#footBBot)"><text x="34" y="54" font-family="Georgia, 'Times New Roman', serif" font-size="58" fill="#28308C">B</text></g>
+            </svg>
+          </span>
+        </a>
+        <p>Premium printing and signage solutions for South African businesses. Quality you can trust, delivered fast.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="marketplace.html">Marketplace</a></li>
+          <li><a href="quote.html">Custom Quote</a></li>
+          <li><a href="orders.html">Orders</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Track Order</a></li>
+          <li><a href="#">Returns Policy</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+          <li><a href="#">Sitemap</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 AweSum Brands (Pty) Ltd. All rights reserved.</span>
+      <span>Registered in South Africa · VAT No. 4560291837</span>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+<script>
+  const pills = document.querySelectorAll('.pill');
+  let cards = document.querySelectorAll('.product-card');
+  const searchInput = document.getElementById('searchInput');
+  const showingCount = document.getElementById('showingCount');
+  const noResults = document.getElementById('noResults');
+  let activeFilter = 'all';
+
+  AweSum.api('products').then(result => { const products = result.products || []; const previous = JSON.stringify(AweSum.read(AweSum.keys.products, [])); AweSum.write(AweSum.keys.products, products); if (previous !== JSON.stringify(products)) location.reload(); }).catch(() => {});
+
+  document.querySelectorAll('#productGrid .product-card').forEach(card => card.remove());
+  JSON.parse(localStorage.getItem('awesum_products') || '[]').forEach(product => {
+    const card = document.createElement('article'); card.className = 'product-card'; card.dataset.category = product.category.toLowerCase().replace(/\s+/g, '-'); card.dataset.name = product.name.toLowerCase();
+    card.innerHTML = '<div class="product-media"><span class="product-tag">' + AweSum.escapeHtml(product.category) + '</span>' + (product.image ? '<img src="' + AweSum.escapeHtml(product.image) + '" alt="' + AweSum.escapeHtml(product.name) + '">' : '<div style="width:100%;height:100%;background:#F0F1F4;"></div>') + '</div><div class="product-body"><h3>' + AweSum.escapeHtml(product.name) + '</h3><div class="rating"><span class="stars">★★★★★</span><span class="count">New</span></div><div class="price-row"><span class="price">R ' + Math.round(product.price).toLocaleString('en-ZA') + '</span><button class="add-btn" aria-label="Add to cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button></div></div>';
+    document.getElementById('productGrid').appendChild(card);
+  });
+  cards = document.querySelectorAll('.product-card');
+
+  function applyFilters(){
+    const query = searchInput.value.trim().toLowerCase();
+    let visible = 0;
+    cards.forEach(card => {
+      const matchesCategory = activeFilter === 'all' || card.dataset.category === activeFilter;
+      const matchesSearch = !query || card.dataset.name.includes(query);
+      const show = matchesCategory && matchesSearch;
+      card.style.display = show ? '' : 'none';
+      if(show) visible++;
+    });
+    showingCount.textContent = `Showing ${visible} product${visible === 1 ? '' : 's'}`;
+    showingCount.style.display = visible === 0 ? 'none' : 'block';
+    noResults.classList.toggle('show', visible === 0);
+  }
+
+  pills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      pills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      activeFilter = pill.dataset.filter;
+      applyFilters();
+    });
+  });
+  searchInput.addEventListener('input', applyFilters);
+  applyFilters();
+
+  document.querySelectorAll('.add-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const card = btn.closest('.product-card');
+      const title = card.querySelector('h3').textContent.trim();
+      const price = Number(card.querySelector('.price').textContent.replace(/[^0-9.]/g, ''));
+      AweSum.addToCart({ id: card.dataset.name, name: title, price, category: card.dataset.category, image: card.querySelector('img') ? card.querySelector('img').getAttribute('src') : '' });
+      btn.classList.add('added');
+      AweSum.showMessage(title + ' added to cart.');
+      setTimeout(() => btn.classList.remove('added'), 600);
+    });
+  });
+
+  const navToggle = document.querySelector('.nav-toggle');
+  const mainNav = document.querySelector('.main-nav');
+  navToggle.addEventListener('click', () => {
+    const isOpen = mainNav.style.display === 'flex';
+    mainNav.style.display = isOpen ? 'none' : 'flex';
+    mainNav.style.cssText += isOpen ? '' : 'flex-direction:column; position:absolute; top:76px; left:0; right:0; background:#0B1B33; padding:24px 24px; gap:20px; border-bottom:1px solid rgba(255,255,255,0.12);';
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Request a Quote — AweSum Brands</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B1B33;
+    --navy-line: rgba(255,255,255,0.12);
+    --orange:#F5820B;
+    --orange-dark:#D96F00;
+    --black:#0A0A0A;
+    --white:#FFFFFF;
+    --muted-on-navy: rgba(255,255,255,0.68);
+    --muted-on-white: rgba(10,10,10,0.55);
+    --line-on-white: rgba(10,10,10,0.1);
+    --radius: 16px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background:var(--white);
+    color:var(--black);
+    -webkit-font-smoothing:antialiased;
+  }
+  img{display:block; max-width:100%; height:auto;}
+  a{text-decoration:none; color:inherit;}
+  button{font-family:inherit; cursor:pointer;}
+  .wrap{ max-width:1360px; margin:0 auto; padding:0 48px; }
+  .narrow{ max-width:820px; }
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:14px 26px; border-radius:10px; font-weight:600; font-size:15px;
+    border:1.5px solid transparent; transition:all .15s ease; white-space:nowrap;
+  }
+  .btn-primary{ background:var(--orange); color:var(--white); }
+  .btn-primary:hover{ background:var(--orange-dark); }
+  .btn-sm{ padding:10px 18px; font-size:14px; border-radius:8px; }
+  .btn-block{ width:100%; }
+
+  header{ background:var(--navy); position:sticky; top:0; z-index:100; border-bottom:1px solid var(--navy-line); }
+  .nav-row{ display:flex; align-items:center; justify-content:space-between; height:76px; }
+  .logo{ display:flex; align-items:center; gap:10px; }
+  .logo-mark{ width:40px; height:40px; background:var(--white); border-radius:9px; display:flex; align-items:center; justify-content:center; padding:6px; }
+  .logo-mark svg{ display:block; width:100%; height:100%; }
+  .logo-text{ color:var(--white); font-weight:700; font-size:16px; letter-spacing:-0.2px; }
+  .logo-text span{ color:var(--orange); }
+  nav.main-nav{ display:flex; align-items:center; gap:40px; }
+  nav.main-nav a{ color:var(--muted-on-navy); font-size:15px; font-weight:500; transition:color .15s ease; }
+  nav.main-nav a:hover{ color:var(--white); }
+  nav.main-nav a.active{ color:var(--orange); }
+  .nav-right{ display:flex; align-items:center; gap:26px; }
+  .cart-link{ position:relative; display:flex; align-items:center; color:var(--white); }
+  .cart-badge{
+    position:absolute; top:-8px; right:-10px; background:var(--orange); color:var(--white);
+    font-size:11px; font-weight:700; min-width:18px; height:18px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; border:2px solid var(--navy);
+  }
+  .login-link{ color:var(--white); font-size:15px; font-weight:500; }
+  .nav-toggle{ display:none; background:none; border:none; color:var(--white); }
+
+  .page-hero{ background:var(--navy); padding:44px 0 40px; }
+  .eyebrow{ display:block; color:var(--orange); font-size:13px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:8px; }
+  .page-hero h1{ color:var(--white); font-size:38px; font-weight:800; letter-spacing:-0.8px; margin-bottom:8px; }
+  .page-hero p{ color:var(--muted-on-navy); font-size:15px; }
+
+  .form-section{ padding:56px 0 100px; }
+
+  .field{ margin-bottom:28px; }
+  .field label{
+    display:block; font-size:15px; font-weight:700; color:var(--navy); margin-bottom:10px;
+  }
+  .field textarea, .field input[type="text"], .field select{
+    width:100%;
+    padding:14px 16px;
+    border:1.5px solid var(--line-on-white);
+    border-radius:10px;
+    font-size:15px;
+    font-family:inherit;
+    color:var(--black);
+    background:var(--white);
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .field textarea{ resize:vertical; min-height:110px; }
+  .field textarea::placeholder, .field input::placeholder{ color:#9CA0AA; }
+  .field textarea:focus, .field input:focus, .field select:focus{
+    outline:none; border-color:var(--orange); box-shadow:0 0 0 3px rgba(245,130,11,0.15);
+  }
+  .field select{
+    appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%230A0A0A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 16px center;
+    padding-right:44px;
+    cursor:pointer;
+  }
+
+  .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+
+  .qty-stepper{
+    display:flex;
+    align-items:stretch;
+    border:1.5px solid var(--line-on-white);
+    border-radius:10px;
+    overflow:hidden;
+  }
+  .qty-stepper button{
+    background:var(--white);
+    border:none;
+    width:52px;
+    font-size:20px;
+    font-weight:600;
+    color:var(--black);
+    transition:background .15s ease;
+    flex-shrink:0;
+  }
+  .qty-stepper button:hover{ background:#F0F1F4; }
+  .qty-stepper input{
+    flex:1;
+    border:none;
+    border-left:1.5px solid var(--line-on-white);
+    border-right:1.5px solid var(--line-on-white);
+    text-align:center;
+    font-size:16px;
+    font-weight:600;
+    font-family:inherit;
+    color:var(--black);
+    -moz-appearance:textfield;
+  }
+  .qty-stepper input:focus{ outline:none; }
+  .qty-stepper input::-webkit-outer-spin-button,
+  .qty-stepper input::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+
+  .dropzone{
+    border:1.5px dashed var(--line-on-white);
+    border-radius:12px;
+    padding:44px 24px;
+    text-align:center;
+    cursor:pointer;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .dropzone:hover, .dropzone.dragover{ border-color:var(--orange); background:#FFF8F0; }
+  .dropzone svg{ width:30px; height:30px; color:var(--muted-on-white); margin-bottom:14px; }
+  .dropzone .dz-main{ font-size:15px; font-weight:600; color:var(--black); margin-bottom:6px; }
+  .dropzone .dz-sub{ font-size:13px; color:var(--muted-on-white); }
+  .dropzone input[type="file"]{ display:none; }
+  .file-list{ margin-top:14px; }
+  .file-chip{
+    display:inline-flex; align-items:center; gap:8px;
+    background:#F0F1F4; border-radius:8px; padding:8px 14px;
+    font-size:13.5px; color:var(--black); margin:4px;
+  }
+
+  @media (max-width:980px){
+    .wrap{ padding:0 24px; }
+    nav.main-nav{ display:none; }
+    .nav-toggle{ display:block; }
+  }
+  @media (max-width:640px){
+    .field-row{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body data-auth-required="user">
+
+<header>
+  <div class="wrap nav-row">
+    <a href="index.html" class="logo">
+      <img src="images/logo.jpg" alt="AweSum Brands logo" style="height:42px; width:auto; display:block;">
+    </a>
+    <nav class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="marketplace.html">Marketplace</a>
+      <a href="quote.html" class="active">Custom Quote</a>
+      <a href="messages.html">Messages</a>
+      <a href="orders.html">Orders</a>
+    </nav>
+    <div class="nav-right">
+      <a href="cart.html" class="cart-link" aria-label="Cart">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="cart-badge">3</span>
+      </a>
+      <a href="login.html" class="login-link">Login</a>
+      <a href="signup.html" class="btn btn-primary btn-sm">Sign Up</a>
+    </div>
+    <button class="nav-toggle" aria-label="Menu">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap">
+    <span class="eyebrow">Custom Order</span>
+    <h1>Request a Quote</h1>
+    <p>Tell us what you need and we'll handle the rest</p>
+  </div>
+</section>
+
+<section class="form-section">
+  <div class="wrap narrow">
+    <form id="quoteForm">
+      <div class="field">
+        <label for="description">Description</label>
+        <textarea id="description" name="description" placeholder="Describe your printing need — product type, size, finish, any special requirements..." required></textarea>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="category">Category</label>
+          <select id="category" name="category">
+            <option>Business Cards</option>
+            <option>Flyers</option>
+            <option>T-Shirts</option>
+            <option>Caps</option>
+            <option>Posters</option>
+            <option>Signage</option>
+            <option>Banners</option>
+            <option>Brochures</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="quantity">Quantity</label>
+          <div class="qty-stepper">
+            <button type="button" id="qtyMinus" aria-label="Decrease quantity">−</button>
+            <input type="number" id="quantity" name="quantity" value="100" min="1">
+            <button type="button" id="qtyPlus" aria-label="Increase quantity">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="fileInput">Upload Design (optional)</label>
+        <div class="dropzone" id="dropzone">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <div class="dz-main">Drop files here or click to browse</div>
+          <div class="dz-sub">PDF, AI, PNG, JPG up to 50MB</div>
+          <input type="file" id="fileInput" multiple accept=".pdf,.ai,.png,.jpg,.jpeg">
+        </div>
+        <div class="file-list" id="fileList"></div>
+      </div>
+
+      <div class="field">
+        <label for="notes">Additional Notes</label>
+        <textarea id="notes" name="notes" placeholder="Colours, fonts, deadline, delivery address..."></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">Submit Quote Request</button>
+    </form>
+  </div>
+</section>
+
+<section class="form-section" style="padding-top:0;">
+  <div class="wrap narrow">
+    <h2 style="color:var(--navy); margin-bottom:18px;">Your Quote Requests</h2>
+    <div id="quoteHistory"><p style="color:var(--muted-on-white);">Loading your quote requests...</p></div>
+  </div>
+</section>
+
+<footer style="background:var(--navy); padding:72px 0 28px;">
+  <div class="wrap">
+    <div style="display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:40px; padding-bottom:48px;">
+      <div>
+        <a href="index.html" class="logo">
+          <span class="logo-mark">
+            <svg width="22" height="22" viewBox="0 0 92 72" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <clipPath id="footBTop"><rect x="0" y="0" width="92" height="30"/></clipPath>
+                <clipPath id="footBBot"><rect x="0" y="30" width="92" height="42"/></clipPath>
+              </defs>
+              <text x="0" y="54" font-family="Georgia, 'Times New Roman', serif" font-size="58" fill="#28308C">A</text>
+              <g clip-path="url(#footBTop)"><text x="34" y="54" font-family="Georgia, 'Times New Roman', serif" font-size="58" fill="#F5820B">B</text></g>
+              <g clip-path="url(#footBBot)"><text x="34" y="54" font-family="Georgia, 'Times New Roman', serif" font-size="58" fill="#28308C">B</text></g>
+            </svg>
+          </span>
+        </a>
+        <p style="color:var(--muted-on-navy); font-size:14.5px; line-height:1.6; margin-top:16px; max-width:280px;">Premium printing and signage solutions for South African businesses. Quality you can trust, delivered fast.</p>
+      </div>
+      <div>
+        <h4 style="color:var(--white); font-size:15px; font-weight:700; margin-bottom:18px;">Quick Links</h4>
+        <ul style="list-style:none;">
+          <li style="margin-bottom:12px;"><a href="index.html" style="color:var(--muted-on-navy); font-size:14.5px;">Home</a></li>
+          <li style="margin-bottom:12px;"><a href="marketplace.html" style="color:var(--muted-on-navy); font-size:14.5px;">Marketplace</a></li>
+          <li style="margin-bottom:12px;"><a href="quote.html" style="color:var(--muted-on-navy); font-size:14.5px;">Custom Quote</a></li>
+          <li style="margin-bottom:12px;"><a href="orders.html" style="color:var(--muted-on-navy); font-size:14.5px;">Orders</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="color:var(--white); font-size:15px; font-weight:700; margin-bottom:18px;">Support</h4>
+        <ul style="list-style:none;">
+          <li style="margin-bottom:12px;"><a href="#" style="color:var(--muted-on-navy); font-size:14.5px;">Help Center</a></li>
+          <li style="margin-bottom:12px;"><a href="#" style="color:var(--muted-on-navy); font-size:14.5px;">Track Order</a></li>
+          <li style="margin-bottom:12px;"><a href="#" style="color:var(--muted-on-navy); font-size:14.5px;">Returns Policy</a></li>
+          <li style="margin-bottom:12px;"><a href="#" style="color:var(--muted-on-navy); font-size:14.5px;">Contact Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="color:var(--white); font-size:15px; font-weight:700; margin-bottom:18px;">Legal</h4>
+        <ul style="list-style:none;">
+          <li style="margin-bottom:12px;"><a href="#" style="color:var(--muted-on-navy); font-size:14.5px;">Terms of Service</a></li>
+          <li style="margin-bottom:12px;"><a href="#" style="color:var(--muted-on-navy); font-size:14.5px;">Privacy Policy</a></li>
+          <li style="margin-bottom:12px;"><a href="#" style="color:var(--muted-on-navy); font-size:14.5px;">Cookie Policy</a></li>
+          <li style="margin-bottom:12px;"><a href="#" style="color:var(--muted-on-navy); font-size:14.5px;">Sitemap</a></li>
+        </ul>
+      </div>
+    </div>
+    <div style="border-top:1px solid var(--navy-line); padding-top:24px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; color:var(--muted-on-navy); font-size:13.5px;">
+      <span>© 2026 AweSum Brands (Pty) Ltd. All rights reserved.</span>
+      <span>Registered in South Africa · VAT No. 4560291837</span>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+<script>
+  const qtyInput = document.getElementById('quantity');
+  document.getElementById('qtyMinus').addEventListener('click', () => {
+    qtyInput.value = Math.max(1, Number(qtyInput.value) - 1);
+  });
+  document.getElementById('qtyPlus').addEventListener('click', () => {
+    qtyInput.value = Number(qtyInput.value) + 1;
+  });
+
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+  const fileList = document.getElementById('fileList');
+  let designImagePromise = Promise.resolve('');
+
+  dropzone.addEventListener('click', () => fileInput.click());
+  dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('dragover'); });
+  dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+  dropzone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropzone.classList.remove('dragover');
+    handleFiles(e.dataTransfer.files);
+  });
+  fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+
+  function handleFiles(files){
+    fileList.innerHTML = '';
+    const image = Array.from(files).find(file => file.type.startsWith('image/'));
+    designImagePromise = image && image.size <= 5 * 1024 * 1024 ? new Promise(resolve => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = () => resolve(''); reader.readAsDataURL(image); }) : Promise.resolve('');
+    if (image && image.size > 5 * 1024 * 1024) AweSum.showMessage('Please choose an image smaller than 5MB.', 'error');
+    Array.from(files).forEach(f => {
+      const chip = document.createElement('span');
+      chip.className = 'file-chip';
+      chip.textContent = f.name;
+      fileList.appendChild(chip);
+    });
+  }
+
+  document.getElementById('quoteForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const user = AweSum.currentUser();
+    if (!user) { window.location.href = 'login.html'; return; }
+    try { const designImage = await designImagePromise; await AweSum.api('quote', { method: 'POST', body: JSON.stringify({ description: document.getElementById('description').value.trim(), category: document.getElementById('category').value, quantity: document.getElementById('quantity').value, notes: document.getElementById('notes').value.trim(), designImage }) }); AweSum.showMessage('Quote request submitted. We will respond within 2 business hours.'); e.target.reset(); fileList.innerHTML = ''; designImagePromise = Promise.resolve(''); AweSum.api('quotes').then(result => renderQuoteHistory(result.quotes || [])); }
+    catch (error) { AweSum.showMessage(error.message, 'error'); }
+  });
+
+  const quoteHistory = document.getElementById('quoteHistory');
+
+  function openRejectModal(quoteId) {
+    const existing = document.getElementById('quoteDecisionModal');
+    if (existing) existing.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'quoteDecisionModal';
+    modal.style.cssText = 'position:fixed; inset:0; background:rgba(11,27,51,.45); display:flex; align-items:center; justify-content:center; z-index:1000; padding:20px; overflow-y:auto;';
+
+    const panel = document.createElement('div');
+    panel.style.cssText = 'width:min(560px, calc(100vw - 24px)); max-height:90vh; overflow-y:auto; background:#fff; border-radius:18px; padding:22px 20px 18px; box-shadow:0 20px 45px rgba(11,27,51,.25);';
+
+    let ideaImage = '';
+    panel.innerHTML = '<h3 style="margin:0 0 18px; color:var(--navy);">Reject draft and request changes</h3><label style="display:block; margin-bottom:8px; color:var(--navy); font-weight:700;">Why are you rejecting this design?</label><textarea id="rejectReason" placeholder="Please explain what is not working." style="width:100%; min-height:90px; padding:12px; border:1px solid var(--line-on-white); border-radius:10px; resize:vertical; margin-bottom:16px; box-sizing:border-box;"></textarea><label style="display:block; margin-bottom:8px; color:var(--navy); font-weight:700;">What changes should we make?</label><textarea id="rejectChanges" placeholder="Specify the exact changes and design direction." style="width:100%; min-height:110px; padding:12px; border:1px solid var(--line-on-white); border-radius:10px; resize:vertical; margin-bottom:16px; box-sizing:border-box;"></textarea><label style="display:block; margin-bottom:8px; color:var(--navy); font-weight:700;">Upload your idea reference image</label><input id="rejectIdeaInput" type="file" accept="image/*" style="width:100%; margin-bottom:14px; box-sizing:border-box;"><div id="rejectIdeaPreview" style="display:none; margin-bottom:18px;"></div><div style="display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap;"><button type="button" data-close-review style="padding:10px 16px; border-radius:10px; border:1px solid var(--line-on-white); background:#fff; color:var(--navy); font-weight:700; cursor:pointer;">Cancel</button><button type="button" id="submitRejectedDesign" style="padding:10px 16px; border-radius:10px; border:none; background:var(--orange); color:#fff; font-weight:700; cursor:pointer;">Send revision request</button></div>';
+
+    modal.appendChild(panel);
+    document.body.appendChild(modal);
+
+    const rejectIdeaInput = document.getElementById('rejectIdeaInput');
+    const rejectIdeaPreview = document.getElementById('rejectIdeaPreview');
+
+    rejectIdeaInput.addEventListener('change', () => {
+      const file = rejectIdeaInput.files[0];
+      if (!file) return;
+      if (file.size > 5 * 1024 * 1024) {
+        AweSum.showMessage('Please choose an image smaller than 5MB.', 'error');
+        rejectIdeaInput.value = '';
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        ideaImage = String(reader.result || '');
+        rejectIdeaPreview.innerHTML = '<img src="' + AweSum.escapeHtml(ideaImage) + '" alt="Reference idea preview" style="max-width:100%; max-height:220px; border-radius:8px; border:1px solid #ddd;">';
+        rejectIdeaPreview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    });
+
+    panel.querySelector('[data-close-review]').addEventListener('click', () => modal.remove());
+    document.getElementById('submitRejectedDesign').addEventListener('click', async () => {
+      const reason = document.getElementById('rejectReason').value.trim();
+      const changes = document.getElementById('rejectChanges').value.trim();
+      if (!reason && !changes) {
+        AweSum.showMessage('Please include a reason and describe the changes you want.', 'error');
+        return;
+      }
+      try {
+        await AweSum.api('quote-client-review', { method: 'PUT', body: JSON.stringify({ id: quoteId, decision: 'rejected', reason, changes, ideaImage }) });
+        modal.remove();
+        const result = await AweSum.api('quotes');
+        renderQuoteHistory(result.quotes || []);
+      } catch (error) { AweSum.showMessage(error.message, 'error'); }
+    });
+  }
+
+  function renderQuoteHistory(quotes) {
+    quoteHistory.innerHTML = quotes.length ? '' : '<p style="color:var(--muted-on-white);">You have not submitted any quote requests yet.</p>';
+    quotes.forEach(quote => {
+      const card = document.createElement('div');
+      card.style.cssText = 'border:1px solid var(--line-on-white); border-radius:12px; padding:18px; margin-bottom:14px;';
+      const status = quote.status || 'Pending';
+      const draftMarkup = quote.draftImage ? '<div style="margin-top:14px; color:var(--navy);"><strong>Design draft:</strong><img src="' + AweSum.escapeHtml(quote.draftImage) + '" alt="Draft design" style="display:block; width:100%; max-width:380px; margin-top:8px; border-radius:10px; border:1px solid var(--line-on-white);"></div>' : '';
+      const clientDecisionMarkup = quote.clientDecision ? '<p style="margin-top:10px; color:var(--navy);"><strong>Your decision:</strong> ' + AweSum.escapeHtml(quote.clientDecision === 'approved' ? 'Approved' : 'Rejected') + '</p>' + (quote.clientReason ? '<p style="margin-top:8px; color:var(--navy);"><strong>Reason:</strong> ' + AweSum.escapeHtml(quote.clientReason) + '</p>' : '') + (quote.clientChanges ? '<p style="margin-top:8px; color:var(--navy);"><strong>Changes requested:</strong> ' + AweSum.escapeHtml(quote.clientChanges) + '</p>' : '') + (quote.clientIdeaImage ? '<div style="margin-top:8px;"><img src="' + AweSum.escapeHtml(quote.clientIdeaImage) + '" alt="Client idea reference" style="max-width:100%; max-height:220px; border-radius:8px; border:1px solid var(--line-on-white);"></div>' : '') : '';
+      const actionsMarkup = ['Draft Sent', 'Needs Revision'].includes(status) ? '<div style="margin-top:16px; display:flex; flex-wrap:wrap; gap:10px;"><button type="button" data-approve-quote="' + AweSum.escapeHtml(quote.id) + '" style="padding:10px 14px; border:none; border-radius:10px; background:var(--orange); color:#fff; font-weight:700; cursor:pointer;">Approve Design</button><button type="button" data-reject-quote="' + AweSum.escapeHtml(quote.id) + '" style="padding:10px 14px; border:1px solid var(--line-on-white); border-radius:10px; background:#fff; color:var(--navy); font-weight:700; cursor:pointer;">Reject & Request Changes</button></div>' : '';
+      card.innerHTML = '<strong style="color:var(--navy);">' + AweSum.escapeHtml(quote.id) + '</strong><span style="margin-left:12px; color:var(--orange); font-weight:700;">' + AweSum.escapeHtml(status) + '</span><p style="margin-top:8px; color:var(--muted-on-white);">' + AweSum.escapeHtml(quote.category) + ' x ' + AweSum.escapeHtml(quote.quantity) + '</p>' + (quote.designImage ? '<p style="margin-top:10px; color:var(--navy);">Design image submitted</p>' : '') + (quote.response ? '<p style="margin-top:10px; color:var(--navy);"><strong>Admin response:</strong> ' + AweSum.escapeHtml(quote.response) + '</p>' : '<p style="margin-top:10px; color:var(--muted-on-white);">Our team has not responded yet.</p>') + draftMarkup + clientDecisionMarkup + actionsMarkup;
+      quoteHistory.appendChild(card);
+    });
+
+    document.querySelectorAll('[data-approve-quote]').forEach(button => {
+      button.addEventListener('click', async () => {
+        const quoteId = button.dataset.approveQuote;
+        try {
+          await AweSum.api('quote-client-review', { method: 'PUT', body: JSON.stringify({ id: quoteId, decision: 'approved' }) });
+          window.location.href = 'checkout.html?quoteId=' + encodeURIComponent(quoteId);
+        } catch (error) { AweSum.showMessage(error.message, 'error'); }
+      });
+    });
+
+    document.querySelectorAll('[data-reject-quote]').forEach(button => {
+      button.addEventListener('click', () => openRejectModal(button.dataset.rejectQuote));
+    });
+  }
+
+  AweSum.api('quotes').then(result => renderQuoteHistory(result.quotes || [])).catch(error => { quoteHistory.innerHTML = ''; AweSum.showMessage(error.message, 'error'); });
+
+  const navToggle = document.querySelector('.nav-toggle');
+  const mainNav = document.querySelector('.main-nav');
+  navToggle.addEventListener('click', () => {
+    const isOpen = mainNav.style.display === 'flex';
+    mainNav.style.display = isOpen ? 'none' : 'flex';
+    mainNav.style.cssText += isOpen ? '' : 'flex-direction:column; position:absolute; top:76px; left:0; right:0; background:#0B1B33; padding:24px 24px; gap:20px; border-bottom:1px solid rgba(255,255,255,0.12);';
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Cart — AweSum Brands</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B1B33;
+    --navy-line: rgba(255,255,255,0.12);
+    --orange:#F5820B;
+    --orange-dark:#D96F00;
+    --black:#0A0A0A;
+    --white:#FFFFFF;
+    --muted-on-navy: rgba(255,255,255,0.68);
+    --muted-on-white: rgba(10,10,10,0.55);
+    --line-on-white: rgba(10,10,10,0.1);
+    --radius: 16px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background:var(--white);
+    color:var(--black);
+    -webkit-font-smoothing:antialiased;
+  }
+  img{display:block; max-width:100%; height:auto;}
+  a{text-decoration:none; color:inherit;}
+  ul{list-style:none;}
+  button{font-family:inherit; cursor:pointer;}
+  .wrap{ max-width:1360px; margin:0 auto; padding:0 48px; }
+
+  /* Buttons */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:14px 26px; border-radius:10px; font-weight:600; font-size:15px;
+    border:1.5px solid transparent; transition:all .15s ease; white-space:nowrap;
+  }
+  .btn-primary{ background:var(--orange); color:var(--white); }
+  .btn-primary:hover{ background:var(--orange-dark); }
+  .btn-outline-navy{ background:transparent; color:var(--navy); border-color:var(--line-on-white); }
+  .btn-outline-navy:hover{ border-color:var(--navy); }
+  .btn-sm{ padding:10px 18px; font-size:14px; border-radius:8px; }
+  .btn-block{ width:100%; }
+
+  /* Header */
+  header{ background:var(--navy); position:sticky; top:0; z-index:100; border-bottom:1px solid var(--navy-line); }
+  .nav-row{ display:flex; align-items:center; justify-content:space-between; height:76px; }
+  .logo{ display:flex; align-items:center; gap:10px; }
+  .logo-mark{ width:40px; height:40px; background:var(--white); border-radius:9px; display:flex; align-items:center; justify-content:center; padding:6px; }
+  .logo-mark svg{ display:block; width:100%; height:100%; }
+  .logo-text{ color:var(--white); font-weight:700; font-size:16px; letter-spacing:-0.2px; }
+  .logo-text span{ color:var(--orange); }
+  nav.main-nav{ display:flex; align-items:center; gap:40px; }
+  nav.main-nav a{ color:var(--muted-on-navy); font-size:15px; font-weight:500; transition:color .15s ease; }
+  nav.main-nav a:hover, nav.main-nav a.active{ color:var(--white); }
+  nav.main-nav a.active{ color:var(--orange); }
+  .nav-right{ display:flex; align-items:center; gap:26px; }
+  .cart-link{ position:relative; display:flex; align-items:center; color:var(--white); }
+  .cart-badge{
+    position:absolute; top:-8px; right:-10px; background:var(--orange); color:var(--white);
+    font-size:11px; font-weight:700; min-width:18px; height:18px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; border:2px solid var(--navy);
+  }
+  .login-link{ color:var(--white); font-size:15px; font-weight:500; }
+  .nav-toggle{ display:none; background:none; border:none; color:var(--white); }
+
+  /* Page header band */
+  .page-hero{
+    background:var(--navy);
+    padding:44px 0 40px;
+  }
+  .page-hero h1{ color:var(--white); font-size:34px; font-weight:800; letter-spacing:-0.6px; margin-bottom:6px; }
+  .page-hero p{ color:var(--muted-on-navy); font-size:15px; }
+
+  /* Cart layout */
+  .cart-section{ padding:48px 0 96px; }
+  .cart-grid{
+    display:grid;
+    grid-template-columns:1fr 380px;
+    gap:32px;
+    align-items:start;
+  }
+
+  .cart-item{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    background:var(--white);
+    border:1px solid var(--line-on-white);
+    border-radius:var(--radius);
+    padding:18px;
+    margin-bottom:20px;
+  }
+  .cart-item-img{
+    width:96px; height:96px;
+    border-radius:12px;
+    overflow:hidden;
+    flex-shrink:0;
+    background:#eee;
+  }
+  .cart-item-img img{ width:100%; height:100%; object-fit:cover; }
+  .cart-item-info{ flex:1; min-width:0; }
+  .cart-item-info h3{ font-size:17px; font-weight:700; color:var(--black); margin-bottom:6px; }
+  .cart-item-info .meta{ font-size:13.5px; color:var(--muted-on-white); margin-bottom:10px; }
+  .cart-item-info .price{ color:var(--orange); font-weight:800; font-size:17px; }
+  .cart-item-remove{
+    background:none; border:none; color:var(--muted-on-white); padding:8px;
+    border-radius:8px; transition:all .15s ease; flex-shrink:0;
+  }
+  .cart-item-remove:hover{ background:#FBEAD8; color:var(--orange); }
+  .cart-item-remove svg{ width:19px; height:19px; }
+
+  /* Order summary */
+  .summary-card{
+    background:var(--white);
+    border:1px solid var(--line-on-white);
+    border-radius:var(--radius);
+    padding:26px;
+    position:sticky;
+    top:96px;
+  }
+  .summary-card h2{ font-size:20px; font-weight:800; color:var(--navy); margin-bottom:20px; }
+  .summary-row{
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:14.5px; color:var(--black); padding:10px 0;
+  }
+  .summary-row .label{ color:var(--muted-on-white); }
+  .summary-row .value{ font-weight:600; }
+  .summary-row .value.pending{ color:var(--orange); font-weight:600; }
+  .summary-divider{ height:1px; background:var(--line-on-white); margin:12px 0; }
+  .summary-total{
+    display:flex; justify-content:space-between; align-items:baseline;
+    margin-bottom:22px;
+  }
+  .summary-total .label{ font-size:16px; font-weight:700; color:var(--navy); }
+  .summary-total .value{ font-size:24px; font-weight:800; color:var(--orange); }
+  .summary-card .btn{ margin-bottom:12px; }
+  .summary-card .btn:last-child{ margin-bottom:0; }
+
+  /* Footer */
+  footer{ background:var(--navy); padding:72px 0 28px; }
+  .footer-grid{ display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:40px; padding-bottom:48px; }
+  .footer-brand p{ color:var(--muted-on-navy); font-size:14.5px; line-height:1.6; margin-top:16px; max-width:280px; }
+  footer h4{ color:var(--white); font-size:15px; font-weight:700; margin-bottom:18px; }
+  footer ul li{ margin-bottom:12px; }
+  footer ul a{ color:var(--muted-on-navy); font-size:14.5px; transition:color .15s ease; }
+  footer ul a:hover{ color:var(--white); }
+  .footer-bottom{
+    border-top:1px solid var(--navy-line); padding-top:24px; display:flex;
+    justify-content:space-between; flex-wrap:wrap; gap:10px; color:var(--muted-on-navy); font-size:13.5px;
+  }
+
+  /* Empty state (hidden by default) */
+  .empty-cart{ display:none; text-align:center; padding:60px 20px; }
+  .empty-cart.show{ display:block; }
+  .empty-cart p{ color:var(--muted-on-white); margin-bottom:20px; }
+
+  @media (max-width:980px){
+    .wrap{ padding:0 24px; }
+    nav.main-nav{ display:none; }
+    .nav-toggle{ display:block; }
+    .cart-grid{ grid-template-columns:1fr; }
+    .summary-card{ position:static; }
+    .footer-grid{ grid-template-columns:1fr 1fr; }
+  }
+  @media (max-width:560px){
+    .cart-item{ flex-wrap:wrap; }
+    .footer-grid{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body data-auth-required="user">
+
+<header>
+  <div class="wrap nav-row">
+    <a href="index.html" class="logo">
+      <img src="images/logo.jpg" alt="AweSum Brands logo" style="height:42px; width:auto; display:block;">
+    </a>
+    <nav class="main-nav">
+      <a href="marketplace.html">Marketplace</a>
+      <a href="quote.html">Custom Quote</a>
+      <a href="messages.html">Messages</a>
+      <a href="orders.html">Orders</a>
+    </nav>
+    <div class="nav-right">
+      <a href="cart.html" class="cart-link" aria-label="Cart">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="cart-badge">3</span>
+      </a>
+      <a href="login.html" class="login-link">Login</a>
+      <a href="signup.html" class="btn btn-primary btn-sm">Sign Up</a>
+    </div>
+    <button class="nav-toggle" aria-label="Menu">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap">
+    <h1>Your Cart</h1>
+    <p id="itemCountLabel">3 items ready to order</p>
+  </div>
+</section>
+
+<section class="cart-section">
+  <div class="wrap cart-grid">
+    <div class="cart-items" id="cartItems">
+      <div class="cart-item" data-price="1495">
+        <div class="cart-item-img">
+          <img src="https://picsum.photos/seed/cart-bizcard/200/200" alt="Premium Business Cards">
+        </div>
+        <div class="cart-item-info">
+          <h3>Premium Business Cards</h3>
+          <div class="meta">500 units · Matt laminate · Logo uploaded</div>
+          <div class="price">R 1,495</div>
+        </div>
+        <button class="cart-item-remove" aria-label="Remove item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m5 0V4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v2"/></svg>
+        </button>
+      </div>
+
+      <div class="cart-item" data-price="1800">
+        <div class="cart-item-img">
+          <img src="https://picsum.photos/seed/cart-tshirt/200/200" alt="Custom T-Shirt Printing">
+        </div>
+        <div class="cart-item-info">
+          <h3>Custom T-Shirt Printing</h3>
+          <div class="meta">10 units · White · Front print · Size M</div>
+          <div class="price">R 1,800</div>
+        </div>
+        <button class="cart-item-remove" aria-label="Remove item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m5 0V4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v2"/></svg>
+        </button>
+      </div>
+
+      <div class="cart-item" data-price="1900">
+        <div class="cart-item-img">
+          <img src="https://picsum.photos/seed/cart-poster/200/200" alt="A1 Poster Printing">
+        </div>
+        <div class="cart-item-info">
+          <h3>A1 Poster Printing</h3>
+          <div class="meta">5 units · Gloss finish · CMYK colour</div>
+          <div class="price">R 1,900</div>
+        </div>
+        <button class="cart-item-remove" aria-label="Remove item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m5 0V4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v2"/></svg>
+        </button>
+      </div>
+
+      <div class="empty-cart" id="emptyCart">
+        <p>Your cart is empty.</p>
+        <a href="marketplace.html" class="btn btn-primary">Browse Products</a>
+      </div>
+    </div>
+
+    <aside class="summary-card">
+      <h2>Order Summary</h2>
+      <div class="summary-row">
+        <span class="label">Subtotal</span>
+        <span class="value" id="subtotalVal">R 5,195</span>
+      </div>
+      <div class="summary-row">
+        <span class="label">VAT (15%)</span>
+        <span class="value" id="vatVal">R 779</span>
+      </div>
+      <div class="summary-row">
+        <span class="label">Delivery</span>
+        <span class="value pending">TBD after quote</span>
+      </div>
+      <div class="summary-divider"></div>
+      <div class="summary-total">
+        <span class="label">Total</span>
+        <span class="value" id="totalVal">R 5,974</span>
+      </div>
+      <a href="checkout.html" class="btn btn-primary btn-block">Proceed to Checkout</a>
+      <a href="marketplace.html" class="btn btn-outline-navy btn-block">Continue Shopping</a>
+    </aside>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo">
+          <span class="logo-mark">
+            <svg width="22" height="22" viewBox="0 0 92 72" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <clipPath id="footBTop"><rect x="0" y="0" width="92" height="30"/></clipPath>
+                <clipPath id="footBBot"><rect x="0" y="30" width="92" height="42"/></clipPath>
+              </defs>
+              <text x="0" y="54" font-family="Georgia, 'Times New Roman', serif" font-size="58" fill="#28308C">A</text>
+              <g clip-path="url(#footBTop)"><text x="34" y="54" font-family="Georgia, 'Times New Roman', serif" font-size="58" fill="#F5820B">B</text></g>
+              <g clip-path="url(#footBBot)"><text x="34" y="54" font-family="Georgia, 'Times New Roman', serif" font-size="58" fill="#28308C">B</text></g>
+            </svg>
+          </span>
+        </a>
+        <p>Premium printing and signage solutions for South African businesses. Quality you can trust, delivered fast.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="marketplace.html">Marketplace</a></li>
+          <li><a href="quote.html">Custom Quote</a></li>
+          <li><a href="orders.html">Orders</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Track Order</a></li>
+          <li><a href="#">Returns Policy</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+          <li><a href="#">Sitemap</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 AweSum Brands (Pty) Ltd. All rights reserved.</span>
+      <span>Registered in South Africa · VAT No. 4560291837</span>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+<script>
+  function formatR(n){
+    return 'R ' + Math.round(n).toLocaleString('en-ZA');
+  }
+  function recalc(){
+    const items = document.querySelectorAll('.cart-item');
+    let subtotal = 0;
+    items.forEach(item => subtotal += Number(item.dataset.price));
+    const vat = subtotal * 0.15;
+    const total = subtotal + vat;
+    document.getElementById('subtotalVal').textContent = formatR(subtotal);
+    document.getElementById('vatVal').textContent = formatR(vat);
+    document.getElementById('totalVal').textContent = formatR(total);
+    document.getElementById('itemCountLabel').textContent = items.length + (items.length === 1 ? ' item ready to order' : ' items ready to order');
+    document.querySelector('.cart-badge').textContent = items.length;
+    document.getElementById('emptyCart').classList.toggle('show', items.length === 0);
+  }
+  document.querySelectorAll('.cart-item-remove').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const removed = btn.closest('.cart-item').querySelector('h3').textContent.trim();
+      btn.closest('.cart-item').remove();
+      AweSum.setCart(AweSum.getCart().filter(item => item.name !== removed));
+      recalc();
+    });
+  });
+
+  const storedCart = AweSum.getCart();
+  if (storedCart.length) {
+    document.querySelectorAll('.cart-item').forEach(item => item.remove());
+    storedCart.forEach(item => {
+      const row = document.createElement('div'); row.className = 'cart-item'; row.dataset.price = item.price * item.quantity;
+      row.innerHTML = '<div class="cart-item-img"><img src="' + (item.image || '') + '" alt=""></div><div class="cart-item-info"><h3>' + item.name.replace(/</g, '&lt;') + '</h3><div class="meta">' + item.quantity + ' unit' + (item.quantity === 1 ? '' : 's') + ' · Marketplace product</div><div class="price">' + AweSum.money(item.price * item.quantity) + '</div></div><button class="cart-item-remove" aria-label="Remove item">Remove</button>';
+      document.getElementById('cartItems').insertBefore(row, document.getElementById('emptyCart'));
+      row.querySelector('.cart-item-remove').addEventListener('click', () => { AweSum.setCart(AweSum.getCart().filter(cartItem => cartItem.name !== item.name)); row.remove(); recalc(); });
+    });
+  }
+  recalc();
+
+  const navToggle = document.querySelector('.nav-toggle');
+  const mainNav = document.querySelector('.main-nav');
+  navToggle.addEventListener('click', () => {
+    const isOpen = mainNav.style.display === 'flex';
+    mainNav.style.display = isOpen ? 'none' : 'flex';
+    mainNav.style.cssText += isOpen ? '' : 'flex-direction:column; position:absolute; top:76px; left:0; right:0; background:#0B1B33; padding:24px 24px; gap:20px; border-bottom:1px solid rgba(255,255,255,0.12);';
+  });
+</script>
+</body>
+</html>

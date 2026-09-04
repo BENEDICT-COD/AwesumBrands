@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AweSum Brands — Admin Panel</title>
+<style>
+  :root{
+    --navy:#0c1a31;
+    --navy-light:#16294a;
+    --orange:#e97e10;
+    --orange-light:#fdf0e2;
+    --text-dark:#0c1a31;
+    --text-grey:#8a94a6;
+    --border:#ececec;
+    --bg:#fffffc;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text-dark);
+    display:flex;
+    min-height:100vh;
+  }
+
+  /* ---------------- Sidebar ---------------- */
+  .sidebar{
+    width:280px;
+    min-width:280px;
+    background:var(--navy);
+    color:#fff;
+    display:flex;
+    flex-direction:column;
+    padding:28px 20px;
+    position:relative;
+    border-right:6px repeating-linear-gradient(45deg,#e97e10,#e97e10 4px,#0c1a31 4px,#0c1a31 8px);
+  }
+  .sidebar::after{
+    content:"";
+    position:absolute;
+    top:0; right:0;
+    width:6px;
+    height:100%;
+    background:repeating-linear-gradient(45deg,#e97e10 0,#e97e10 6px,#0c1a31 6px,#0c1a31 12px);
+  }
+  .brand-label{
+    font-size:11px;
+    letter-spacing:1.5px;
+    color:#7c88a3;
+    text-transform:uppercase;
+    margin-bottom:4px;
+  }
+  .brand-name{
+    font-size:20px;
+    font-weight:700;
+    margin-bottom:22px;
+  }
+  .sidebar-divider{
+    border:none;
+    border-top:1px solid #253656;
+    margin-bottom:18px;
+  }
+  .nav{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    flex:1;
+  }
+  .nav-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:13px 16px;
+    border-radius:10px;
+    color:#8f9bb5;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease;
+    background:transparent;
+    border:none;
+    text-align:left;
+    width:100%;
+  }
+  .nav-item svg{
+    width:18px;
+    height:18px;
+    flex-shrink:0;
+  }
+  .nav-item:hover{
+    color:#fff;
+  }
+  .nav-item.active{
+    background:var(--orange);
+    color:#fff;
+  }
+  .pages-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    border:1px solid #fff;
+    color:#fff;
+    background:transparent;
+    padding:12px 20px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    align-self:flex-start;
+  }
+
+  /* ---------------- Main content ---------------- */
+  .main{
+    flex:1;
+    padding:48px 56px;
+    max-width:1280px;
+  }
+  .page-title{
+    font-size:32px;
+    font-weight:700;
+    color:var(--navy);
+    margin-bottom:32px;
+  }
+  .exit-admin{
+    position:fixed;
+    bottom:32px;
+    right:40px;
+    background:var(--navy);
+    color:#fff;
+    border:none;
+    padding:14px 22px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  /* ---------------- Orders Queue ---------------- */
+  .order-list{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    max-width:1080px;
+  }
+  .order-card{
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:22px 26px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    transition:box-shadow .15s ease;
+  }
+  .order-card:hover{
+    box-shadow:0 2px 10px rgba(12,26,49,0.05);
+  }
+  .order-info{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .order-top{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .order-id{
+    font-size:16px;
+    font-weight:700;
+    color:var(--navy);
+  }
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    padding:5px 14px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:700;
+  }
+  .badge.awaiting{
+    background:var(--orange);
+    color:#fff;
+  }
+  .badge.accepted{
+    background:var(--navy);
+    color:#fff;
+  }
+  .badge.reviewed{
+    background:#e7edf7;
+    color:var(--navy);
+  }
+  .badge.rejected{
+    background:#eee;
+    color:#9aa2b1;
+  }
+  .order-customer{
+    font-size:16px;
+    font-weight:600;
+    color:var(--navy);
+  }
+  .order-meta{
+    font-size:14px;
+    color:var(--text-grey);
+  }
+  .review-btn{
+    border:1px solid var(--orange);
+    background:transparent;
+    color:var(--orange);
+    padding:12px 22px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:background .15s ease;
+  }
+  .review-btn:hover{
+    background:var(--orange-light);
+  }
+  .review-btn:disabled{
+    opacity:0;
+    pointer-events:none;
+  }
+
+  /* ---------------- Modal ---------------- */
+  .modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(20,24,33,0.45);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .15s ease;
+    z-index:50;
+  }
+  .modal-overlay.open{
+    opacity:1;
+    pointer-events:auto;
+  }
+  .modal{
+    background:#fff;
+    border-radius:16px;
+    padding:36px 40px;
+    width:420px;
+    max-width:90vw;
+    box-shadow:0 20px 60px rgba(12,26,49,0.25);
+    transform:translateY(10px);
+    transition:transform .15s ease;
+  }
+  .modal-overlay.open .modal{
+    transform:translateY(0);
+  }
+  .modal h3{
+    font-size:22px;
+    color:var(--navy);
+    margin-bottom:10px;
+  }
+  .modal p{
+    color:var(--text-grey);
+    font-size:15px;
+    margin-bottom:26px;
+  }
+  .modal-actions{
+    display:flex;
+    gap:14px;
+  }
+  .quote-modal{ max-height:90vh; overflow:auto; }
+  .quote-details{ display:grid; gap:8px; margin:18px 0 22px; color:var(--text-grey); font-size:14px; }
+  .quote-details strong{ color:var(--navy); }
+  .quote-design-image{ display:block; max-width:100%; max-height:280px; object-fit:contain; border:1px solid var(--border); border-radius:8px; margin-top:6px; }
+  .quote-response{ width:100%; min-height:100px; padding:12px; border:1px solid var(--border); border-radius:8px; font:inherit; resize:vertical; margin:8px 0 16px; }
+  .quote-status{ width:100%; padding:12px; border:1px solid var(--border); border-radius:8px; font:inherit; margin-bottom:16px; }
+  .quote-close{ background:transparent; border:1px solid var(--border); color:var(--text-grey); padding:12px 18px; border-radius:10px; font-weight:600; cursor:pointer; }
+  .btn-proceed{
+    flex:1;
+    background:var(--orange);
+    color:#fff;
+    border:none;
+    padding:15px 0;
+    border-radius:10px;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .btn-reject{
+    flex:1;
+    background:#fff;
+    color:var(--navy);
+    border:1px solid #e2e5ea;
+    padding:15px 0;
+    border-radius:10px;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+  }
+
+  /* ---------------- Marketplace Items form ---------------- */
+  .form-wrap{
+    max-width:744px;
+  }
+  .field{
+    margin-bottom:26px;
+  }
+  .field label{
+    display:block;
+    font-size:15px;
+    font-weight:600;
+    color:var(--navy);
+    margin-bottom:10px;
+  }
+  .field input[type="text"],
+  .field input[type="number"],
+  .field select,
+  .field textarea{
+    width:100%;
+    border:1px solid #e2e5ea;
+    border-radius:10px;
+    padding:14px 16px;
+    font-size:15px;
+    color:var(--navy);
+    background:#fff;
+    font-family:inherit;
+  }
+  .field input::placeholder,
+  .field textarea::placeholder{
+    color:#b7bcc6;
+  }
+  .field select{
+    appearance:none;
+    -webkit-appearance:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'><path d='M1 1l6 6 6-6' stroke='%230c1a31' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat:no-repeat;
+    background-position:right 18px center;
+    cursor:pointer;
+  }
+  .field textarea{
+    resize:vertical;
+    min-height:110px;
+  }
+  .upload-box{
+    border:2px dashed #d7dae1;
+    border-radius:12px;
+    padding:44px 20px;
+    text-align:center;
+    color:var(--navy);
+    cursor:pointer;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .upload-box:hover{
+    border-color:var(--orange);
+    background:#fffaf4;
+  }
+  .upload-box svg{
+    margin-bottom:14px;
+  }
+  .upload-box .upload-title{
+    font-size:15px;
+    font-weight:500;
+    margin-bottom:4px;
+  }
+  .upload-box .upload-sub{
+    font-size:13px;
+    color:var(--text-grey);
+  }
+  .upload-box input{
+    display:none;
+  }
+  .submit-btn{
+    width:100%;
+    background:var(--orange);
+    color:#fff;
+    border:none;
+    padding:17px 0;
+    border-radius:10px;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    margin-top:6px;
+  }
+  .submit-btn:hover{
+    background:#d67209;
+  }
+
+  /* ---------------- Placeholder pages ---------------- */
+  .placeholder{
+    max-width:640px;
+    color:var(--text-grey);
+    font-size:15px;
+    line-height:1.6;
+  }
+  .placeholder-icon{
+    width:56px;
+    height:56px;
+    border-radius:14px;
+    background:var(--orange-light);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:20px;
+    color:var(--orange);
+  }
+
+  .page{
+    display:none;
+  }
+  .page.active{
+    display:block;
+  }
+
+  .toast{
+    position:fixed;
+    top:28px;
+    right:40px;
+    background:var(--navy);
+    color:#fff;
+    padding:16px 24px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:600;
+    box-shadow:0 10px 30px rgba(12,26,49,0.25);
+    transform:translateY(-20px);
+    opacity:0;
+    pointer-events:none;
+    transition:transform .2s ease, opacity .2s ease;
+    z-index:60;
+  }
+  .toast.show{
+    transform:translateY(0);
+    opacity:1;
+  }
+
+  @media (max-width:820px){
+    body{flex-direction:column;}
+    .sidebar{width:100%;min-width:0;}
+    .main{padding:32px 24px 100px;}
+  }
+</style>
+</head>
+<body data-auth-required="admin">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand-label">ADMIN PANEL</div>
+    <div class="brand-name">AweSum Brands</div>
+    <hr class="sidebar-divider">
+    <nav class="nav">
+      <button class="nav-item active" data-page="orders">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+        Orders Queue
+      </button>
+      <button class="nav-item" data-page="marketplace">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/></svg>
+        Marketplace Items
+      </button>
+      <button class="nav-item" data-page="sellers">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.5 2.9-6 6.5-6s6.5 2.5 6.5 6"/><circle cx="17" cy="8.5" r="2.4"/><path d="M15.5 14.2c2.6.4 4.5 2.4 4.5 5.3"/></svg>
+        Sellers
+      </button>
+      <button class="nav-item" data-page="reports">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
+        Homepage Content
+      </button>
+      <button class="nav-item" data-page="quotes">Quotes</button>
+      <button class="nav-item" data-page="adverts">Adverts</button>
+      <button class="nav-item" data-page="messages">Messages</button>
+    </nav>
+    <button class="pages-btn">Pages ▾</button>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main">
+
+    <!-- Orders Queue page -->
+    <section class="page active" id="page-orders">
+      <h1 class="page-title">New Orders Queue</h1>
+      <div class="order-list" id="order-list">
+
+        <div class="order-card" data-order="ORD-2850">
+          <div class="order-info">
+            <div class="order-top">
+              <span class="order-id">ORD-2850</span>
+              <span class="badge awaiting">Awaiting Review</span>
+            </div>
+            <span class="order-customer">Thandi Mokoena</span>
+            <span class="order-meta">Custom T-Shirts × 200 · Today, 09:15</span>
+          </div>
+          <button class="review-btn" data-item="Custom T-Shirts × 200">Review →</button>
+        </div>
+
+        <div class="order-card" data-order="ORD-2849">
+          <div class="order-info">
+            <div class="order-top">
+              <span class="order-id">ORD-2849</span>
+              <span class="badge awaiting">Awaiting Review</span>
+            </div>
+            <span class="order-customer">Ruan du Plessis</span>
+            <span class="order-meta">Outdoor Signage × 3 · Today, 08:02</span>
+          </div>
+          <button class="review-btn" data-item="Outdoor Signage × 3">Review →</button>
+        </div>
+
+        <div class="order-card" data-order="ORD-2848">
+          <div class="order-info">
+            <div class="order-top">
+              <span class="order-id">ORD-2848</span>
+              <span class="badge accepted">Accepted</span>
+            </div>
+            <span class="order-customer">Lindiwe Zulu</span>
+            <span class="order-meta">Flyers × 5,000 · Yesterday</span>
+          </div>
+          <button class="review-btn" style="visibility:hidden;">Review →</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Marketplace Items page -->
+    <section class="page" id="page-marketplace">
+      <h1 class="page-title">Add New Marketplace Item</h1>
+      <div class="order-list" id="admin-products" style="margin-bottom:32px;"></div>
+      <form class="form-wrap" id="marketplace-form">
+        <div class="field">
+          <label for="prod-name">Product Name</label>
+          <input type="text" id="prod-name" placeholder="e.g. Premium Business Cards" required>
+        </div>
+        <div class="field">
+          <label for="prod-price">Price(ZAR)</label>
+          <input type="number" id="prod-price" placeholder="299" min="1" required>
+        </div>
+        <div class="field">
+          <label for="prod-category">Category</label>
+          <select id="prod-category">
+            <option>Business Cards</option>
+            <option>Flyers</option>
+            <option>T-Shirts</option>
+            <option>Caps</option>
+            <option>Posters</option>
+            <option>Signage</option>
+            <option>Banners</option>
+            <option>Brochures</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="prod-desc">Description</label>
+          <textarea id="prod-desc" placeholder="Describe this product..."></textarea>
+        </div>
+        <div class="field">
+          <label>Product Image</label>
+          <label class="upload-box" id="upload-box">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8a94a6" stroke-width="1.8"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+            <div class="upload-title" id="upload-text">Click or drag to upload</div>
+            <div class="upload-sub">JPG, PNG up to 10MB</div>
+            <input type="file" accept=".jpg,.jpeg,.png" id="prod-image">
+          </label>
+        </div>
+        <button type="submit" class="submit-btn">Add to Marketplace</button>
+      </form>
+    </section>
+
+    <section class="page" id="page-adverts">
+      <h1 class="page-title">Adverts and Previous Work</h1>
+      <div class="order-list" id="admin-adverts" style="margin-bottom:32px;"></div>
+      <form class="form-wrap" id="advert-form">
+        <div class="field">
+          <label for="advert-title">Advert Title</label>
+          <input type="text" id="advert-title" placeholder="e.g. 20% off branded t-shirts" required>
+        </div>
+        <div class="field">
+          <label for="advert-description">Message</label>
+          <textarea id="advert-description" placeholder="Tell customers about this special or project..." required></textarea>
+        </div>
+        <div class="field">
+          <label for="advert-type">Media Type</label>
+          <select id="advert-type"><option value="video">Video</option><option value="image">Image</option></select>
+        </div>
+        <div class="field">
+          <label for="advert-url">Media URL</label>
+          <input type="url" id="advert-url" placeholder="https://example.com/special.mp4" required>
+        </div>
+        <button type="submit" class="submit-btn">Publish Advert</button>
+      </form>
+    </section>
+
+    <!-- Sellers page (placeholder) -->
+    <section class="page" id="page-sellers">
+      <h1 class="page-title">Sellers</h1>
+      <div class="placeholder">
+        <div class="placeholder-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.5 2.9-6 6.5-6s6.5 2.5 6.5 6"/><circle cx="17" cy="8.5" r="2.4"/><path d="M15.5 14.2c2.6.4 4.5 2.4 4.5 5.3"/></svg>
+        </div>
+        <p>Seller accounts and their marketplace activity will appear here.</p>
+      </div>
+    </section>
+
+    <section class="page" id="page-reports">
+      <h1 class="page-title">Manage Homepage</h1>
+      <form class="form-wrap" id="stats-form">
+        <div class="field">
+          <label for="stat-1-value">Stat 1 value</label>
+          <input type="text" id="stat-1-value" value="2,400+" required>
+        </div>
+        <div class="field">
+          <label for="stat-1-label">Stat 1 label</label>
+          <input type="text" id="stat-1-label" value="Happy Clients" required>
+        </div>
+        <div class="field">
+          <label for="stat-2-value">Stat 2 value</label>
+          <input type="text" id="stat-2-value" value="18,000+" required>
+        </div>
+        <div class="field">
+          <label for="stat-2-label">Stat 2 label</label>
+          <input type="text" id="stat-2-label" value="Projects Completed" required>
+        </div>
+        <div class="field">
+          <label for="stat-3-value">Stat 3 value</label>
+          <input type="text" id="stat-3-value" value="3–5 Days" required>
+        </div>
+        <div class="field">
+          <label for="stat-3-label">Stat 3 label</label>
+          <input type="text" id="stat-3-label" value="Turnaround Time" required>
+        </div>
+        <div class="field">
+          <label for="stat-4-value">Stat 4 value</label>
+          <input type="text" id="stat-4-value" value="100%" required>
+        </div>
+        <div class="field">
+          <label for="stat-4-label">Stat 4 label</label>
+          <input type="text" id="stat-4-label" value="Quality Guaranteed" required>
+        </div>
+        <button type="submit" class="submit-btn">Save Homepage Statistics</button>
+      </form>
+
+      <h1 class="page-title" style="margin-top:48px;">Previous Projects</h1>
+      <div class="order-list" id="admin-projects" style="margin-bottom:32px;"></div>
+      <form class="form-wrap" id="project-form">
+        <div class="field">
+          <label for="project-title">Project Title</label>
+          <input type="text" id="project-title" placeholder="e.g. Brand Launch Campaign" required>
+        </div>
+        <div class="field">
+          <label for="project-category">Category</label>
+          <select id="project-category">
+            <option value="business-cards">Business Cards</option>
+            <option value="flyers">Flyers</option>
+            <option value="banners">Banners</option>
+            <option value="t-shirts">T-Shirts</option>
+            <option value="signage">Signage</option>
+            <option value="caps">Caps</option>
+            <option value="posters">Posters</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="project-image-url">Image URL</label>
+          <input type="url" id="project-image-url" placeholder="https://example.com/project-image.jpg">
+        </div>
+        <div class="field">
+          <label>Or upload a project image</label>
+          <label class="upload-box" id="project-upload-box">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8a94a6" stroke-width="1.8"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+            <div class="upload-title" id="project-upload-text">Click to upload</div>
+            <div class="upload-sub">JPG, PNG up to 5MB</div>
+            <input type="file" accept="image/*" id="project-image-file">
+          </label>
+        </div>
+        <button type="submit" class="submit-btn">Add Project to Homepage</button>
+      </form>
+    </section>
+
+    <section class="page" id="page-quotes">
+      <h1 class="page-title">Customer Quotes</h1>
+      <div class="order-list" id="quote-list"></div>
+    </section>
+
+    <section class="page" id="page-messages">
+      <h1 class="page-title">Customer Messages</h1>
+      <div class="order-list" id="message-list"></div>
+    </section>
+
+  </main>
+
+  <button class="exit-admin">← Exit Admin</button>
+
+  <!-- Review Modal -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+      <h3>Can This Be Done?</h3>
+      <p id="modal-item">Custom T-Shirts × 200</p>
+      <div class="modal-actions">
+        <button class="btn-proceed" id="btn-proceed">Yes - Proceed</button>
+        <button class="btn-reject" id="btn-reject">No - Reject</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="quote-modal-overlay">
+    <div class="modal quote-modal">
+      <h3>Review Quote Request</h3>
+      <div class="quote-details" id="quote-details"></div>
+      <label for="quote-response">Response to customer</label>
+      <textarea class="quote-response" id="quote-response" placeholder="Write your response..."></textarea>
+      <label for="draft-design-input">Upload first draft design</label>
+      <input type="file" id="draft-design-input" accept="image/*" style="width:100%; margin-bottom:10px;">
+      <div id="draft-design-preview" style="display:none; margin-bottom:12px;"></div>
+      <label for="quote-status">Status</label>
+      <select class="quote-status" id="quote-status"><option>Draft Sent</option><option>Reviewed</option><option>Accepted</option><option>Rejected</option></select>
+      <div class="modal-actions"><button class="quote-close" type="button" id="quote-close">Cancel</button><button class="btn-proceed" type="button" id="quote-save">Send To Client</button></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Product added to marketplace</div>
+
+<script src="app.js"></script>
+<script>
+  Promise.all([AweSum.api('quotes'), AweSum.api('messages'), AweSum.api('products'), AweSum.api('adverts'), AweSum.api('orders')]).then(([quotes, messages, products, adverts, orders]) => {
+    AweSum.write(AweSum.keys.quotes, quotes.quotes || []);
+    AweSum.write(AweSum.keys.messages, messages.messages || []);
+    AweSum.write(AweSum.keys.products, products.products || []);
+    AweSum.write(AweSum.keys.adverts, adverts.adverts || []);
+    AweSum.write(AweSum.keys.orders, orders.orders || []);
+    renderAdminOrders(orders.orders || []);
+    renderAdminMessages(messages.messages || []);
+    renderAdminAdverts(adverts.adverts || []);
+  }).catch(error => AweSum.showMessage(error.message, 'error'));
+  const orderList = document.getElementById('order-list');
+  orderList.innerHTML = '';
+  function renderAdminOrders(orders) {
+    orderList.innerHTML = orders.length ? '' : '<p class="placeholder">No customer orders have been placed yet.</p>';
+    orders.forEach(order => {
+      const card = document.createElement('div');
+      card.className = 'order-card';
+      const items = (Array.isArray(order.items) ? order.items : []).map(item => item.name + ' x ' + item.quantity).join(', ');
+      card.innerHTML = '<div class="order-info"><div class="order-top"><span class="order-id">' + AweSum.escapeHtml(order.id) + '</span><span class="badge ' + (order.status === 'Accepted' ? 'accepted' : order.status === 'Rejected' ? 'rejected' : 'awaiting') + '">' + AweSum.escapeHtml(order.status || 'Pending') + '</span></div><span class="order-customer">' + AweSum.escapeHtml(order.customer || '') + ' · ' + AweSum.escapeHtml(order.email || '') + '</span><span class="order-meta">' + AweSum.escapeHtml(items) + ' · ' + AweSum.escapeHtml(order.address || '') + '</span></div><button class="review-btn" data-order-response="' + AweSum.escapeHtml(order.id) + '">Review / Respond</button>';
+      orderList.appendChild(card);
+    });
+  }
+  orderList.addEventListener('click', async event => {
+    const button = event.target.closest('[data-order-response]');
+    if (!button) return;
+    const response = prompt('Enter a response status: Pending, Accepted, Rejected, Processing, or Completed');
+    const status = response ? response.trim() : '';
+    if (!['Pending', 'Accepted', 'Rejected', 'Processing', 'Completed'].includes(status)) return;
+    try {
+      await AweSum.api('order-status', { method: 'PUT', body: JSON.stringify({ id: button.dataset.orderResponse, status }) });
+      const orders = AweSum.read(AweSum.keys.orders, []);
+      const order = orders.find(item => item.id === button.dataset.orderResponse);
+      if (order) order.status = status;
+      AweSum.write(AweSum.keys.orders, orders);
+      renderAdminOrders(orders);
+    } catch (error) { AweSum.showMessage(error.message, 'error'); }
+  });
+  const storedQuotes = AweSum.read(AweSum.keys.quotes, []);
+  const quoteList = document.getElementById('quote-list');
+  const quoteModal = document.getElementById('quote-modal-overlay');
+  const quoteDetails = document.getElementById('quote-details');
+  const quoteResponse = document.getElementById('quote-response');
+  const quoteStatus = document.getElementById('quote-status');
+  const draftDesignInput = document.getElementById('draft-design-input');
+  const draftDesignPreview = document.getElementById('draft-design-preview');
+  let activeQuote = null;
+  let pendingDraftImage = '';
+
+  function renderQuoteCards() {
+    quoteList.innerHTML = '';
+    storedQuotes.forEach(quote => {
+      const card = document.createElement('div');
+      card.className = 'order-card';
+      card.innerHTML = '<div class="order-info"><div class="order-top"><span class="order-id">' + AweSum.escapeHtml(quote.id) + '</span><span class="badge awaiting">' + AweSum.escapeHtml(quote.status || 'Pending') + '</span></div><span class="order-customer">' + AweSum.escapeHtml(quote.customer) + ' · ' + AweSum.escapeHtml(quote.email) + '</span><span class="order-meta">' + AweSum.escapeHtml(quote.category) + ' x ' + AweSum.escapeHtml(quote.quantity) + ' · ' + AweSum.escapeHtml(quote.description) + (quote.response ? ' · Response: ' + AweSum.escapeHtml(quote.response) : '') + '</span></div><div><button class="review-btn" data-quote="' + AweSum.escapeHtml(quote.id) + '">Review / Respond</button><button class="review-btn" data-delete-quote="' + AweSum.escapeHtml(quote.id) + '">Delete</button></div>';
+      quoteList.appendChild(card);
+    });
+
+    document.querySelectorAll('#quote-list [data-quote]').forEach(button => {
+      button.textContent = 'Review / Respond';
+      button.addEventListener('click', event => {
+        event.stopPropagation();
+        activeQuote = storedQuotes.find(quote => quote.id === button.dataset.quote);
+        if (!activeQuote) return;
+        pendingDraftImage = activeQuote.draftImage || '';
+        quoteDetails.innerHTML = '<div><strong>Reference:</strong> ' + AweSum.escapeHtml(activeQuote.id) + '</div><div><strong>Customer:</strong> ' + AweSum.escapeHtml(activeQuote.customer) + ' · ' + AweSum.escapeHtml(activeQuote.email) + '</div><div><strong>Category:</strong> ' + AweSum.escapeHtml(activeQuote.category) + '</div><div><strong>Quantity:</strong> ' + AweSum.escapeHtml(activeQuote.quantity) + '</div><div><strong>Description:</strong> ' + AweSum.escapeHtml(activeQuote.description) + '</div><div><strong>Notes:</strong> ' + AweSum.escapeHtml(activeQuote.notes || 'None provided') + '</div><div><strong>Submitted:</strong> ' + AweSum.escapeHtml(new Date(activeQuote.createdAt).toLocaleString()) + '</div>' + (activeQuote.designImage ? '<div><strong>Original client design:</strong><img class="quote-design-image" src="' + AweSum.escapeHtml(activeQuote.designImage) + '" alt="Customer design upload"></div>' : '<div><strong>Original client design:</strong> None provided</div>') + (activeQuote.draftImage ? '<div><strong>Sent draft:</strong><img class="quote-design-image" src="' + AweSum.escapeHtml(activeQuote.draftImage) + '" alt="Admin draft design"></div>' : '');
+        quoteResponse.value = activeQuote.response || '';
+        quoteStatus.value = activeQuote.status === 'Pending' ? 'Draft Sent' : (activeQuote.status || 'Draft Sent');
+        if (pendingDraftImage) {
+          draftDesignPreview.innerHTML = '<img src="' + AweSum.escapeHtml(pendingDraftImage) + '" alt="Draft preview" style="max-width:100%; max-height:220px; border-radius:8px; border:1px solid #ddd;">';
+          draftDesignPreview.style.display = 'block';
+        } else {
+          draftDesignPreview.innerHTML = '';
+          draftDesignPreview.style.display = 'none';
+        }
+        draftDesignInput.value = '';
+        quoteModal.classList.add('open');
+      });
+    });
+  }
+
+  renderQuoteCards();
+
+  draftDesignInput.addEventListener('change', () => {
+    const file = draftDesignInput.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      AweSum.showMessage('Please choose a draft image smaller than 5MB.', 'error');
+      draftDesignInput.value = '';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      pendingDraftImage = String(reader.result || '');
+      draftDesignPreview.innerHTML = '<img src="' + AweSum.escapeHtml(pendingDraftImage) + '" alt="Draft preview" style="max-width:100%; max-height:220px; border-radius:8px; border:1px solid #ddd;">';
+      draftDesignPreview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('quote-close').addEventListener('click', () => quoteModal.classList.remove('open'));
+  document.getElementById('quote-save').addEventListener('click', async () => {
+      if (!activeQuote) return;
+      try {
+        await AweSum.api('quote-status', { method: 'PUT', body: JSON.stringify({ id: activeQuote.id, status: quoteStatus.value, response: quoteResponse.value.trim(), draftImage: pendingDraftImage }) });
+        const quotes = AweSum.read(AweSum.keys.quotes, []);
+        const quote = quotes.find(item => item.id === activeQuote.id);
+        if (quote) {
+          quote.status = quoteStatus.value;
+          quote.response = quoteResponse.value.trim();
+          quote.draftImage = pendingDraftImage;
+        }
+        AweSum.write(AweSum.keys.quotes, quotes);
+        quoteModal.classList.remove('open');
+        location.reload();
+      } catch (error) { AweSum.showMessage(error.message, 'error'); }
+  });
+  quoteList.addEventListener('click', async event => {
+    const button = event.target.closest('[data-delete-quote]');
+    if (!button || !confirm('Delete this quote request?')) return;
+    try {
+      await AweSum.api('quote', { method: 'DELETE', body: JSON.stringify({ id: button.dataset.deleteQuote }) });
+      const quotes = AweSum.read(AweSum.keys.quotes, []).filter(quote => String(quote.id) !== button.dataset.deleteQuote);
+      AweSum.write(AweSum.keys.quotes, quotes);
+      button.closest('.order-card').remove();
+    } catch (error) { AweSum.showMessage(error.message, 'error'); }
+  });
+  const messageList = document.getElementById('message-list');
+  function renderAdminMessages(messages) {
+    messageList.innerHTML = '';
+    messages.forEach(message => { const card = document.createElement('div'); card.className = 'order-card'; card.innerHTML = '<div class="order-info"><div class="order-top"><span class="order-id">' + AweSum.escapeHtml(message.id) + '</span><span class="badge ' + (message.reply ? 'accepted' : 'awaiting') + '">' + AweSum.escapeHtml(message.status) + '</span></div><span class="order-customer">' + AweSum.escapeHtml(message.name) + ' · ' + AweSum.escapeHtml(message.email) + '</span><span class="order-meta">' + AweSum.escapeHtml(message.text) + (message.reply ? ' · Reply: ' + AweSum.escapeHtml(message.reply) : '') + '</span></div><button class="review-btn" data-new-message="' + AweSum.escapeHtml(message.userId || '') + '">New Message</button><button class="review-btn" data-message="' + AweSum.escapeHtml(message.id) + '"' + (message.reply ? ' disabled' : '') + '>' + (message.reply ? 'Responded' : 'Respond') + '</button><button class="review-btn" data-delete-message="' + AweSum.escapeHtml(message.id) + '">Delete</button>'; messageList.appendChild(card); });
+  }
+  renderAdminMessages(AweSum.read(AweSum.keys.messages, []));
+  setInterval(() => AweSum.api('messages').then(result => { AweSum.write(AweSum.keys.messages, result.messages || []); renderAdminMessages(result.messages || []); }).catch(() => {}), 15000);
+  document.addEventListener('click', e => {
+    if (e.target.dataset.newMessage) { const text = prompt('Write a new message to this user:'); if (!text || !text.trim()) return; AweSum.api('admin-message', { method: 'POST', body: JSON.stringify({ userId: e.target.dataset.newMessage, text: text.trim() }) }).then(() => AweSum.showMessage('Message sent to the user.')).catch(error => AweSum.showMessage(error.message, 'error')); }
+    if (e.target.dataset.quote) { const quotes = AweSum.read(AweSum.keys.quotes, []); const quote = quotes.find(item => item.id === e.target.dataset.quote); if (quote) { quote.status = 'Reviewed'; AweSum.write(AweSum.keys.quotes, quotes); AweSum.api('quote-status', { method: 'PUT', body: JSON.stringify({ id: quote.id, status: 'Reviewed' }) }).catch(() => {}); } e.target.textContent = 'Reviewed'; e.target.disabled = true; }
+    if (e.target.dataset.message) { const reply = prompt('Write a reply to this customer:'); if (!reply) return; const messages = AweSum.read(AweSum.keys.messages, []); const message = messages.find(item => item.id === e.target.dataset.message); if (message) { message.status = 'Responded'; message.reply = reply.trim(); message.repliedAt = new Date().toISOString(); AweSum.write(AweSum.keys.messages, messages); AweSum.api('message-reply', { method: 'PUT', body: JSON.stringify({ id: message.id, reply: message.reply }) }).catch(() => {}); } e.target.textContent = 'Responded'; e.target.disabled = true; }
+    if (e.target.dataset.deleteMessage) { const messageId = e.target.dataset.deleteMessage; if (!confirm('Delete this customer message?')) return; AweSum.api('message', { method: 'DELETE', body: JSON.stringify({ id: messageId }) }).then(() => { const messages = AweSum.read(AweSum.keys.messages, []).filter(item => item.id !== messageId); AweSum.write(AweSum.keys.messages, messages); e.target.closest('.order-card').remove(); toast.textContent = 'Message deleted'; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2200); }).catch(error => AweSum.showMessage(error.message, 'error')); }
+  });
+  document.querySelector('.exit-admin').addEventListener('click', () => { window.location.href = 'index.html'; });
+
+  // Navigation
+  const navItems = document.querySelectorAll('.nav-item');
+  const pages = document.querySelectorAll('.page');
+  navItems.forEach(item => {
+    item.addEventListener('click', () => {
+      navItems.forEach(n => n.classList.remove('active'));
+      item.classList.add('active');
+      pages.forEach(p => p.classList.remove('active'));
+      document.getElementById('page-' + item.dataset.page).classList.add('active');
+    });
+  });
+
+  // Orders Queue review modal
+  const overlay = document.getElementById('modal-overlay');
+  const modalItem = document.getElementById('modal-item');
+  let activeCard = null;
+
+  document.querySelectorAll('.review-btn').forEach(btn => {
+    if (btn.style.visibility === 'hidden') return;
+    btn.addEventListener('click', () => {
+      activeCard = btn.closest('.order-card');
+      modalItem.textContent = btn.dataset.item;
+      overlay.classList.add('open');
+    });
+  });
+
+  function closeModal(){
+    overlay.classList.remove('open');
+    activeCard = null;
+  }
+
+  document.getElementById('btn-proceed').addEventListener('click', () => {
+    if (activeCard){
+      const badge = activeCard.querySelector('.badge');
+      badge.textContent = 'Accepted';
+      badge.className = 'badge accepted';
+      activeCard.querySelector('.review-btn').style.visibility = 'hidden';
+    }
+    closeModal();
+  });
+
+  document.getElementById('btn-reject').addEventListener('click', () => {
+    if (activeCard){
+      const badge = activeCard.querySelector('.badge');
+      badge.textContent = 'Rejected';
+      badge.className = 'badge rejected';
+      activeCard.querySelector('.review-btn').style.visibility = 'hidden';
+    }
+    closeModal();
+  });
+
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeModal();
+  });
+
+  // Marketplace form: image upload label + submit toast
+  const uploadInput = document.getElementById('prod-image');
+  const uploadText = document.getElementById('upload-text');
+  uploadInput.addEventListener('change', () => {
+    if (uploadInput.files.length){
+      uploadText.textContent = uploadInput.files[0].name;
+    }
+  });
+
+  const form = document.getElementById('marketplace-form');
+  const toast = document.getElementById('toast');
+  const adminProducts = document.getElementById('admin-products');
+  let productImagePromise = Promise.resolve('');
+  uploadInput.addEventListener('change', () => {
+    const file = uploadInput.files[0];
+    if (!file) { productImagePromise = Promise.resolve(''); return; }
+    uploadText.textContent = file.name;
+    if (!file.type.startsWith('image/') || file.size > 5 * 1024 * 1024) {
+      productImagePromise = Promise.resolve('');
+      AweSum.showMessage('Please choose an image smaller than 5MB.', 'error');
+      return;
+    }
+    productImagePromise = new Promise(resolve => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = () => resolve(''); reader.readAsDataURL(file); });
+  });
+  function renderAdminProducts(){
+    const products = JSON.parse(localStorage.getItem('awesum_products') || '[]');
+    adminProducts.innerHTML = products.length ? '' : '<p class="placeholder">No products have been added yet.</p>';
+    products.forEach(product => { const productId = product.id || product.name; const card = document.createElement('div'); card.className = 'order-card'; card.innerHTML = '<div class="order-info"><span class="order-customer">' + AweSum.escapeHtml(product.name) + '</span><span class="order-meta">' + AweSum.escapeHtml(product.category) + ' · R ' + Math.round(product.price).toLocaleString('en-ZA') + '</span></div><button type="button" class="review-btn" data-remove-product="' + AweSum.escapeHtml(productId) + '">Remove</button>'; adminProducts.appendChild(card); });
+  }
+  renderAdminProducts();
+  adminProducts.addEventListener('click', event => { if (!event.target.dataset.removeProduct) return; const productId = event.target.dataset.removeProduct; const products = JSON.parse(localStorage.getItem('awesum_products') || '[]').filter(product => String(product.id || product.name) !== productId); localStorage.setItem('awesum_products', JSON.stringify(products)); AweSum.api('products', { method: 'DELETE', body: JSON.stringify({ id: productId }) }).catch(() => {}); renderAdminProducts(); toast.textContent = 'Product removed from marketplace'; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2200); });
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const products = JSON.parse(localStorage.getItem('awesum_products') || '[]');
+    const image = await productImagePromise;
+    const product = { name: document.getElementById('prod-name').value.trim(), price: Number(document.getElementById('prod-price').value), category: document.getElementById('prod-category').value, description: document.getElementById('prod-desc').value.trim(), image };
+    try { const result = await AweSum.api('products', { method: 'POST', body: JSON.stringify(product) }); product.id = result.id; } catch (error) { AweSum.showMessage(error.message, 'error'); return; }
+    products.push(product);
+    localStorage.setItem('awesum_products', JSON.stringify(products));
+    renderAdminProducts();
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2200);
+    form.reset();
+    uploadText.textContent = 'Click or drag to upload';
+    productImagePromise = Promise.resolve('');
+  });
+
+  const advertForm = document.getElementById('advert-form');
+  const adminAdverts = document.getElementById('admin-adverts');
+  const statsForm = document.getElementById('stats-form');
+  const projectForm = document.getElementById('project-form');
+  const adminProjects = document.getElementById('admin-projects');
+  const projectImageFile = document.getElementById('project-image-file');
+  const projectUploadText = document.getElementById('project-upload-text');
+  const projectImageUrl = document.getElementById('project-image-url');
+  const defaultStats = [
+    { value: '2,400+', label: 'Happy Clients' },
+    { value: '18,000+', label: 'Projects Completed' },
+    { value: '3–5 Days', label: 'Turnaround Time' },
+    { value: '100%', label: 'Quality Guaranteed' }
+  ];
+
+  function populateStatsForm() {
+    const stats = AweSum.read(AweSum.keys.stats, defaultStats);
+    document.getElementById('stat-1-value').value = stats[0]?.value || defaultStats[0].value;
+    document.getElementById('stat-1-label').value = stats[0]?.label || defaultStats[0].label;
+    document.getElementById('stat-2-value').value = stats[1]?.value || defaultStats[1].value;
+    document.getElementById('stat-2-label').value = stats[1]?.label || defaultStats[1].label;
+    document.getElementById('stat-3-value').value = stats[2]?.value || defaultStats[2].value;
+    document.getElementById('stat-3-label').value = stats[2]?.label || defaultStats[2].label;
+    document.getElementById('stat-4-value').value = stats[3]?.value || defaultStats[3].value;
+    document.getElementById('stat-4-label').value = stats[3]?.label || defaultStats[3].label;
+  }
+
+  statsForm.addEventListener('submit', event => {
+    event.preventDefault();
+    const stats = [
+      { value: document.getElementById('stat-1-value').value.trim(), label: document.getElementById('stat-1-label').value.trim() },
+      { value: document.getElementById('stat-2-value').value.trim(), label: document.getElementById('stat-2-label').value.trim() },
+      { value: document.getElementById('stat-3-value').value.trim(), label: document.getElementById('stat-3-label').value.trim() },
+      { value: document.getElementById('stat-4-value').value.trim(), label: document.getElementById('stat-4-label').value.trim() }
+    ];
+    AweSum.write(AweSum.keys.stats, stats);
+    AweSum.showMessage('Homepage statistics updated.');
+  });
+
+  const defaultProjects = [
+    { title: "Louis O'Reilly — Business Cards", category: 'business-cards', image: 'https://picsum.photos/seed/awesum-bizcard2/700/481', size: 'narrow' },
+    { title: 'Marketing Bundle — Flyers', category: 'flyers', image: 'https://picsum.photos/seed/awesum-flyer2/1100/756', size: 'wide' },
+    { title: 'Zachary Eastwood-Bloom — Business Cards', category: 'business-cards', image: 'https://picsum.photos/seed/awesum-bizcard3/700/481', size: 'narrow' },
+    { title: 'Large Format Print — Banners', category: 'banners', image: 'https://picsum.photos/seed/awesum-banner1/1100/756', size: 'wide' },
+    { title: 'Studio Design Work — Banners', category: 'banners', image: 'https://picsum.photos/seed/awesum-banner2/700/481', size: 'narrow' },
+    { title: 'Streetwear Drop — T-Shirts', category: 't-shirts', image: 'https://picsum.photos/seed/awesum-tshirt2/700/481', size: 'narrow' },
+    { title: 'Production Floor — Signage', category: 'signage', image: 'https://picsum.photos/seed/awesum-signage1/700/481', size: 'narrow' },
+    { title: 'Engraved Signage — Posters', category: 'posters', image: 'https://picsum.photos/seed/awesum-poster1/700/481', size: 'narrow' },
+    { title: 'Trucker Cap Run — Caps', category: 'caps', image: 'https://picsum.photos/seed/awesum-cap2/700/481', size: 'narrow' }
+  ];
+
+  function renderAdminProjects(projects) {
+    adminProjects.innerHTML = projects.length ? '' : '<p class="placeholder">No previous projects have been added yet.</p>';
+    projects.forEach((project, index) => {
+      const card = document.createElement('div');
+      card.className = 'order-card';
+      const title = project.title || project.name || 'Untitled project';
+      const category = project.category || 'Uncategorized';
+      card.innerHTML = '<div class="order-info"><span class="order-customer">' + AweSum.escapeHtml(title) + '</span><span class="order-meta">' + AweSum.escapeHtml(category) + '</span></div><button type="button" class="review-btn" data-remove-project-index="' + index + '">Remove</button>';
+      adminProjects.appendChild(card);
+    });
+  }
+
+  function loadProjects() {
+    const storedProjects = localStorage.getItem(AweSum.keys.projects);
+    const projects = storedProjects === null ? defaultProjects : AweSum.read(AweSum.keys.projects, []);
+    return Array.isArray(projects) ? projects : [];
+  }
+
+  projectImageFile.addEventListener('change', () => {
+    const file = projectImageFile.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/') || file.size > 5 * 1024 * 1024) {
+      AweSum.showMessage('Please choose an image smaller than 5MB.', 'error');
+      projectImageFile.value = '';
+      return;
+    }
+    projectUploadText.textContent = file.name;
+  });
+
+  projectForm.addEventListener('submit', async event => {
+    event.preventDefault();
+    const title = document.getElementById('project-title').value.trim();
+    const category = document.getElementById('project-category').value;
+    const url = projectImageUrl.value.trim();
+
+    let image = url;
+    if (!image && projectImageFile.files[0]) {
+      image = await new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result || '');
+        reader.onerror = () => resolve('');
+        reader.readAsDataURL(projectImageFile.files[0]);
+      });
+    }
+
+    if (!title || (!image && !projectImageFile.files[0])) {
+      AweSum.showMessage('Please add a project title and image.', 'error');
+      return;
+    }
+
+    const project = {
+      id: 'project-' + Date.now(),
+      title,
+      category,
+      image,
+      size: ['business-cards', 'flyers', 'banners'].includes(category) ? 'wide' : 'narrow'
+    };
+
+    const projects = [...loadProjects(), project];
+    AweSum.write(AweSum.keys.projects, projects);
+    renderAdminProjects(projects);
+    projectForm.reset();
+    projectImageFile.value = '';
+    projectUploadText.textContent = 'Click to upload';
+    projectImageUrl.value = '';
+    AweSum.showMessage('Project added to homepage.');
+  });
+
+  adminProjects.addEventListener('click', event => {
+    const button = event.target.closest('[data-remove-project-index]');
+    if (!button) return;
+    const projects = loadProjects();
+    const projectIndex = Number(button.dataset.removeProjectIndex);
+    if (!Number.isInteger(projectIndex) || projectIndex < 0 || projectIndex >= projects.length) return;
+    projects.splice(projectIndex, 1);
+    AweSum.write(AweSum.keys.projects, projects);
+    renderAdminProjects(projects);
+    AweSum.showMessage('Project removed from homepage.');
+  });
+
+  renderAdminProjects(loadProjects());
+
+  function renderAdminAdverts(adverts) {
+    adminAdverts.innerHTML = adverts.length ? '' : '<p class="placeholder">No adverts have been published yet.</p>';
+    adverts.forEach(advert => { const card = document.createElement('div'); card.className = 'order-card'; card.innerHTML = '<div class="order-info"><span class="order-customer">' + AweSum.escapeHtml(advert.title) + '</span><span class="order-meta">' + AweSum.escapeHtml(advert.mediaType) + ' · ' + AweSum.escapeHtml(advert.description) + '</span></div><button type="button" class="review-btn" data-remove-advert="' + AweSum.escapeHtml(advert.id) + '">Remove</button>'; adminAdverts.appendChild(card); });
+  }
+  renderAdminAdverts(AweSum.read(AweSum.keys.adverts, []));
+  populateStatsForm();
+  adminAdverts.addEventListener('click', async event => {
+    const button = event.target.closest('[data-remove-advert]');
+    if (!button) return;
+    try {
+      await AweSum.api('advert', { method: 'DELETE', body: JSON.stringify({ id: button.dataset.removeAdvert }) });
+      const adverts = AweSum.read(AweSum.keys.adverts, []).filter(advert => String(advert.id) !== button.dataset.removeAdvert);
+      AweSum.write(AweSum.keys.adverts, adverts);
+      renderAdminAdverts(adverts);
+    } catch (error) { AweSum.showMessage(error.message, 'error'); }
+  });
+  advertForm.addEventListener('submit', async event => {
+    event.preventDefault();
+    const advert = { title: document.getElementById('advert-title').value.trim(), description: document.getElementById('advert-description').value.trim(), mediaType: document.getElementById('advert-type').value, mediaUrl: document.getElementById('advert-url').value.trim() };
+    try {
+      const result = await AweSum.api('adverts', { method: 'POST', body: JSON.stringify(advert) });
+      advert.id = result.id;
+      const adverts = [advert, ...AweSum.read(AweSum.keys.adverts, [])];
+      AweSum.write(AweSum.keys.adverts, adverts);
+      renderAdminAdverts(adverts);
+      advertForm.reset();
+    } catch (error) { AweSum.showMessage(error.message, 'error'); }
+  });
+</script>
+
+</body>
+</html>
