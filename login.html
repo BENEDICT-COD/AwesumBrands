@@ -156,6 +156,15 @@
   @media (max-width:520px){
     .auth-card{ padding:36px 26px 32px; border-radius:18px; }
   }
+  .pw-wrap{ position:relative; }
+  .pw-wrap input{ padding-right:48px; }
+  .pw-toggle{ position:absolute; right:6px; top:50%; transform:translateY(-50%); width:38px; height:38px; display:flex; align-items:center; justify-content:center; background:none; border:0; border-radius:8px; cursor:pointer; color:#667085; }
+  .pw-toggle:hover{ color:#F5820B; }
+  .pw-toggle:focus-visible{ outline:2px solid #F5820B; outline-offset:1px; }
+  .pw-toggle svg{ width:20px; height:20px; }
+  .pw-toggle .eye-off{ display:none; }
+  .pw-toggle.showing .eye{ display:none; }
+  .pw-toggle.showing .eye-off{ display:block; }
 </style>
 </head>
 <body>
@@ -190,7 +199,10 @@
       </div>
       <div class="field">
         <label for="password">Password</label>
-        <input type="password" id="password" name="password" placeholder="••••••••" required>
+        <div class="pw-wrap">
+          <input type="password" id="password" name="password" placeholder="••••••••" autocomplete="current-password" required>
+          <button type="button" class="pw-toggle" data-target="password" aria-label="Show password" aria-pressed="false"><svg class="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a19.8 19.8 0 0 1 5.06-5.94"/><path d="M9.9 4.24A10.9 10.9 0 0 1 12 4c7 0 11 7 11 7a19.7 19.7 0 0 1-3.17 4.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button>
+        </div>
       </div>
       <button type="submit" class="btn-submit">Sign In</button>
     </form>
@@ -205,6 +217,18 @@
     const password = document.getElementById('password').value;
     try { const result = await AweSum.api('login', { method: 'POST', body: JSON.stringify({ email, password }) }); AweSum.write(AweSum.keys.session, result.user); window.location.href = result.user.role === 'admin' ? 'admin.html' : 'index.html'; }
     catch (error) { AweSum.showMessage(error.message, 'error'); }
+  });
+</script>
+<script>
+  document.querySelectorAll('.pw-toggle').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const input = document.getElementById(btn.dataset.target);
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      btn.classList.toggle('showing', show);
+      btn.setAttribute('aria-pressed', String(show));
+      btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+    });
   });
 </script>
 </body>

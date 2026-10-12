@@ -345,8 +345,8 @@
   function handleFiles(files){
     fileList.innerHTML = '';
     const image = Array.from(files).find(file => file.type.startsWith('image/'));
-    designImagePromise = image && image.size <= 5 * 1024 * 1024 ? new Promise(resolve => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = () => resolve(''); reader.readAsDataURL(image); }) : Promise.resolve('');
-    if (image && image.size > 5 * 1024 * 1024) AweSum.showMessage('Please choose an image smaller than 5MB.', 'error');
+    designImagePromise = image && image.size <= 15 * 1024 * 1024 ? AweSum.imageToDataUrl(image).catch(error => { AweSum.showMessage(error.message, 'error'); return ''; }) : Promise.resolve('');
+    if (image && image.size > 15 * 1024 * 1024) AweSum.showMessage('Please choose an image smaller than 15MB.', 'error');
     Array.from(files).forEach(f => {
       const chip = document.createElement('span');
       chip.className = 'file-chip';
@@ -388,18 +388,16 @@
     rejectIdeaInput.addEventListener('change', () => {
       const file = rejectIdeaInput.files[0];
       if (!file) return;
-      if (file.size > 5 * 1024 * 1024) {
-        AweSum.showMessage('Please choose an image smaller than 5MB.', 'error');
+      if (file.size > 15 * 1024 * 1024) {
+        AweSum.showMessage('Please choose an image smaller than 15MB.', 'error');
         rejectIdeaInput.value = '';
         return;
       }
-      const reader = new FileReader();
-      reader.onload = () => {
-        ideaImage = String(reader.result || '');
+      AweSum.imageToDataUrl(file).then(dataUrl => {
+        ideaImage = dataUrl;
         rejectIdeaPreview.innerHTML = '<img src="' + AweSum.escapeHtml(ideaImage) + '" alt="Reference idea preview" style="max-width:100%; max-height:220px; border-radius:8px; border:1px solid #ddd;">';
         rejectIdeaPreview.style.display = 'block';
-      };
-      reader.readAsDataURL(file);
+      }).catch(error => { AweSum.showMessage(error.message, 'error'); rejectIdeaInput.value = ''; });
     });
 
     panel.querySelector('[data-close-review]').addEventListener('click', () => modal.remove());

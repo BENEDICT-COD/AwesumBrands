@@ -6,10 +6,99 @@ $action = $_GET['action'] ?? '';
 $method = $_SERVER['REQUEST_METHOD'];
 $body = requestBody();
 
+const AWESUM_VAT_RATE = 0.15;
+const AWESUM_MAX_ORDER_LINES = 50;
+const AWESUM_MAX_LINE_QUANTITY = 1000;
+
+/**
+ * Built-in marketplace items that are written directly into marketplace.html.
+ * Prices here MUST match marketplace.html. A product with the same name in the
+ * database takes priority over these.
+ */
+function awesumStaticCatalogue(): array
+{
+    return [
+        'premium business cards' => 299.00,
+        'a5 flyers full colour' => 450.00,
+        'custom t-shirt printing' => 180.00,
+        'branded cap printing' => 220.00,
+        'a1 poster printing' => 380.00,
+        'outdoor vinyl signage' => 1200.00,
+        'pull-up banner 2m' => 850.00,
+        'tri-fold brochure' => 520.00,
+    ];
+}
+
+/**
+ * Rebuilds an order from trusted prices. The browser only supplies item names and
+ * quantities; every price and the total are calculated here, in whole cents.
+ */
+function priceOrderItems(PDO $database, array $items): array
+{
+    if (!$items || count($items) > AWESUM_MAX_ORDER_LINES) {
+        jsonResponse(['error' => 'The order must contain between 1 and ' . AWESUM_MAX_ORDER_LINES . ' items.'], 422);
+    }
+
+    $prices = [];
+    foreach (awesumStaticCatalogue() as $name => $price) {
+        $prices[$name] = (int) round($price * 100);
+    }
+    foreach ($database->query('SELECT name, price FROM products WHERE active = 1') as $row) {
+        $prices[mb_strtolower(trim((string) $row['name']))] = (int) round(((float) $row['price']) * 100);
+    }
+
+    $lines = [];
+    foreach ($items as $item) {
+        if (!is_array($item)) {
+            jsonResponse(['error' => 'Invalid item in order.'], 422);
+        }
+        $name = trim((string) ($item['name'] ?? ''));
+        $key = mb_strtolower($name);
+        if ($name === '' || !isset($prices[$key])) {
+            jsonResponse(['error' => '"' . mb_substr($name, 0, 80) . '" is no longer available. Please remove it from your cart.'], 422);
+        }
+        $quantity = filter_var($item['quantity'] ?? 1, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => AWESUM_MAX_LINE_QUANTITY]]);
+        if ($quantity === false) {
+            jsonResponse(['error' => 'Invalid quantity for "' . mb_substr($name, 0, 80) . '".'], 422);
+        }
+        if (isset($lines[$key])) {
+            $lines[$key]['quantity'] += $quantity;
+        } else {
+            $lines[$key] = ['name' => $name, 'unitCents' => $prices[$key], 'quantity' => $quantity];
+        }
+    }
+
+    $subtotalCents = 0;
+    $priced = [];
+    foreach ($lines as $line) {
+        if ($line['quantity'] > AWESUM_MAX_LINE_QUANTITY) {
+            jsonResponse(['error' => 'Quantity for "' . mb_substr($line['name'], 0, 80) . '" is too large.'], 422);
+        }
+        $lineCents = $line['unitCents'] * $line['quantity'];
+        $subtotalCents += $lineCents;
+        $priced[] = [
+            'name' => $line['name'],
+            'price' => $line['unitCents'] / 100,
+            'quantity' => $line['quantity'],
+            'lineTotal' => $lineCents / 100,
+        ];
+    }
+    $vatCents = (int) round($subtotalCents * AWESUM_VAT_RATE);
+
+    return [
+        'items' => $priced,
+        'subtotal' => $subtotalCents / 100,
+        'vat' => $vatCents / 100,
+        'total' => ($subtotalCents + $vatCents) / 100,
+    ];
+}
+
 try {
     $database = db();
     if ($action === 'signup' && $method === 'POST') {
         requireFields($body, ['name', 'email', 'password']);
+        rateLimitGuard($database, 'signup-ip:' . clientIp(), 5, 3600, 'Too many sign-up attempts from your network. Please try again in an hour.');
+        rateLimitHit($database, 'signup-ip:' . clientIp());
         $email = strtolower(trim((string) $body['email']));
         if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen((string) $body['password']) < 8) {
             jsonResponse(['error' => 'Use a valid email and a password of at least 8 characters.'], 422);
@@ -21,10 +110,16 @@ try {
 
     if ($action === 'login' && $method === 'POST') {
         requireFields($body, ['email', 'password']);
+        $loginEmail = strtolower(trim((string) $body['email']));
+        $loginMessage = 'Too many failed sign-in attempts. Please wait 15 minutes and try again.';
+        rateLimitGuard($database, 'login-ip:' . clientIp(), 10, 900, $loginMessage);
+        rateLimitGuard($database, 'login-email:' . sha1($loginEmail), 8, 900, $loginMessage);
         $statement = $database->prepare('SELECT id, name, email, password_hash, company, role FROM users WHERE email = ? LIMIT 1');
-        $statement->execute([strtolower(trim((string) $body['email']))]);
+        $statement->execute([$loginEmail]);
         $record = $statement->fetch();
         if (!$record || !password_verify((string) $body['password'], $record['password_hash'])) {
+            rateLimitHit($database, 'login-ip:' . clientIp());
+            rateLimitHit($database, 'login-email:' . sha1($loginEmail));
             jsonResponse(['error' => 'Email or password is incorrect.'], 401);
         }
         session_regenerate_id(true);
@@ -52,9 +147,10 @@ try {
         requireAdmin();
         requireFields($body, ['name', 'category', 'price']);
         $database->exec('ALTER TABLE products MODIFY image LONGTEXT NULL');
+        $image = saveUploadedImage($body['image'] ?? '');
         $statement = $database->prepare('INSERT INTO products (name, category, description, price, image) VALUES (?, ?, ?, ?, ?)');
-        $statement->execute([trim((string) $body['name']), trim((string) $body['category']), trim((string) ($body['description'] ?? '')), (float) $body['price'], trim((string) ($body['image'] ?? '')) ?: null]);
-        jsonResponse(['id' => (int) $database->lastInsertId()], 201);
+        $statement->execute([trim((string) $body['name']), trim((string) $body['category']), trim((string) ($body['description'] ?? '')), (float) $body['price'], $image]);
+        jsonResponse(['id' => (int) $database->lastInsertId(), 'image' => $image], 201);
     }
 
     if ($action === 'products' && $method === 'DELETE') {
@@ -94,7 +190,7 @@ try {
         $database->exec('ALTER TABLE quotes ADD COLUMN IF NOT EXISTS design_image LONGTEXT NULL');
         $reference = 'Q-' . strtoupper(bin2hex(random_bytes(4)));
         $statement = $database->prepare('INSERT INTO quotes (reference_code, user_id, description, category, quantity, notes, design_image) VALUES (?, ?, ?, ?, ?, ?, ?)');
-        $statement->execute([$reference, $current['id'], trim((string) $body['description']), trim((string) $body['category']), max(1, (int) $body['quantity']), trim((string) ($body['notes'] ?? '')), (string) ($body['designImage'] ?? '')]);
+        $statement->execute([$reference, $current['id'], trim((string) $body['description']), trim((string) $body['category']), max(1, (int) $body['quantity']), trim((string) ($body['notes'] ?? '')), saveUploadedImage($body['designImage'] ?? '') ?? '']);
         jsonResponse(['reference' => $reference], 201);
     }
 
@@ -126,8 +222,15 @@ try {
         $database->exec('ALTER TABLE quotes ADD COLUMN IF NOT EXISTS client_reason TEXT NULL');
         $database->exec('ALTER TABLE quotes ADD COLUMN IF NOT EXISTS client_changes TEXT NULL');
         $database->exec('ALTER TABLE quotes ADD COLUMN IF NOT EXISTS client_idea_image LONGTEXT NULL');
-        $statement = $database->prepare('UPDATE quotes SET status = ?, response = ?, draft_image = ? WHERE reference_code = ?');
-        $statement->execute([trim((string) $body['status']), trim((string) ($body['response'] ?? '')), trim((string) ($body['draftImage'] ?? '')), trim((string) $body['id'])]);
+        $draftImage = saveUploadedImage($body['draftImage'] ?? '');
+        if ($draftImage === null) {
+            // No new draft was sent, so keep the existing one instead of wiping it.
+            $statement = $database->prepare('UPDATE quotes SET status = ?, response = ? WHERE reference_code = ?');
+            $statement->execute([trim((string) $body['status']), trim((string) ($body['response'] ?? '')), trim((string) $body['id'])]);
+        } else {
+            $statement = $database->prepare('UPDATE quotes SET status = ?, response = ?, draft_image = ? WHERE reference_code = ?');
+            $statement->execute([trim((string) $body['status']), trim((string) ($body['response'] ?? '')), $draftImage, trim((string) $body['id'])]);
+        }
         jsonResponse(['ok' => true]);
     }
 
@@ -146,7 +249,7 @@ try {
             $decision,
             trim((string) ($body['reason'] ?? '')),
             trim((string) ($body['changes'] ?? '')),
-            trim((string) ($body['ideaImage'] ?? '')),
+            saveUploadedImage($body['ideaImage'] ?? '') ?? '',
             $status,
             trim((string) $body['id']),
             $current['id']
@@ -166,8 +269,23 @@ try {
         $current = user();
         requireFields($body, ['name', 'email', 'text']);
         $reference = 'MSG-' . strtoupper(bin2hex(random_bytes(4)));
+        // Hidden "website" field: real visitors never see or fill it, spam bots do. Pretend it worked and save nothing.
+        if (trim((string) ($body['website'] ?? '')) !== '') {
+            jsonResponse(['reference' => $reference], 201);
+        }
+        $messageName = trim((string) $body['name']);
+        $messageEmail = strtolower(trim((string) $body['email']));
+        $messageText = trim((string) $body['text']);
+        if (mb_strlen($messageName) > 160 || !filter_var($messageEmail, FILTER_VALIDATE_EMAIL) || mb_strlen($messageEmail) > 255) {
+            jsonResponse(['error' => 'Please enter a valid name and email address.'], 422);
+        }
+        if (mb_strlen($messageText) > 5000) {
+            jsonResponse(['error' => 'Your message is too long (maximum 5000 characters).'], 422);
+        }
+        rateLimitGuard($database, 'message-ip:' . clientIp(), 5, 600, 'You are sending messages too quickly. Please wait a few minutes and try again.');
+        rateLimitHit($database, 'message-ip:' . clientIp());
         $statement = $database->prepare('INSERT INTO messages (reference_code, user_id, name, email, text) VALUES (?, ?, ?, ?, ?)');
-        $statement->execute([$reference, $current['id'] ?? null, trim((string) $body['name']), strtolower(trim((string) $body['email'])), trim((string) $body['text'])]);
+        $statement->execute([$reference, $current['id'] ?? null, $messageName, $messageEmail, $messageText]);
         jsonResponse(['reference' => $reference], 201);
     }
 
@@ -221,15 +339,22 @@ try {
 
     if ($action === 'order' && $method === 'POST') {
         $current = requireUser();
-        requireFields($body, ['items', 'total', 'address']);
-        $items = is_array($body['items']) ? $body['items'] : [];
-        if (!$items) {
-            jsonResponse(['error' => 'The order must contain at least one item.'], 422);
+        requireFields($body, ['address']);
+        $address = trim((string) $body['address']);
+        if (mb_strlen($address) > 500) {
+            jsonResponse(['error' => 'The delivery address is too long (maximum 500 characters).'], 422);
         }
+        $rawItems = $body['items'] ?? null;
+        $order = priceOrderItems($database, is_array($rawItems) ? $rawItems : []);
         $reference = 'ORD-' . strtoupper(bin2hex(random_bytes(4)));
         $statement = $database->prepare('INSERT INTO orders (reference_code, user_id, items, total, address) VALUES (?, ?, ?, ?, ?)');
-        $statement->execute([$reference, $current['id'], json_encode($items, JSON_THROW_ON_ERROR), (float) $body['total'], trim((string) $body['address'])]);
-        jsonResponse(['reference' => $reference], 201);
+        $statement->execute([$reference, $current['id'], json_encode($order['items'], JSON_THROW_ON_ERROR), $order['total'], $address]);
+        jsonResponse([
+            'reference' => $reference,
+            'subtotal' => $order['subtotal'],
+            'vat' => $order['vat'],
+            'total' => $order['total'],
+        ], 201);
     }
 
     if ($action === 'orders' && $method === 'GET') {
@@ -250,7 +375,7 @@ try {
     if ($action === 'order-status' && $method === 'PUT') {
         requireAdmin();
         requireFields($body, ['id', 'status']);
-        $allowedStatuses = ['Pending', 'Accepted', 'Rejected', 'Processing', 'Completed'];
+        $allowedStatuses = ['Payment pending', 'Payment received', 'Pending', 'Accepted', 'Rejected', 'Processing', 'Completed'];
         $status = trim((string) $body['status']);
         if (!in_array($status, $allowedStatuses, true)) {
             jsonResponse(['error' => 'Invalid order status.'], 422);

@@ -160,6 +160,18 @@
   @media (max-width:520px){
     .auth-card{ padding:36px 26px 32px; border-radius:18px; }
   }
+  .pw-wrap{ position:relative; }
+  .pw-wrap input{ padding-right:48px; }
+  .pw-toggle{ position:absolute; right:6px; top:50%; transform:translateY(-50%); width:38px; height:38px; display:flex; align-items:center; justify-content:center; background:none; border:0; border-radius:8px; cursor:pointer; color:#667085; }
+  .pw-toggle:hover{ color:#F5820B; }
+  .pw-toggle:focus-visible{ outline:2px solid #F5820B; outline-offset:1px; }
+  .pw-toggle svg{ width:20px; height:20px; }
+  .pw-toggle .eye-off{ display:none; }
+  .pw-toggle.showing .eye{ display:none; }
+  .pw-toggle.showing .eye-off{ display:block; }
+  .pw-hint{ font-size:12.5px; margin-top:7px; color:#667085; min-height:16px; }
+  .pw-hint.bad{ color:#b42318; }
+  .pw-hint.good{ color:#067647; }
 </style>
 </head>
 <body>
@@ -198,7 +210,18 @@
       </div>
       <div class="field">
         <label for="password">Password</label>
-        <input type="password" id="password" name="password" placeholder="••••••••" required>
+        <div class="pw-wrap">
+          <input type="password" id="password" name="password" placeholder="••••••••" minlength="8" autocomplete="new-password" required>
+          <button type="button" class="pw-toggle" data-target="password" aria-label="Show password" aria-pressed="false"><svg class="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a19.8 19.8 0 0 1 5.06-5.94"/><path d="M9.9 4.24A10.9 10.9 0 0 1 12 4c7 0 11 7 11 7a19.7 19.7 0 0 1-3.17 4.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="confirmPassword">Confirm password</label>
+        <div class="pw-wrap">
+          <input type="password" id="confirmPassword" name="confirmPassword" placeholder="••••••••" minlength="8" autocomplete="new-password" required>
+          <button type="button" class="pw-toggle" data-target="confirmPassword" aria-label="Show password" aria-pressed="false"><svg class="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a19.8 19.8 0 0 1 5.06-5.94"/><path d="M9.9 4.24A10.9 10.9 0 0 1 12 4c7 0 11 7 11 7a19.7 19.7 0 0 1-3.17 4.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button>
+        </div>
+        <p class="pw-hint" id="pwHint" aria-live="polite"></p>
       </div>
       <div class="field">
         <label for="company">Company <span class="field-optional-label">(optional)</span></label>
@@ -216,9 +239,35 @@
     const name = document.getElementById('fullname').value.trim();
     const email = document.getElementById('email').value.trim().toLowerCase();
     const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    if (password.length < 8) { AweSum.showMessage('Password must be at least 8 characters.', 'error'); return; }
+    if (password !== confirmPassword) { AweSum.showMessage('Passwords do not match.', 'error'); document.getElementById('confirmPassword').focus(); return; }
     try { await AweSum.api('signup', { method: 'POST', body: JSON.stringify({ name, email, password, company: document.getElementById('company').value.trim() }) }); AweSum.showMessage('Account created. Please sign in.'); window.location.href = 'login.html'; }
     catch (error) { AweSum.showMessage(error.message.includes('Duplicate') ? 'An account with this email already exists.' : error.message, 'error'); }
   });
+</script>
+<script>
+  (function () {
+    const pw = document.getElementById('password'), confirmPw = document.getElementById('confirmPassword'), hint = document.getElementById('pwHint');
+    document.querySelectorAll('.pw-toggle').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        const input = document.getElementById(btn.dataset.target);
+        const show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        btn.classList.toggle('showing', show);
+        btn.setAttribute('aria-pressed', String(show));
+        btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+      });
+    });
+    function check() {
+      if (!confirmPw.value) { hint.textContent = ''; hint.className = 'pw-hint'; return; }
+      const ok = pw.value === confirmPw.value;
+      hint.textContent = ok ? 'Passwords match' : 'Passwords do not match';
+      hint.className = 'pw-hint ' + (ok ? 'good' : 'bad');
+    }
+    pw.addEventListener('input', check);
+    confirmPw.addEventListener('input', check);
+  })();
 </script>
 </body>
 </html>

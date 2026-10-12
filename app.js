@@ -52,7 +52,31 @@
     if (!node) { node = document.createElement('div'); node.id = 'appMessage'; node.style.cssText = 'position:fixed;top:22px;right:22px;z-index:9999;padding:14px 18px;border-radius:10px;background:#0B1B33;color:#fff;font:600 14px Inter, sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.2)'; document.body.appendChild(node); }
     node.style.background = type === 'error' ? '#b42318' : '#0B1B33'; node.textContent = text; node.hidden = false; clearTimeout(node._timer); node._timer = setTimeout(() => { node.hidden = true; }, 3000);
   };
-  window.AweSum = { keys, read, write, currentUser, money, getCart, setCart, updateCartBadges, showMessage, escapeHtml, requireUser, addToCart, paymentGatewayUrl, api };
+  // Shrinks a chosen image (max 1600px, JPEG) before upload so requests stay small and pages load fast.
+  const imageToDataUrl = (file, maxSide = 1600, quality = 0.85) => new Promise((resolve, reject) => {
+    if (!file || !String(file.type).startsWith('image/')) { reject(new Error('Please choose an image file.')); return; }
+    const readOriginal = () => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result || '')); reader.onerror = () => reject(new Error('Could not read the image.')); reader.readAsDataURL(file); };
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      try {
+        const scale = Math.min(1, maxSide / Math.max(img.naturalWidth, img.naturalHeight));
+        if (scale === 1 && file.size <= 600 * 1024 && /^image\/(png|jpeg|webp)$/.test(file.type)) { readOriginal(); return; }
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+        canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+        const context = canvas.getContext('2d');
+        context.fillStyle = '#fff';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      } catch (error) { readOriginal(); }
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); readOriginal(); };
+    img.src = url;
+  });
+  window.AweSum = { keys, read, write, currentUser, money, getCart, setCart, updateCartBadges, showMessage, escapeHtml, requireUser, addToCart, paymentGatewayUrl, api, imageToDataUrl };
   document.addEventListener('DOMContentLoaded', () => {
     enforceAccess();
     updateCartBadges();
@@ -61,7 +85,7 @@
     if (contactForm) contactForm.addEventListener('submit', async event => {
       event.preventDefault();
       const data = new FormData(contactForm);
-      try { await api('message', { method: 'POST', body: JSON.stringify({ name: data.get('name'), email: data.get('email'), text: data.get('message') }) }); contactForm.reset(); showMessage('Thanks for reaching out. Our team will respond shortly.'); }
+      try { await api('message', { method: 'POST', body: JSON.stringify({ name: data.get('name'), email: data.get('email'), text: data.get('message'), website: data.get('website') }) }); contactForm.reset(); showMessage('Thanks for reaching out. Our team will respond shortly.'); }
       catch (error) { showMessage(error.message, 'error'); }
     });
   });

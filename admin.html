@@ -724,6 +724,7 @@
     AweSum.write(AweSum.keys.products, products.products || []);
     AweSum.write(AweSum.keys.adverts, adverts.adverts || []);
     AweSum.write(AweSum.keys.orders, orders.orders || []);
+    renderAdminProducts(products.products || []);
     renderAdminOrders(orders.orders || []);
     renderAdminMessages(messages.messages || []);
     renderAdminAdverts(adverts.adverts || []);
@@ -736,16 +737,18 @@
       const card = document.createElement('div');
       card.className = 'order-card';
       const items = (Array.isArray(order.items) ? order.items : []).map(item => item.name + ' x ' + item.quantity).join(', ');
-      card.innerHTML = '<div class="order-info"><div class="order-top"><span class="order-id">' + AweSum.escapeHtml(order.id) + '</span><span class="badge ' + (order.status === 'Accepted' ? 'accepted' : order.status === 'Rejected' ? 'rejected' : 'awaiting') + '">' + AweSum.escapeHtml(order.status || 'Pending') + '</span></div><span class="order-customer">' + AweSum.escapeHtml(order.customer || '') + ' · ' + AweSum.escapeHtml(order.email || '') + '</span><span class="order-meta">' + AweSum.escapeHtml(items) + ' · ' + AweSum.escapeHtml(order.address || '') + '</span></div><button class="review-btn" data-order-response="' + AweSum.escapeHtml(order.id) + '">Review / Respond</button>';
+      card.innerHTML = '<div class="order-info"><div class="order-top"><span class="order-id">' + AweSum.escapeHtml(order.id) + '</span><span class="badge ' + (['Accepted', 'Payment received', 'Completed'].includes(order.status) ? 'accepted' : order.status === 'Rejected' ? 'rejected' : 'awaiting') + '">' + AweSum.escapeHtml(order.status || 'Pending') + '</span></div><span class="order-customer">' + AweSum.escapeHtml(order.customer || '') + ' · ' + AweSum.escapeHtml(order.email || '') + '</span><span class="order-meta">' + AweSum.escapeHtml(items) + ' · ' + AweSum.escapeHtml(order.address || '') + '</span></div><button class="review-btn" data-order-response="' + AweSum.escapeHtml(order.id) + '">Review / Respond</button>';
       orderList.appendChild(card);
     });
   }
   orderList.addEventListener('click', async event => {
     const button = event.target.closest('[data-order-response]');
     if (!button) return;
-    const response = prompt('Enter a response status: Pending, Accepted, Rejected, Processing, or Completed');
-    const status = response ? response.trim() : '';
-    if (!['Pending', 'Accepted', 'Rejected', 'Processing', 'Completed'].includes(status)) return;
+    const orderStatuses = ['Payment pending', 'Payment received', 'Pending', 'Accepted', 'Rejected', 'Processing', 'Completed'];
+    const response = prompt('Enter a status: ' + orderStatuses.join(', '));
+    if (!response) return;
+    const status = orderStatuses.find(option => option.toLowerCase() === response.trim().toLowerCase());
+    if (!status) { AweSum.showMessage('That is not a valid status. Please type one exactly as listed.', 'error'); return; }
     try {
       await AweSum.api('order-status', { method: 'PUT', body: JSON.stringify({ id: button.dataset.orderResponse, status }) });
       const orders = AweSum.read(AweSum.keys.orders, []);
@@ -803,18 +806,16 @@
   draftDesignInput.addEventListener('change', () => {
     const file = draftDesignInput.files[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
-      AweSum.showMessage('Please choose a draft image smaller than 5MB.', 'error');
+    if (file.size > 15 * 1024 * 1024) {
+      AweSum.showMessage('Please choose a draft image smaller than 15MB.', 'error');
       draftDesignInput.value = '';
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      pendingDraftImage = String(reader.result || '');
+    AweSum.imageToDataUrl(file).then(dataUrl => {
+      pendingDraftImage = dataUrl;
       draftDesignPreview.innerHTML = '<img src="' + AweSum.escapeHtml(pendingDraftImage) + '" alt="Draft preview" style="max-width:100%; max-height:220px; border-radius:8px; border:1px solid #ddd;">';
       draftDesignPreview.style.display = 'block';
-    };
-    reader.readAsDataURL(file);
+    }).catch(error => { AweSum.showMessage(error.message, 'error'); draftDesignInput.value = ''; });
   });
 
   document.getElementById('quote-close').addEventListener('click', () => quoteModal.classList.remove('open'));
@@ -931,29 +932,50 @@
     const file = uploadInput.files[0];
     if (!file) { productImagePromise = Promise.resolve(''); return; }
     uploadText.textContent = file.name;
-    if (!file.type.startsWith('image/') || file.size > 5 * 1024 * 1024) {
+    if (!file.type.startsWith('image/') || file.size > 15 * 1024 * 1024) {
       productImagePromise = Promise.resolve('');
-      AweSum.showMessage('Please choose an image smaller than 5MB.', 'error');
+      AweSum.showMessage('Please choose an image smaller than 15MB.', 'error');
       return;
     }
-    productImagePromise = new Promise(resolve => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = () => resolve(''); reader.readAsDataURL(file); });
+    productImagePromise = AweSum.imageToDataUrl(file).catch(error => { AweSum.showMessage(error.message, 'error'); return ''; });
   });
-  function renderAdminProducts(){
-    const products = JSON.parse(localStorage.getItem('awesum_products') || '[]');
-    adminProducts.innerHTML = products.length ? '' : '<p class="placeholder">No products have been added yet.</p>';
-    products.forEach(product => { const productId = product.id || product.name; const card = document.createElement('div'); card.className = 'order-card'; card.innerHTML = '<div class="order-info"><span class="order-customer">' + AweSum.escapeHtml(product.name) + '</span><span class="order-meta">' + AweSum.escapeHtml(product.category) + ' · R ' + Math.round(product.price).toLocaleString('en-ZA') + '</span></div><button type="button" class="review-btn" data-remove-product="' + AweSum.escapeHtml(productId) + '">Remove</button>'; adminProducts.appendChild(card); });
+  let adminProductList = [];
+  function renderAdminProducts(products){
+    if (Array.isArray(products)) adminProductList = products;
+    adminProducts.innerHTML = adminProductList.length ? '' : '<p class="placeholder">No products have been added yet.</p>';
+    adminProductList.forEach(product => { const productId = product.id || product.name; const card = document.createElement('div'); card.className = 'order-card'; card.innerHTML = '<div class="order-info"><span class="order-customer">' + AweSum.escapeHtml(product.name) + '</span><span class="order-meta">' + AweSum.escapeHtml(product.category) + ' · R ' + Math.round(product.price).toLocaleString('en-ZA') + '</span></div><button type="button" class="review-btn" data-remove-product="' + AweSum.escapeHtml(productId) + '">Remove</button>'; adminProducts.appendChild(card); });
   }
-  renderAdminProducts();
-  adminProducts.addEventListener('click', event => { if (!event.target.dataset.removeProduct) return; const productId = event.target.dataset.removeProduct; const products = JSON.parse(localStorage.getItem('awesum_products') || '[]').filter(product => String(product.id || product.name) !== productId); localStorage.setItem('awesum_products', JSON.stringify(products)); AweSum.api('products', { method: 'DELETE', body: JSON.stringify({ id: productId }) }).catch(() => {}); renderAdminProducts(); toast.textContent = 'Product removed from marketplace'; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2200); });
+  // Show the saved copy instantly; the fresh list from the server replaces it a moment later.
+  renderAdminProducts(AweSum.read(AweSum.keys.products, []));
+  async function refreshAdminProducts(){
+    const result = await AweSum.api('products');
+    const list = result.products || [];
+    AweSum.write(AweSum.keys.products, list);
+    renderAdminProducts(list);
+  }
+  adminProducts.addEventListener('click', async event => {
+    const productId = event.target.dataset.removeProduct;
+    if (!productId) return;
+    if (!confirm('Remove this product from the marketplace?')) return;
+    try { await AweSum.api('products', { method: 'DELETE', body: JSON.stringify({ id: productId }) }); } catch (error) { AweSum.showMessage(error.message, 'error'); return; }
+    const remaining = adminProductList.filter(product => String(product.id || product.name) !== productId);
+    AweSum.write(AweSum.keys.products, remaining);
+    renderAdminProducts(remaining);
+    toast.textContent = 'Product removed from marketplace';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2200);
+  });
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const products = JSON.parse(localStorage.getItem('awesum_products') || '[]');
     const image = await productImagePromise;
     const product = { name: document.getElementById('prod-name').value.trim(), price: Number(document.getElementById('prod-price').value), category: document.getElementById('prod-category').value, description: document.getElementById('prod-desc').value.trim(), image };
-    try { const result = await AweSum.api('products', { method: 'POST', body: JSON.stringify(product) }); product.id = result.id; } catch (error) { AweSum.showMessage(error.message, 'error'); return; }
-    products.push(product);
-    localStorage.setItem('awesum_products', JSON.stringify(products));
-    renderAdminProducts();
+    try { const result = await AweSum.api('products', { method: 'POST', body: JSON.stringify(product) }); product.id = result.id; product.image = result.image || ''; } catch (error) { AweSum.showMessage(error.message, 'error'); return; }
+    try { await refreshAdminProducts(); } catch (error) {
+      const withNew = adminProductList.concat([product]);
+      AweSum.write(AweSum.keys.products, withNew);
+      renderAdminProducts(withNew);
+    }
+    toast.textContent = 'Product added to marketplace';
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 2200);
     form.reset();
