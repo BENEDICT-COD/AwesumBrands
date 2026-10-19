@@ -342,9 +342,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`user_id`, `name`, `role`, `email`, `password`, `firebase_uid`, `auth_provider`, `created_at`) VALUES
-(1, 'TheeAfricanTalent', 'Installer', 'clivexab@gmail.com', NULL, 'TjPC69pHIMcVpMEytuxTEl6U3ne2', 'google.com', '2026-10-11 20:08:14'),
-(2, 'Sphumelele Xaba', 'Installer', 'clivexabsc@gmail.com', NULL, 'tXROMWcLnJRL0yxBQVRdQuj8OBH2', 'google.com', '2026-10-11 20:11:42'),
-(3, 'mpilo', 'Installer', 'mpilo@gmail.com', NULL, 'gDMyKfEGbbTGQn7e7KlEQCEGeJw1', 'password', '2026-10-11 20:13:56');
+
 
 -- --------------------------------------------------------
 
@@ -367,10 +365,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password_hash`, `company`, `role`, `created_at`) VALUES
-(1, 'Mpilonhle Memela', 'mpilonhlebmemela@gmail.com', '$2y$10$oHbMu4nmVJsvCKnwkjmE4.CgyHcsZcDwZfC45CgAkdVoeM6i0Wo4G', NULL, 'admin', '2026-09-03 12:45:39'),
-(2, 'Sphumelele Clive Xaba', 'clivexab@gmail.com', '$2y$10$pnML7hBprQkF9VX.yGq80u2Buz46pxFBMoSeMofx/cb/xDML0iDUC', 'Future stack', 'user', '2026-10-11 22:01:21'),
-(3, 'Lindokuhle Mkhize', 'nonkosi40000@gmail.com', '$2y$10$dYtVZVOe9EyxjAPjxlzMkes.gNCYmj60wEtNOUc9Oh1A2lGvmQyUW', 'BrianzEcho', 'user', '2026-10-12 16:26:59'),
-(4, 'UNAM', 'uunastar@gmail.com', '$2y$10$mXhQk80kb78mMt64KKfTPOlX6gqIYbompsLua0aOpMNNCpwCfxKkO', NULL, 'user', '2026-10-13 08:52:41');
+
 
 --
 -- Indexes for dumped tables
