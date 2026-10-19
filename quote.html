@@ -6,7 +6,7 @@
 <title>Request a Quote — AweSum Brands</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
 <style>
   :root{
     --navy:#0B1B33;
@@ -294,25 +294,24 @@
       <div>
         <h4 style="color:var(--white); font-size:15px; font-weight:700; margin-bottom:18px;">Support</h4>
         <ul style="list-style:none;">
-          <li style="margin-bottom:12px;"><a href="#" style="color:var(--muted-on-navy); font-size:14.5px;">Help Center</a></li>
-          <li style="margin-bottom:12px;"><a href="#" style="color:var(--muted-on-navy); font-size:14.5px;">Track Order</a></li>
-          <li style="margin-bottom:12px;"><a href="#" style="color:var(--muted-on-navy); font-size:14.5px;">Returns Policy</a></li>
-          <li style="margin-bottom:12px;"><a href="#" style="color:var(--muted-on-navy); font-size:14.5px;">Contact Us</a></li>
+          <li style="margin-bottom:12px;"><a href="index.html#contact" style="color:var(--muted-on-navy); font-size:14.5px;">Help Center</a></li>
+          <li style="margin-bottom:12px;"><a href="orders.html" style="color:var(--muted-on-navy); font-size:14.5px;">Track Order</a></li>
+          <li style="margin-bottom:12px;"><a href="returns.html" style="color:var(--muted-on-navy); font-size:14.5px;">Returns Policy</a></li>
+          <li style="margin-bottom:12px;"><a href="index.html#contact" style="color:var(--muted-on-navy); font-size:14.5px;">Contact Us</a></li>
         </ul>
       </div>
       <div>
         <h4 style="color:var(--white); font-size:15px; font-weight:700; margin-bottom:18px;">Legal</h4>
         <ul style="list-style:none;">
-          <li style="margin-bottom:12px;"><a href="#" style="color:var(--muted-on-navy); font-size:14.5px;">Terms of Service</a></li>
-          <li style="margin-bottom:12px;"><a href="#" style="color:var(--muted-on-navy); font-size:14.5px;">Privacy Policy</a></li>
-          <li style="margin-bottom:12px;"><a href="#" style="color:var(--muted-on-navy); font-size:14.5px;">Cookie Policy</a></li>
-          <li style="margin-bottom:12px;"><a href="#" style="color:var(--muted-on-navy); font-size:14.5px;">Sitemap</a></li>
+          <li style="margin-bottom:12px;"><a href="terms.html" style="color:var(--muted-on-navy); font-size:14.5px;">Terms of Service</a></li>
+          <li style="margin-bottom:12px;"><a href="privacy.html" style="color:var(--muted-on-navy); font-size:14.5px;">Privacy Policy</a></li>
+          <li style="margin-bottom:12px;"><a href="privacy.html#cookies" style="color:var(--muted-on-navy); font-size:14.5px;">Cookie Policy</a></li>
         </ul>
       </div>
     </div>
     <div style="border-top:1px solid var(--navy-line); padding-top:24px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; color:var(--muted-on-navy); font-size:13.5px;">
-      <span>© 2026 AweSum Brands (Pty) Ltd. All rights reserved.</span>
-      <span>Registered in South Africa · VAT No. 4560291837</span>
+      <span id="bizCopyright">© 2026 AweSum Brands. All rights reserved.</span>
+      <span id="bizRegistration"></span>
     </div>
   </div>
 </footer>
@@ -425,8 +424,25 @@
       const status = quote.status || 'Pending';
       const draftMarkup = quote.draftImage ? '<div style="margin-top:14px; color:var(--navy);"><strong>Design draft:</strong><img src="' + AweSum.escapeHtml(quote.draftImage) + '" alt="Draft design" style="display:block; width:100%; max-width:380px; margin-top:8px; border-radius:10px; border:1px solid var(--line-on-white);"></div>' : '';
       const clientDecisionMarkup = quote.clientDecision ? '<p style="margin-top:10px; color:var(--navy);"><strong>Your decision:</strong> ' + AweSum.escapeHtml(quote.clientDecision === 'approved' ? 'Approved' : 'Rejected') + '</p>' + (quote.clientReason ? '<p style="margin-top:8px; color:var(--navy);"><strong>Reason:</strong> ' + AweSum.escapeHtml(quote.clientReason) + '</p>' : '') + (quote.clientChanges ? '<p style="margin-top:8px; color:var(--navy);"><strong>Changes requested:</strong> ' + AweSum.escapeHtml(quote.clientChanges) + '</p>' : '') + (quote.clientIdeaImage ? '<div style="margin-top:8px;"><img src="' + AweSum.escapeHtml(quote.clientIdeaImage) + '" alt="Client idea reference" style="max-width:100%; max-height:220px; border-radius:8px; border:1px solid var(--line-on-white);"></div>' : '') : '';
-      const actionsMarkup = ['Draft Sent', 'Needs Revision'].includes(status) ? '<div style="margin-top:16px; display:flex; flex-wrap:wrap; gap:10px;"><button type="button" data-approve-quote="' + AweSum.escapeHtml(quote.id) + '" style="padding:10px 14px; border:none; border-radius:10px; background:var(--orange); color:#fff; font-weight:700; cursor:pointer;">Approve Design</button><button type="button" data-reject-quote="' + AweSum.escapeHtml(quote.id) + '" style="padding:10px 14px; border:1px solid var(--line-on-white); border-radius:10px; background:#fff; color:var(--navy); font-weight:700; cursor:pointer;">Reject & Request Changes</button></div>' : '';
-      card.innerHTML = '<strong style="color:var(--navy);">' + AweSum.escapeHtml(quote.id) + '</strong><span style="margin-left:12px; color:var(--orange); font-weight:700;">' + AweSum.escapeHtml(status) + '</span><p style="margin-top:8px; color:var(--muted-on-white);">' + AweSum.escapeHtml(quote.category) + ' x ' + AweSum.escapeHtml(quote.quantity) + '</p>' + (quote.designImage ? '<p style="margin-top:10px; color:var(--navy);">Design image submitted</p>' : '') + (quote.response ? '<p style="margin-top:10px; color:var(--navy);"><strong>Admin response:</strong> ' + AweSum.escapeHtml(quote.response) + '</p>' : '<p style="margin-top:10px; color:var(--muted-on-white);">Our team has not responded yet.</p>') + draftMarkup + clientDecisionMarkup + actionsMarkup;
+      const hasPrice = quote.quotedPrice !== null && quote.quotedPrice !== undefined;
+      const priceMarkup = hasPrice ? '<div style="margin-top:14px; padding:14px 16px; background:#FFF8EF; border:1px solid #F8D9AE; border-radius:10px; color:var(--navy);"><div style="font-size:13px; font-weight:600; color:#8A5A12;">Your quoted price</div><div style="font-size:24px; font-weight:800; margin:2px 0;">' + AweSum.money(quote.quotedTotal) + ' <span style="font-size:13px; font-weight:600; color:var(--muted-on-white);">incl. VAT</span></div><div style="font-size:13.5px; color:var(--muted-on-white);">' + AweSum.money(quote.quotedPrice) + ' excl. VAT + ' + AweSum.money(quote.quotedVat) + ' VAT (15%)</div></div>' : '';
+      const buttonStyle = 'padding:11px 18px; border:none; border-radius:10px; background:var(--orange); color:#fff; font-weight:700; cursor:pointer; text-decoration:none; display:inline-block;';
+      const ghostStyle = 'padding:11px 18px; border:1px solid var(--line-on-white); border-radius:10px; background:#fff; color:var(--navy); font-weight:700; cursor:pointer;';
+      let actionsMarkup = '';
+      if (status === 'Draft Sent' && hasPrice) {
+        actionsMarkup = '<div style="margin-top:16px; display:flex; flex-wrap:wrap; gap:10px;"><button type="button" data-approve-quote="' + AweSum.escapeHtml(quote.id) + '" style="' + buttonStyle + '">Accept design &amp; pay ' + AweSum.money(quote.quotedTotal) + '</button><button type="button" data-reject-quote="' + AweSum.escapeHtml(quote.id) + '" style="' + ghostStyle + '">Reject &amp; request changes</button></div>';
+      } else if (status === 'Draft Sent') {
+        actionsMarkup = '<p style="margin-top:14px; color:var(--muted-on-white);">We are still preparing your price. You will be able to accept once it is added.</p>';
+      } else if (status === 'Needs Revision') {
+        actionsMarkup = '<p style="margin-top:14px; color:var(--muted-on-white);">Thank you. We are working on your requested changes and will send a new draft and price.</p>';
+      } else if (status === 'Approved' && quote.orderReference && quote.orderStatus === 'Payment pending') {
+        actionsMarkup = '<p style="margin-top:14px; color:var(--navy);">Your order <strong>' + AweSum.escapeHtml(quote.orderReference) + '</strong> is waiting for payment. <a href="orders.html" style="color:var(--orange); font-weight:700;">Pay now from my orders</a></p>';
+      } else if (status === 'Approved' && quote.orderReference && quote.orderStatus && quote.orderStatus !== 'Payment pending') {
+        actionsMarkup = '<p style="margin-top:14px; color:#067647; font-weight:700;">Paid. Order ' + AweSum.escapeHtml(quote.orderReference) + ' (' + AweSum.escapeHtml(quote.orderStatus) + ') &middot; <a href="orders.html" style="color:var(--orange);">View my orders</a></p>';
+      } else if (status === 'Approved') {
+        actionsMarkup = '<div style="margin-top:16px;"><button type="button" data-checkout-quote="' + AweSum.escapeHtml(quote.id) + '" style="' + buttonStyle + '">Go to checkout' + (hasPrice ? ' &middot; ' + AweSum.money(quote.quotedTotal) : '') + '</button></div>';
+      }
+      card.innerHTML = '<strong style="color:var(--navy);">' + AweSum.escapeHtml(quote.id) + '</strong><span style="margin-left:12px; color:var(--orange); font-weight:700;">' + AweSum.escapeHtml(status) + '</span><p style="margin-top:8px; color:var(--muted-on-white);">' + AweSum.escapeHtml(quote.category) + ' x ' + AweSum.escapeHtml(quote.quantity) + '</p>' + (quote.designImage ? '<p style="margin-top:10px; color:var(--navy);">Design image submitted</p>' : '') + (quote.response ? '<p style="margin-top:10px; color:var(--navy);"><strong>Admin response:</strong> ' + AweSum.escapeHtml(quote.response) + '</p>' : '<p style="margin-top:10px; color:var(--muted-on-white);">Our team has not responded yet.</p>') + draftMarkup + priceMarkup + clientDecisionMarkup + actionsMarkup;
       quoteHistory.appendChild(card);
     });
 
@@ -435,8 +451,18 @@
         const quoteId = button.dataset.approveQuote;
         try {
           await AweSum.api('quote-client-review', { method: 'PUT', body: JSON.stringify({ id: quoteId, decision: 'approved' }) });
-          window.location.href = 'checkout.html?quoteId=' + encodeURIComponent(quoteId);
+          const approvedQuote = quotes.find(item => item.id === quoteId);
+          if (approvedQuote) AweSum.addQuoteToCart(approvedQuote);
+          window.location.href = 'checkout.html';
         } catch (error) { AweSum.showMessage(error.message, 'error'); }
+      });
+    });
+
+    document.querySelectorAll('[data-checkout-quote]').forEach(button => {
+      button.addEventListener('click', () => {
+        const readyQuote = quotes.find(item => item.id === button.dataset.checkoutQuote);
+        if (readyQuote) AweSum.addQuoteToCart(readyQuote);
+        window.location.href = 'checkout.html';
       });
     });
 
@@ -455,5 +481,6 @@
     mainNav.style.cssText += isOpen ? '' : 'flex-direction:column; position:absolute; top:76px; left:0; right:0; background:#0B1B33; padding:24px 24px; gap:20px; border-bottom:1px solid rgba(255,255,255,0.12);';
   });
 </script>
+<script src="business-info.js"></script>
 </body>
 </html>

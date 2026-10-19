@@ -6,399 +6,463 @@
 <title>Messages — AweSum Brands</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
 <style>
   :root{
     --navy:#0B1B33;
-    --navy-panel:#0F2038;
-    --navy-line: rgba(255,255,255,0.1);
+    --navy-2:#122747;
+    --navy-line: rgba(255,255,255,0.12);
     --orange:#F5820B;
     --orange-dark:#D96F00;
     --black:#0A0A0A;
     --white:#FFFFFF;
-    --muted-on-navy: rgba(255,255,255,0.6);
-    --muted-on-white: rgba(10,10,10,0.5);
-    --line-on-white: rgba(10,10,10,0.1);
+    --ink:#1B2437;
+    --muted:#6B7385;
+    --line:#E6E9F0;
+    --bg:#F3F5F9;
+    --muted-on-navy: rgba(255,255,255,0.68);
   }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  html, body{ height:100%; }
-  body{
-    font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    color:var(--black);
-    -webkit-font-smoothing:antialiased;
-    overflow:hidden;
-  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{ font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; min-height:100vh; }
+  img{ display:block; max-width:100%; height:auto; }
   a{ text-decoration:none; color:inherit; }
-  button{ font-family:inherit; cursor:pointer; }
+  button, textarea{ font-family:inherit; }
+  button{ cursor:pointer; }
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 32px; }
 
-  .app{
-    display:grid;
-    grid-template-columns:355px 1fr;
-    height:100vh;
-  }
+  /* ---- site header (same as the other pages) ---- */
+  header{ background:var(--navy); position:sticky; top:0; z-index:100; border-bottom:1px solid var(--navy-line); }
+  .nav-row{ display:flex; align-items:center; justify-content:space-between; height:76px; }
+  .logo{ display:flex; align-items:center; gap:10px; }
+  nav.main-nav{ display:flex; align-items:center; gap:40px; }
+  nav.main-nav a{ color:var(--muted-on-navy); font-size:15px; font-weight:500; transition:color .15s ease; }
+  nav.main-nav a:hover{ color:var(--white); }
+  nav.main-nav a.active{ color:var(--orange); }
+  .nav-right{ display:flex; align-items:center; gap:26px; }
+  .cart-link{ position:relative; display:flex; align-items:center; color:var(--white); }
+  .cart-badge{ position:absolute; top:-8px; right:-10px; background:var(--orange); color:var(--white); font-size:11px; font-weight:700; min-width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid var(--navy); }
+  .login-link{ color:var(--white); font-size:15px; font-weight:500; }
+  .btn{ display:inline-flex; align-items:center; justify-content:center; font-weight:600; border:none; border-radius:10px; transition:background .15s ease; }
+  .btn-primary{ background:var(--orange); color:var(--white); }
+  .btn-primary:hover{ background:var(--orange-dark); }
+  .btn-sm{ padding:10px 18px; font-size:14px; border-radius:8px; }
+  .nav-toggle{ display:none; background:none; border:none; color:var(--white); }
 
-  /* Back-to-site link (small, since this screen has no global header) */
-  .back-link{
-    position:absolute;
-    top:16px;
-    right:20px;
-    z-index:20;
-    font-size:13px;
-    color:var(--muted-on-navy);
-    display:flex;
-    align-items:center;
-    gap:6px;
-  }
-  .back-link:hover{ color:var(--white); }
-  .back-link svg{ width:14px; height:14px; }
-  .site-nav{ position:absolute; top:0; left:0; right:0; z-index:20; display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:18px; padding:12px 20px; font-size:13px; color:var(--muted-on-navy); background:rgba(11,27,51,.96); }
-  .site-nav .nav-links,.site-nav .nav-right{ display:flex; align-items:center; gap:14px; }
-  .site-nav .nav-right .login-link{ color:var(--white); }
-  .site-nav .btn{ border:1px solid var(--orange); color:var(--white); padding:8px 12px; border-radius:6px; background:transparent; }
-  .site-nav .btn:hover{ background:var(--orange); }
-  .site-nav a:hover{ color:var(--white); }
-  @media(max-width:900px){ .site-nav{ gap:10px; padding:10px 8px; font-size:12px; } .site-nav .nav-links,.site-nav .nav-right{ gap:10px; } }
+  /* ---- page ---- */
+  .page-head{ padding:38px 0 22px; }
+  .page-head h1{ font-size:32px; font-weight:800; letter-spacing:-.6px; color:var(--navy); }
+  .page-head p{ margin-top:6px; color:var(--muted); font-size:15.5px; }
 
-  /* Sidebar */
-  .conv-sidebar{
-    background:var(--navy);
-    display:flex;
-    flex-direction:column;
-    overflow-y:auto;
-  }
-  .conv-sidebar h1{
-    color:var(--white);
-    font-size:22px;
-    font-weight:800;
-    padding:26px 24px 18px;
-  }
-  .conv-item{
-    display:flex;
-    flex-direction:column;
-    gap:4px;
-    padding:16px 24px;
-    border-top:1px solid var(--navy-line);
-    cursor:pointer;
-    transition:background .15s ease;
-    position:relative;
-  }
-  .conv-item:hover{ background:rgba(255,255,255,0.04); }
-  .conv-item.active{ background:var(--navy-panel); }
-  .conv-item.active::before{
-    content:"";
-    position:absolute;
-    left:0; top:0; bottom:0;
-    width:3px;
-    background:var(--orange);
-  }
-  .conv-top-row{
-    display:flex;
-    justify-content:space-between;
-    align-items:baseline;
-    gap:8px;
-  }
-  .conv-name{ color:var(--white); font-weight:700; font-size:15px; }
-  .conv-time{ color:var(--muted-on-navy); font-size:12px; flex-shrink:0; }
-  .conv-bottom-row{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:8px;
-  }
-  .conv-preview{
-    color:var(--muted-on-navy);
-    font-size:13.5px;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-  }
-  .conv-unread{
-    background:var(--orange);
-    color:var(--white);
-    font-size:11px;
-    font-weight:700;
-    min-width:20px;
-    height:20px;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-shrink:0;
+  .chat-shell{
+    display:grid; grid-template-columns:310px 1fr;
+    background:var(--white); border:1px solid var(--line); border-radius:22px;
+    box-shadow:0 18px 50px rgba(11,27,51,.08);
+    height:min(720px, calc(100vh - 250px)); min-height:520px; overflow:hidden; margin-bottom:48px;
   }
 
-  /* Chat pane */
-  .chat-pane{
-    display:flex;
-    flex-direction:column;
-    height:100vh;
-    background:var(--white);
-  }
-  .chat-header{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    padding:20px 32px;
-    border-bottom:1px solid var(--line-on-white);
-    flex-shrink:0;
-  }
-  .chat-avatar{
-    width:42px; height:42px;
-    border-radius:50%;
-    background:var(--navy);
-    color:var(--white);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:700;
-    font-size:14px;
-    flex-shrink:0;
-  }
-  .chat-header-info h2{ font-size:16.5px; font-weight:700; color:var(--black); }
-  .chat-header-info p{ font-size:13px; color:var(--muted-on-white); }
+  /* ---- left panel ---- */
+  .support-panel{ background:linear-gradient(180deg,var(--navy) 0%,var(--navy-2) 100%); color:var(--white); padding:30px 26px; display:flex; flex-direction:column; gap:22px; overflow-y:auto; }
+  .agent{ display:flex; align-items:center; gap:14px; }
+  .avatar{ width:48px; height:48px; border-radius:50%; background:linear-gradient(135deg,var(--orange),#FFB155); color:var(--white); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px; flex-shrink:0; position:relative; }
+  .agent h2{ font-size:17px; font-weight:700; }
+  .agent p{ font-size:13px; color:var(--muted-on-navy); margin-top:2px; }
+  .panel-note{ font-size:14px; line-height:1.6; color:rgba(255,255,255,.78); }
+  .panel-links{ display:flex; flex-direction:column; gap:10px; }
+  .panel-link{ display:flex; align-items:center; gap:12px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:13px 14px; font-size:14px; font-weight:600; color:var(--white); transition:background .15s ease, transform .15s ease; }
+  .panel-link:hover{ background:rgba(255,255,255,.14); transform:translateY(-1px); }
+  .panel-link svg{ width:18px; height:18px; flex-shrink:0; color:var(--orange); }
+  .panel-foot{ margin-top:auto; font-size:12.5px; color:rgba(255,255,255,.55); line-height:1.5; }
+  .panel-foot strong{ color:rgba(255,255,255,.85); font-weight:600; }
 
-  .chat-thread{
-    flex:1;
-    overflow-y:auto;
-    padding:32px;
-    display:flex;
-    flex-direction:column;
-    gap:22px;
-  }
-  .msg-row{ display:flex; }
-  .msg-row.sent{ justify-content:flex-end; }
-  .msg-row.received{ justify-content:flex-start; }
-  .bubble{
-    max-width:440px;
-    padding:16px 20px;
-    border-radius:16px;
-    font-size:15px;
-    line-height:1.5;
-  }
-  .msg-row.received .bubble{
-    background:#F0F1F4;
-    color:var(--black);
-    border-bottom-left-radius:4px;
-  }
-  .msg-row.sent .bubble{
-    background:var(--navy);
-    color:var(--white);
-    border-bottom-right-radius:4px;
-  }
-  .bubble .timestamp{
-    display:block;
-    font-size:11.5px;
-    margin-top:8px;
-    opacity:0.6;
-  }
+  /* ---- chat ---- */
+  .chat{ display:flex; flex-direction:column; min-width:0; min-height:0; position:relative; }
+  .chat-top{ display:flex; align-items:center; gap:14px; padding:16px 26px; border-bottom:1px solid var(--line); background:var(--white); }
+  .chat-top .avatar{ width:42px; height:42px; font-size:14px; }
+  .chat-top h2{ font-size:16.5px; font-weight:700; color:var(--navy); }
+  .chat-top p{ font-size:13px; color:var(--muted); }
+  .chat-top .spacer{ flex:1; }
+  .icon-btn{ width:38px; height:38px; border-radius:10px; border:1px solid var(--line); background:var(--white); color:var(--muted); display:flex; align-items:center; justify-content:center; transition:all .15s ease; }
+  .icon-btn:hover{ color:var(--orange); border-color:var(--orange); }
+  .icon-btn svg{ width:18px; height:18px; }
+  .icon-btn.spin svg{ animation:spin .7s linear; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
 
-  .chat-input-bar{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    padding:20px 32px;
-    border-top:1px solid var(--line-on-white);
-    flex-shrink:0;
-  }
-  .chat-input-bar input{
-    flex:1;
-    padding:14px 18px;
-    border:1.5px solid var(--line-on-white);
-    border-radius:10px;
-    font-size:15px;
-    font-family:inherit;
-    color:var(--black);
-  }
-  .chat-input-bar input::placeholder{ color:#9CA0AA; }
-  .chat-input-bar input:focus{
-    outline:none;
-    border-color:var(--orange);
-    box-shadow:0 0 0 3px rgba(245,130,11,0.15);
-  }
-  .btn-send{
-    background:var(--orange);
-    color:var(--white);
-    border:none;
-    padding:14px 26px;
-    border-radius:10px;
-    font-weight:700;
-    font-size:15px;
-    transition:background .15s ease;
-    flex-shrink:0;
-  }
-  .btn-send:hover{ background:var(--orange-dark); }
+  .thread{ flex:1; overflow-y:auto; padding:26px 28px 14px; background:var(--bg); display:flex; flex-direction:column; gap:6px; scroll-behavior:smooth; }
+  .day-sep{ align-self:center; margin:14px 0 10px; font-size:12px; font-weight:600; color:var(--muted); background:var(--white); border:1px solid var(--line); border-radius:999px; padding:4px 14px; }
+  .row{ display:flex; align-items:flex-end; gap:10px; max-width:100%; animation:pop .22s ease both; }
+  @keyframes pop{ from{ opacity:0; transform:translateY(6px); } to{ opacity:1; transform:none; } }
+  .row.sent{ justify-content:flex-end; margin-top:8px; }
+  .row.received{ justify-content:flex-start; margin-top:8px; }
+  .row .avatar{ width:30px; height:30px; font-size:11px; }
+  .stack{ display:flex; flex-direction:column; max-width:min(560px, 78%); }
+  .row.sent .stack{ align-items:flex-end; }
+  .bubble{ padding:11px 16px; font-size:15px; line-height:1.55; word-wrap:break-word; overflow-wrap:anywhere; white-space:pre-wrap; box-shadow:0 1px 2px rgba(11,27,51,.06); }
+  .row.sent .bubble{ background:linear-gradient(135deg,#F5820B 0%,#E26C00 100%); color:var(--white); border-radius:18px 18px 4px 18px; }
+  .row.received .bubble{ background:var(--white); color:var(--ink); border:1px solid var(--line); border-radius:18px 18px 18px 4px; }
+  .row.pending .bubble{ opacity:.65; }
+  .meta{ display:flex; align-items:center; gap:10px; margin-top:5px; font-size:11.5px; color:var(--muted); min-height:18px; }
+  .msg-delete{ display:inline-flex; align-items:center; gap:4px; background:none; border:none; color:var(--muted); font-size:11.5px; padding:2px 4px; border-radius:6px; opacity:0; transition:opacity .15s ease, color .15s ease; }
+  .row:hover .msg-delete, .msg-delete:focus-visible{ opacity:1; }
+  .msg-delete:hover{ color:#C2352B; }
+  .msg-delete svg{ width:13px; height:13px; }
+  @media (hover:none){ .msg-delete{ opacity:1; } }
 
-  .msg-row.sent .bubble{ position:relative; }
-  .bubble-actions{ display:flex; align-items:center; gap:10px; margin-top:8px; }
-  .bubble .timestamp{ display:inline-block; margin-top:0; }
-  .msg-delete{
-    background:none;
-    border:none;
-    padding:0;
-    font-size:11.5px;
-    font-family:inherit;
-    color:rgba(255,255,255,0.55);
-    text-decoration:underline;
-    cursor:pointer;
-    opacity:0;
-    transition:opacity .15s ease, color .15s ease;
-  }
-  .msg-row.sent:hover .msg-delete{ opacity:1; }
-  .msg-delete:hover{ color:#fff; }
-  .empty-thread{
-    margin:auto;
-    text-align:center;
-    color:var(--muted-on-white);
-    font-size:14.5px;
-    max-width:280px;
-  }
+  /* empty state + loading */
+  .empty{ margin:auto; text-align:center; max-width:420px; padding:20px; }
+  .empty .art{ width:84px; height:84px; margin:0 auto 18px; border-radius:50%; background:linear-gradient(135deg,#FFF1DE,#FFE0B8); display:flex; align-items:center; justify-content:center; color:var(--orange); }
+  .empty .art svg{ width:38px; height:38px; }
+  .empty h3{ font-size:19px; font-weight:800; color:var(--navy); margin-bottom:8px; }
+  .empty p{ font-size:14.5px; color:var(--muted); line-height:1.6; margin-bottom:18px; }
+  .chips{ display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
+  .chip{ background:var(--white); border:1px solid var(--line); color:var(--navy); font-size:13.5px; font-weight:600; padding:9px 15px; border-radius:999px; transition:all .15s ease; }
+  .chip:hover{ border-color:var(--orange); color:var(--orange-dark); background:#FFF8EF; }
+  .skeleton{ display:flex; flex-direction:column; gap:14px; }
+  .skel{ height:44px; border-radius:16px; background:linear-gradient(90deg,#E9ECF3 25%,#F5F6FA 50%,#E9ECF3 75%); background-size:200% 100%; animation:shimmer 1.2s infinite; }
+  .skel.r{ align-self:flex-end; width:48%; }
+  .skel.l{ width:58%; }
+  @keyframes shimmer{ to{ background-position:-200% 0; } }
 
-  @media (max-width:860px){
-    .app{ grid-template-columns:1fr; }
-    .conv-sidebar{ display:none; }
-    .conv-sidebar.show-mobile{ display:flex; position:fixed; inset:0; z-index:30; width:100%; }
-    .chat-pane{ position:relative; }
+  .jump{ position:absolute; left:50%; bottom:112px; transform:translateX(-50%); background:var(--navy); color:var(--white); border:none; border-radius:999px; font-size:13px; font-weight:600; padding:9px 16px; box-shadow:0 8px 24px rgba(11,27,51,.28); }
+  .jump[hidden]{ display:none; }
+
+  /* composer */
+  .composer-wrap{ background:var(--white); border-top:1px solid var(--line); padding:14px 22px 12px; }
+  .composer{ display:flex; align-items:flex-end; gap:12px; background:var(--bg); border:1.5px solid transparent; border-radius:18px; padding:8px 8px 8px 18px; transition:border-color .15s ease, background .15s ease; }
+  .composer:focus-within{ border-color:var(--orange); background:var(--white); box-shadow:0 0 0 4px rgba(245,130,11,.12); }
+  .composer textarea{ flex:1; border:none; outline:none; background:transparent; resize:none; font-size:15px; line-height:1.5; color:var(--ink); padding:8px 0; max-height:140px; }
+  .composer textarea::placeholder{ color:#9AA1B2; }
+  .send{ width:44px; height:44px; border-radius:14px; border:none; background:var(--orange); color:var(--white); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background .15s ease, transform .15s ease; }
+  .send:hover:not(:disabled){ background:var(--orange-dark); transform:translateY(-1px); }
+  .send:disabled{ background:#D6DAE3; cursor:not-allowed; }
+  .send svg{ width:20px; height:20px; }
+  .hint{ display:flex; justify-content:space-between; gap:10px; margin-top:8px; padding:0 6px; font-size:12px; color:#98A0B1; }
+  .hint .count.warn{ color:#C2352B; font-weight:600; }
+
+  @media (max-width:980px){
+    .wrap{ padding:0 18px; }
+    nav.main-nav{ display:none; }
+    .nav-toggle{ display:block; }
+    .chat-shell{ grid-template-columns:1fr; height:calc(100vh - 210px); min-height:480px; border-radius:18px; }
+    .support-panel{ display:none; }
+    .page-head{ padding:26px 0 16px; }
+    .page-head h1{ font-size:26px; }
+    .thread{ padding:18px 14px 10px; }
+    .stack{ max-width:84%; }
+    .chat-top{ padding:14px 16px; }
+    .composer-wrap{ padding:10px 12px 8px; }
+    .hint .tip{ display:none; }
   }
 </style>
 </head>
 <body data-auth-required="user">
 
-<nav class="site-nav">
-  <div class="nav-links"><a href="index.html">Home</a><a href="marketplace.html">Marketplace</a><a href="quote.html">Custom Quote</a><a href="orders.html">Orders</a><a href="cart.html">Cart</a></div>
-  <div class="nav-right"><a href="login.html" class="login-link">Login</a><a href="signup.html" class="btn btn-primary btn-sm">Sign Up</a></div>
-</nav>
-
-<div class="app">
-  <aside class="conv-sidebar">
-    <h1>Messages</h1>
-
-    <div class="conv-item active" id="convItem" data-initials="AS">
-      <div class="conv-top-row">
-        <span class="conv-name">AweSum Support</span>
-        <span class="conv-time" id="convTime"></span>
-      </div>
-      <div class="conv-bottom-row">
-        <span class="conv-preview" id="convPreview">Start a conversation with our team.</span>
-      </div>
+<header>
+  <div class="wrap nav-row">
+    <a href="index.html" class="logo">
+      <img src="images/logo.jpg" alt="AweSum Brands logo" style="height:42px; width:auto; display:block;">
+    </a>
+    <nav class="main-nav">
+      <a href="marketplace.html">Marketplace</a>
+      <a href="quote.html">Custom Quote</a>
+      <a href="messages.html" class="active">Messages</a>
+      <a href="orders.html">Orders</a>
+    </nav>
+    <div class="nav-right">
+      <a href="cart.html" class="cart-link" aria-label="Cart">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="cart-badge">0</span>
+      </a>
+      <a href="login.html" class="login-link">Login</a>
+      <a href="signup.html" class="btn btn-primary btn-sm">Sign Up</a>
     </div>
-  </aside>
+    <button class="nav-toggle" aria-label="Menu">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+</header>
 
-  <div class="chat-pane">
-    <div class="chat-header">
-      <div class="chat-avatar" id="chatAvatar">AS</div>
-      <div class="chat-header-info">
-        <h2 id="chatName">AweSum Support</h2>
-        <p>We typically reply within a few hours</p>
-      </div>
+<main>
+  <div class="wrap">
+    <div class="page-head">
+      <h1>Messages</h1>
+      <p>Chat with the AweSum Brands team about your orders, quotes and artwork.</p>
     </div>
 
-    <div class="chat-thread" id="chatThread">
-      <div class="empty-thread" id="emptyThread">No messages yet. Send us a message and our team will get back to you here.</div>
-    </div>
+    <div class="chat-shell">
+      <aside class="support-panel">
+        <div class="agent">
+          <div class="avatar">AB</div>
+          <div>
+            <h2>AweSum Brands</h2>
+            <p>We usually reply within a few hours</p>
+          </div>
+        </div>
+        <p class="panel-note">Questions about a print job, delivery or artwork? Message us here and our team will answer in this chat.</p>
+        <div class="panel-links">
+          <a class="panel-link" href="quote.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>
+            Request a custom quote
+          </a>
+          <a class="panel-link" href="orders.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/></svg>
+            Track my orders
+          </a>
+          <a class="panel-link" id="emailLink" href="#">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+            <span class="email-text" data-biz="email"></span>
+          </a>
+        </div>
+        <p class="panel-foot"><strong>Signed in as</strong><br><span id="whoami"></span></p>
+      </aside>
 
-    <div class="chat-input-bar">
-      <input type="text" id="messageInput" placeholder="Type a message...">
-      <button class="btn-send" id="sendBtn">Send</button>
+      <section class="chat" aria-label="Conversation with AweSum Brands">
+        <div class="chat-top">
+          <div class="avatar">AB</div>
+          <div>
+            <h2>AweSum Brands Support</h2>
+            <p>We usually reply within a few hours</p>
+          </div>
+          <div class="spacer"></div>
+          <button class="icon-btn" id="refreshBtn" type="button" aria-label="Refresh messages" title="Refresh messages">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>
+          </button>
+        </div>
+
+        <div class="thread" id="chatThread" role="log" aria-live="polite">
+          <div class="skeleton" id="skeleton"><div class="skel l"></div><div class="skel r"></div><div class="skel l" style="width:42%"></div></div>
+        </div>
+        <button class="jump" id="jumpBtn" type="button" hidden>New messages &darr;</button>
+
+        <div class="composer-wrap">
+          <form class="composer" id="composer" autocomplete="off">
+            <textarea id="messageInput" rows="1" maxlength="5000" placeholder="Write a message..." aria-label="Write a message"></textarea>
+            <button class="send" id="sendBtn" type="submit" aria-label="Send message" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            </button>
+          </form>
+          <div class="hint"><span class="tip">Press Enter to send &middot; Shift + Enter for a new line</span><span class="count" id="counter"></span></div>
+        </div>
+      </section>
     </div>
   </div>
-</div>
+</main>
 
 <script src="app.js"></script>
+<script src="business-info.js"></script>
 <script>
+  const thread = document.getElementById('chatThread');
   const input = document.getElementById('messageInput');
   const sendBtn = document.getElementById('sendBtn');
-  const thread = document.getElementById('chatThread');
-  const emptyThread = document.getElementById('emptyThread');
-  const convPreview = document.getElementById('convPreview');
-  const convTime = document.getElementById('convTime');
-  const chatAvatar = document.getElementById('chatAvatar');
+  const composer = document.getElementById('composer');
+  const counter = document.getElementById('counter');
+  const jumpBtn = document.getElementById('jumpBtn');
+  const refreshBtn = document.getElementById('refreshBtn');
   const user = AweSum.currentUser();
+  const MAX_LENGTH = 5000;
+  let sending = false;
+  let loaded = false;
+  let signature = '';
+  let shownCount = 0;
 
-  const formatTime = value => new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  if (user && user.role === 'admin') { window.location.replace('admin.html'); }
+  if (user) document.getElementById('whoami').textContent = user.name + ' (' + user.email + ')';
+  if (window.AweSumBusiness && AweSumBusiness.email) document.getElementById('emailLink').href = 'mailto:' + AweSumBusiness.email;
 
-  function initialsOf(name){
-    return String(name || 'AS').trim().split(/\s+/).slice(0, 2).map(part => part[0] || '').join('').toUpperCase() || 'AS';
+  const TRASH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>';
+  const CHAT_ART = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a3 3 0 0 1-3 3H8l-5 4V6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3z"/><path d="M8 9h8M8 13h5"/></svg>';
+
+  function parseDate(value) {
+    if (!value) return new Date();
+    const text = String(value);
+    return new Date(/^\d{4}-\d{2}-\d{2} /.test(text) ? text.replace(' ', 'T') : text);
   }
-  if (user) chatAvatar.textContent = initialsOf(user.name);
-
-  function updateSidebarPreview(messages){
-    if (!messages.length) { convPreview.textContent = 'Start a conversation with our team.'; convTime.textContent = ''; return; }
-    const last = messages[messages.length - 1];
-    convPreview.textContent = (last.reply || last.text || '').slice(0, 60);
-    convTime.textContent = formatTime(last.repliedAt || last.createdAt);
+  const timeOf = date => date.toLocaleTimeString('en-ZA', { hour: '2-digit', minute: '2-digit' });
+  function dayLabel(date) {
+    const startOf = d => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+    const diff = Math.round((startOf(new Date()) - startOf(date)) / 86400000);
+    if (diff === 0) return 'Today';
+    if (diff === 1) return 'Yesterday';
+    return date.toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' });
   }
 
-  function appendRow(className, text, time, messageId){
+  function buildEntries(messages) {
+    const entries = [];
+    messages.slice().sort((a, b) => parseDate(a.createdAt) - parseDate(b.createdAt)).forEach(message => {
+      const fromTeam = message.senderRole === 'admin';
+      entries.push({ side: fromTeam ? 'received' : 'sent', text: message.text, date: parseDate(message.createdAt), id: fromTeam ? '' : message.id });
+      if (message.reply) entries.push({ side: 'received', text: message.reply, date: parseDate(message.repliedAt || message.createdAt), id: '' });
+    });
+    return entries;
+  }
+
+  function makeRow(entry) {
     const row = document.createElement('div');
-    row.className = 'msg-row ' + className;
-    row.dataset.id = messageId || '';
+    row.className = 'row ' + entry.side + (entry.pending ? ' pending' : '');
+    if (entry.side === 'received') {
+      const avatar = document.createElement('div');
+      avatar.className = 'avatar';
+      avatar.textContent = 'AB';
+      row.appendChild(avatar);
+    }
+    const stack = document.createElement('div');
+    stack.className = 'stack';
     const bubble = document.createElement('div');
     bubble.className = 'bubble';
-    bubble.textContent = text;
-    const actions = document.createElement('div');
-    actions.className = 'bubble-actions';
-    const timestamp = document.createElement('span');
-    timestamp.className = 'timestamp';
-    timestamp.textContent = time;
-    actions.appendChild(timestamp);
-    if (className === 'sent' && messageId) {
+    bubble.textContent = entry.text;
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    const time = document.createElement('span');
+    time.textContent = entry.pending ? 'Sending...' : timeOf(entry.date);
+    meta.appendChild(time);
+    if (entry.side === 'sent' && entry.id) {
       const del = document.createElement('button');
-      del.className = 'msg-delete';
       del.type = 'button';
-      del.textContent = 'Delete';
-      del.addEventListener('click', () => deleteMessage(messageId, row));
-      actions.appendChild(del);
+      del.className = 'msg-delete';
+      del.setAttribute('aria-label', 'Delete this message');
+      del.innerHTML = TRASH + 'Delete';
+      del.addEventListener('click', () => deleteMessage(entry.id));
+      meta.appendChild(del);
     }
-    bubble.appendChild(actions);
-    row.appendChild(bubble);
-    thread.appendChild(row);
+    stack.appendChild(bubble);
+    stack.appendChild(meta);
+    row.appendChild(stack);
     return row;
   }
 
-  function renderThread(messages){
-    thread.querySelectorAll('.msg-row').forEach(row => row.remove());
-    if (!messages.length) { emptyThread.style.display = ''; }
-    else {
-      emptyThread.style.display = 'none';
-      messages.slice().sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)).forEach(message => {
-        appendRow(message.senderRole === 'admin' ? 'received' : 'sent', message.text, formatTime(message.createdAt), message.senderRole === 'admin' ? '' : message.id);
-        if (message.reply) appendRow('received', message.reply, formatTime(message.repliedAt || message.createdAt));
+  function emptyState() {
+    const box = document.createElement('div');
+    box.className = 'empty';
+    box.innerHTML = '<div class="art">' + CHAT_ART + '</div><h3>Start a conversation</h3><p>Send us a message and our team will reply right here. Ask about an order, your artwork, delivery or anything else.</p><div class="chips"></div>';
+    [['Question about my order', 'Hi, I have a question about my order: '], ['Help with my artwork', 'Hi, I need help with my artwork. '], ['Delivery question', 'Hi, I have a question about delivery. ']].forEach(([label, text]) => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'chip';
+      chip.textContent = label;
+      chip.addEventListener('click', () => { input.value = text; autosize(); updateState(); input.focus(); });
+      box.querySelector('.chips').appendChild(chip);
+    });
+    return box;
+  }
+
+  const nearBottom = () => thread.scrollHeight - thread.scrollTop - thread.clientHeight < 100;
+  function scrollToBottom(smooth) {
+    thread.style.scrollBehavior = smooth ? 'smooth' : 'auto';
+    thread.scrollTop = thread.scrollHeight;
+    jumpBtn.hidden = true;
+  }
+
+  function renderEntries(entries, forceBottom) {
+    const stick = forceBottom || !loaded || nearBottom();
+    thread.innerHTML = '';
+    if (!entries.length) {
+      thread.appendChild(emptyState());
+    } else {
+      let lastDay = '';
+      entries.forEach(entry => {
+        const label = dayLabel(entry.date);
+        if (label !== lastDay) {
+          const separator = document.createElement('div');
+          separator.className = 'day-sep';
+          separator.textContent = label;
+          thread.appendChild(separator);
+          lastDay = label;
+        }
+        thread.appendChild(makeRow(entry));
       });
     }
-    updateSidebarPreview(messages);
-    thread.scrollTop = thread.scrollHeight;
+    if (stick) scrollToBottom(false);
+    else if (entries.length > shownCount) jumpBtn.hidden = false;
+    shownCount = entries.length;
   }
 
-  function loadThread(){
-    AweSum.api('messages').then(result => renderThread(result.messages || [])).catch(error => AweSum.showMessage(error.message, 'error'));
+  function loadThread(silent, forceBottom) {
+    return AweSum.api('messages').then(result => {
+      const messages = result.messages || [];
+      const next = JSON.stringify(messages.map(m => [m.id, m.text, m.reply, m.repliedAt]));
+      if (next !== signature || forceBottom) {
+        signature = next;
+        renderEntries(buildEntries(messages), forceBottom);
+      }
+      loaded = true;
+    }).catch(error => {
+      if (!silent || !loaded) AweSum.showMessage(error.message, 'error');
+      if (!loaded) { loaded = true; renderEntries([], true); }
+    });
   }
-  if (user) loadThread();
 
-  function deleteMessage(messageId, row){
-    if (!confirm('Delete this message?')) return;
-    AweSum.api('message', { method: 'DELETE', body: JSON.stringify({ id: messageId }) })
-      .then(() => { row.remove(); const next = row.nextElementSibling; if (next && next.classList.contains('received') && !next.dataset.id) next.remove(); if (!thread.querySelector('.msg-row')) emptyThread.style.display = ''; })
+  function deleteMessage(id) {
+    if (!confirm('Delete this message? Any reply from our team to it will be removed too.')) return;
+    AweSum.api('message', { method: 'DELETE', body: JSON.stringify({ id }) })
+      .then(() => loadThread(true, false))
       .catch(error => AweSum.showMessage(error.message, 'error'));
   }
 
-  function sendMessage(){
-    const text = input.value.trim();
-    if(!text) return;
-    if (!user) { window.location.href = 'login.html'; return; }
-    sendBtn.disabled = true;
-    AweSum.api('message', { method: 'POST', body: JSON.stringify({ name: user.name, email: user.email, text }) })
-      .then(result => {
-        emptyThread.style.display = 'none';
-        appendRow('sent', text, formatTime(new Date()), result.reference);
-        thread.scrollTop = thread.scrollHeight;
-        convPreview.textContent = text.slice(0, 60);
-        convTime.textContent = formatTime(new Date());
-        input.value = '';
-      })
-      .catch(error => AweSum.showMessage(error.message, 'error'))
-      .finally(() => { sendBtn.disabled = false; });
+  function autosize() {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 140) + 'px';
   }
-  sendBtn.addEventListener('click', sendMessage);
-  input.addEventListener('keydown', e => { if(e.key === 'Enter') sendMessage(); });
+  function updateState() {
+    const length = input.value.length;
+    sendBtn.disabled = sending || !input.value.trim();
+    counter.textContent = length > MAX_LENGTH - 500 ? length.toLocaleString('en-ZA') + ' / ' + MAX_LENGTH.toLocaleString('en-ZA') : '';
+    counter.classList.toggle('warn', length >= MAX_LENGTH - 50);
+  }
+
+  async function sendMessage() {
+    const text = input.value.trim();
+    if (!text || sending) return;
+    if (!user) { window.location.href = 'login.html'; return; }
+    sending = true;
+    updateState();
+    const empty = thread.querySelector('.empty');
+    if (empty) empty.remove();
+    const pendingRow = makeRow({ side: 'sent', text, date: new Date(), pending: true });
+    thread.appendChild(pendingRow);
+    scrollToBottom(true);
+    input.value = '';
+    autosize();
+    try {
+      await AweSum.api('message', { method: 'POST', body: JSON.stringify({ name: user.name, email: user.email, text }) });
+      await loadThread(true, true);
+    } catch (error) {
+      pendingRow.remove();
+      input.value = text;
+      autosize();
+      AweSum.showMessage(error.message, 'error');
+      if (!thread.querySelector('.row')) renderEntries([], true);
+    } finally {
+      sending = false;
+      updateState();
+      input.focus();
+    }
+  }
+
+  composer.addEventListener('submit', event => { event.preventDefault(); sendMessage(); });
+  input.addEventListener('input', () => { autosize(); updateState(); });
+  input.addEventListener('keydown', event => {
+    if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); sendMessage(); }
+  });
+  jumpBtn.addEventListener('click', () => scrollToBottom(true));
+  thread.addEventListener('scroll', () => { if (nearBottom()) jumpBtn.hidden = true; });
+  refreshBtn.addEventListener('click', () => {
+    refreshBtn.classList.add('spin');
+    loadThread(false, false).finally(() => setTimeout(() => refreshBtn.classList.remove('spin'), 700));
+  });
+
+  // Pick up replies from the team without the customer having to reload the page.
+  setInterval(() => { if (!document.hidden && !sending && user) loadThread(true, false); }, 30000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && user) loadThread(true, false); });
+
+  if (user) loadThread(false, true); else renderEntries([], true);
+  updateState();
+
+  const navToggle = document.querySelector('.nav-toggle');
+  const mainNav = document.querySelector('.main-nav');
+  navToggle.addEventListener('click', () => {
+    const isOpen = mainNav.style.display === 'flex';
+    mainNav.style.display = isOpen ? 'none' : 'flex';
+    mainNav.style.cssText += isOpen ? '' : 'flex-direction:column; position:absolute; top:76px; left:0; right:0; background:#0B1B33; padding:24px 24px; gap:20px; border-bottom:1px solid rgba(255,255,255,0.12);';
+  });
 </script>
 </body>
 </html>

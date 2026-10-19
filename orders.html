@@ -6,7 +6,7 @@
 <title>My Orders — AweSum Brands</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
 <style>
   :root{
     --navy:#0B1B33;
@@ -138,6 +138,8 @@
     .order-right{ width:100%; justify-content:space-between; }
     .footer-grid{ grid-template-columns:1fr; }
   }
+  .pay-btn{ margin-left:14px; background:var(--orange); color:#fff; border:0; border-radius:999px; padding:10px 18px; font-weight:700; font-size:14px; cursor:pointer; }
+  .pay-btn:disabled{ opacity:.6; cursor:default; }
 </style>
 </head>
 <body>
@@ -176,74 +178,7 @@
 
 <section class="orders-section">
   <div class="wrap">
-
-    <div class="order-card">
-      <div class="order-left">
-        <div class="order-id-row">
-          <span class="order-id">ORD-2847</span>
-          <span class="badge badge-action">Action Needed</span>
-        </div>
-        <div class="order-title">Premium Business Cards</div>
-        <div class="order-meta">500 units · 28 Aug 2026</div>
-      </div>
-      <div class="order-right">
-        <span class="order-price">R 1,495</span>
-        <a href="#" class="btn btn-primary btn-sm">Review Proof</a>
-      </div>
     </div>
-
-    <div class="order-card">
-      <div class="order-left">
-        <div class="order-id-row">
-          <span class="order-id">ORD-2831</span>
-          <span class="badge badge-pending">Pending</span>
-        </div>
-        <div class="order-title">A5 Flyers Full Colour</div>
-        <div class="order-meta">1000 units · 25 Aug 2026</div>
-      </div>
-      <div class="order-right">
-        <span class="order-price">R 900</span>
-        <a href="#" class="order-action-link">View details
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
-      </div>
-    </div>
-
-    <div class="order-card">
-      <div class="order-left">
-        <div class="order-id-row">
-          <span class="order-id">ORD-2819</span>
-          <span class="badge badge-complete">Complete</span>
-        </div>
-        <div class="order-title">Custom T-Shirt Printing</div>
-        <div class="order-meta">50 units · 20 Aug 2026</div>
-      </div>
-      <div class="order-right">
-        <span class="order-price">R 9,000</span>
-        <a href="#" class="order-action-link">View details
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
-      </div>
-    </div>
-
-    <div class="order-card">
-      <div class="order-left">
-        <div class="order-id-row">
-          <span class="order-id">ORD-2801</span>
-          <span class="badge badge-complete">Complete</span>
-        </div>
-        <div class="order-title">Pull-Up Banner 2m</div>
-        <div class="order-meta">2 units · 15 Aug 2026</div>
-      </div>
-      <div class="order-right">
-        <span class="order-price">R 1,700</span>
-        <a href="#" class="order-action-link">View details
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
-      </div>
-    </div>
-
-  </div>
 </section>
 
 <footer>
@@ -277,25 +212,24 @@
       <div>
         <h4>Support</h4>
         <ul>
-          <li><a href="#">Help Center</a></li>
-          <li><a href="#">Track Order</a></li>
-          <li><a href="#">Returns Policy</a></li>
-          <li><a href="#">Contact Us</a></li>
+          <li><a href="index.html#contact">Help Center</a></li>
+          <li><a href="orders.html">Track Order</a></li>
+          <li><a href="returns.html">Returns Policy</a></li>
+          <li><a href="index.html#contact">Contact Us</a></li>
         </ul>
       </div>
       <div>
         <h4>Legal</h4>
         <ul>
-          <li><a href="#">Terms of Service</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Cookie Policy</a></li>
-          <li><a href="#">Sitemap</a></li>
+          <li><a href="terms.html">Terms of Service</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+          <li><a href="privacy.html#cookies">Cookie Policy</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 AweSum Brands (Pty) Ltd. All rights reserved.</span>
-      <span>Registered in South Africa · VAT No. 4560291837</span>
+      <span id="bizCopyright">© 2026 AweSum Brands. All rights reserved.</span>
+      <span id="bizRegistration"></span>
     </div>
   </div>
 </footer>
@@ -304,16 +238,28 @@
 <script>
   const user = AweSum.requireUser();
   const orderWrap = document.querySelector('.orders-section .wrap');
+  orderWrap.innerHTML = '<p>Loading your orders...</p>';
   function renderOrders(orders) {
     orderWrap.innerHTML = orders.length ? '' : '<p>No orders have been placed yet.</p>';
     orders.forEach(order => {
       const card = document.createElement('div'); card.className = 'order-card';
       const names = (Array.isArray(order.items) ? order.items : []).map(item => item.name + ' x ' + item.quantity).join(', ');
-      card.innerHTML = '<div class="order-left"><div class="order-id-row"><span class="order-id">' + AweSum.escapeHtml(order.id) + '</span><span class="badge badge-pending">' + AweSum.escapeHtml(order.status || 'Pending') + '</span></div><div class="order-title">' + AweSum.escapeHtml(names) + '</div><div class="order-meta">' + new Date(order.createdAt).toLocaleDateString('en-ZA') + '</div></div><div class="order-right"><span class="order-price">' + AweSum.money(order.total) + '</span></div>';
+      card.innerHTML = '<div class="order-left"><div class="order-id-row"><span class="order-id">' + AweSum.escapeHtml(order.id) + '</span><span class="badge badge-pending">' + AweSum.escapeHtml(order.status || 'Pending') + '</span></div><div class="order-title">' + AweSum.escapeHtml(names) + '</div><div class="order-meta">' + new Date(order.createdAt).toLocaleDateString('en-ZA') + '</div></div><div class="order-right"><span class="order-price">' + AweSum.money(order.total) + '</span>' + (order.status === 'Payment pending' ? '<button type="button" class="pay-btn" data-pay="' + AweSum.escapeHtml(order.id) + '">Pay now</button>' : '') + '</div>';
       orderWrap.appendChild(card);
     });
   }
   if (user) AweSum.api('orders').then(result => { AweSum.write(AweSum.keys.orders, result.orders || []); renderOrders(result.orders || []); }).catch(error => AweSum.showMessage(error.message, 'error'));
+  orderWrap.addEventListener('click', async event => {
+    const button = event.target.closest('[data-pay]');
+    if (!button) return;
+    button.disabled = true;
+    button.textContent = 'Opening payment...';
+    try { await AweSum.payWithPayFast(button.dataset.pay); }
+    catch (error) { AweSum.showMessage(error.message, 'error'); button.disabled = false; button.textContent = 'Pay now'; }
+  });
+  const paymentNote = new URLSearchParams(location.search).get('payment');
+  if (paymentNote === 'return') AweSum.showMessage('Thank you! We are confirming your payment. Your order status will update shortly, so refresh this page in a minute.');
+  if (paymentNote === 'cancelled') AweSum.showMessage('Payment was cancelled. You can complete it any time with the Pay now button.', 'error');
   const navToggle = document.querySelector('.nav-toggle');
   const mainNav = document.querySelector('.main-nav');
   navToggle.addEventListener('click', () => {
@@ -322,5 +268,6 @@
     mainNav.style.cssText += isOpen ? '' : 'flex-direction:column; position:absolute; top:76px; left:0; right:0; background:#0B1B33; padding:24px 24px; gap:20px; border-bottom:1px solid rgba(255,255,255,0.12);';
   });
 </script>
+<script src="business-info.js"></script>
 </body>
 </html>

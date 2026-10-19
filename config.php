@@ -19,14 +19,25 @@ if ($awesumMissing) {
 }
 unset($awesumMissing, $awesumExtension);
 
+// Never print PHP warnings into a response (they would corrupt the JSON the site reads); log them instead.
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
+ob_start();
+
 // Copy this file's values into environment variables on the server; do not commit production secrets.
-define('DB_HOST', getenv('AWESUM_DB_HOST') ?: '127.0.0.1');
+define('DB_HOST', getenv('AWESUM_DB_HOST') ?: 'localhost');
 define('DB_PORT', getenv('AWESUM_DB_PORT') ?: '3306');
-define('DB_NAME', getenv('AWESUM_DB_NAME') ?: 'awesum_brands');
-define('DB_USER', getenv('AWESUM_DB_USER') ?: 'root');
+define('DB_NAME', getenv('AWESUM_DB_NAME') ?: '');
+define('DB_USER', getenv('AWESUM_DB_USER') ?: '');
 define('DB_PASS', getenv('AWESUM_DB_PASS') ?: '');
 define('ADMIN_EMAIL', strtolower(getenv('AWESUM_ADMIN_EMAIL') ?: 'mpilonhlebmemela@gmail.com'));
 define('APP_ORIGIN', getenv('AWESUM_APP_ORIGIN') ?: '');
+define('PAYFAST_MODE', 'live');
+define('PAYFAST_MERCHANT_ID', ' ');
+define('PAYFAST_MERCHANT_KEY', '');
+define('PAYFAST_PASSPHRASE', '');
+define('SITE_URL', 'https://awesumbrands.co.za');
+define('GOOGLE_CLIENT_ID', '');
 
 function db(): PDO
 {
@@ -51,6 +62,9 @@ function db(): PDO
 /** Sends a JSON response and stops the script (never returns). */
 function jsonResponse(array $payload, int $status = 200)
 {
+    while (ob_get_level() > 0) {
+        ob_end_clean(); // throw away any stray output (spaces, warnings) so the JSON stays clean
+    }
     http_response_code($status);
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode($payload, JSON_UNESCAPED_SLASHES);
@@ -233,5 +247,6 @@ function isHttpsRequest(): bool
     return $forwardedProto === 'https' || strtolower((string) ($_SERVER['HTTP_X_FORWARDED_SSL'] ?? '')) === 'on';
 }
 
-session_set_cookie_params(['path' => '/', 'httponly' => true, 'samesite' => 'Lax', 'secure' => isHttpsRequest()]);
+ini_set('session.gc_maxlifetime', '28800');
+session_set_cookie_params(['lifetime' => 28800, 'path' => '/', 'httponly' => true, 'samesite' => 'Lax', 'secure' => isHttpsRequest()]);
 session_start();

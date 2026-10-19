@@ -1,0 +1,34 @@
+# AweSum Brands - Apache settings (works on Afrihost cPanel hosting)
+
+Options -Indexes
+
+# 1) Send every visitor to the secure (https) version of the site.
+#    Turn on AutoSSL in cPanel first, otherwise visitors will see a certificate error.
+<IfModule mod_rewrite.c>
+RewriteEngine On
+# Let the SSL certificate checks (AutoSSL) reach their files over plain http.
+RewriteCond %{REQUEST_URI} !^/\.well-known/(acme-challenge|cpanel-dcv|pki-validation)/ [NC]
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !https [NC]
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# 2) Hide private project folders and git history.
+RewriteRule ^(\.git|docs)(/|$) - [R=404,L]
+</IfModule>
+
+# 3) Never serve database dumps, readmes, logs, backups or hidden files.
+<FilesMatch "(\.(sql|md|log|bak|zip|sh|ini)$|^\.)">
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>
+</FilesMatch>
+
+<IfModule mod_headers.c>
+# 4) Tell browsers to always use https for this site (1 week for now; raise to 1 year once everything works).
+Header always set Strict-Transport-Security "max-age=604800" env=HTTPS
+Header always set X-Content-Type-Options "nosniff"
+</IfModule>

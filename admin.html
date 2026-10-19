@@ -95,21 +95,7 @@
     background:var(--orange);
     color:#fff;
   }
-  .pages-btn{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-    border:1px solid #fff;
-    color:#fff;
-    background:transparent;
-    padding:12px 20px;
-    border-radius:10px;
-    font-size:14px;
-    font-weight:600;
-    cursor:pointer;
-    align-self:flex-start;
-  }
+  
 
   /* ---------------- Main content ---------------- */
   .main{
@@ -461,7 +447,7 @@
       </button>
       <button class="nav-item" data-page="sellers">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.5 2.9-6 6.5-6s6.5 2.5 6.5 6"/><circle cx="17" cy="8.5" r="2.4"/><path d="M15.5 14.2c2.6.4 4.5 2.4 4.5 5.3"/></svg>
-        Sellers
+        Customers
       </button>
       <button class="nav-item" data-page="reports">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
@@ -470,8 +456,8 @@
       <button class="nav-item" data-page="quotes">Quotes</button>
       <button class="nav-item" data-page="adverts">Adverts</button>
       <button class="nav-item" data-page="messages">Messages</button>
+      <a href="change-password.html" style="display:flex;align-items:center;padding:13px 16px;border-radius:10px;color:#8f9bb5;font-size:15px;font-weight:600;text-decoration:none;">Change Password</a>
     </nav>
-    <button class="pages-btn">Pages ▾</button>
   </aside>
 
   <!-- Main content -->
@@ -481,44 +467,7 @@
     <section class="page active" id="page-orders">
       <h1 class="page-title">New Orders Queue</h1>
       <div class="order-list" id="order-list">
-
-        <div class="order-card" data-order="ORD-2850">
-          <div class="order-info">
-            <div class="order-top">
-              <span class="order-id">ORD-2850</span>
-              <span class="badge awaiting">Awaiting Review</span>
-            </div>
-            <span class="order-customer">Thandi Mokoena</span>
-            <span class="order-meta">Custom T-Shirts × 200 · Today, 09:15</span>
-          </div>
-          <button class="review-btn" data-item="Custom T-Shirts × 200">Review →</button>
-        </div>
-
-        <div class="order-card" data-order="ORD-2849">
-          <div class="order-info">
-            <div class="order-top">
-              <span class="order-id">ORD-2849</span>
-              <span class="badge awaiting">Awaiting Review</span>
-            </div>
-            <span class="order-customer">Ruan du Plessis</span>
-            <span class="order-meta">Outdoor Signage × 3 · Today, 08:02</span>
-          </div>
-          <button class="review-btn" data-item="Outdoor Signage × 3">Review →</button>
-        </div>
-
-        <div class="order-card" data-order="ORD-2848">
-          <div class="order-info">
-            <div class="order-top">
-              <span class="order-id">ORD-2848</span>
-              <span class="badge accepted">Accepted</span>
-            </div>
-            <span class="order-customer">Lindiwe Zulu</span>
-            <span class="order-meta">Flyers × 5,000 · Yesterday</span>
-          </div>
-          <button class="review-btn" style="visibility:hidden;">Review →</button>
-        </div>
-
-      </div>
+    </div>
     </section>
 
     <!-- Marketplace Items page -->
@@ -590,13 +539,9 @@
 
     <!-- Sellers page (placeholder) -->
     <section class="page" id="page-sellers">
-      <h1 class="page-title">Sellers</h1>
-      <div class="placeholder">
-        <div class="placeholder-icon">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.5 2.9-6 6.5-6s6.5 2.5 6.5 6"/><circle cx="17" cy="8.5" r="2.4"/><path d="M15.5 14.2c2.6.4 4.5 2.4 4.5 5.3"/></svg>
-        </div>
-        <p>Seller accounts and their marketplace activity will appear here.</p>
-      </div>
+      <h1 class="page-title">Customers</h1>
+      <p style="color:#8f9bb5;margin-bottom:18px;">Everyone with an account. If a customer is locked out, click "Reset password": we email them a reset link and show you the same link to send by WhatsApp if the email does not arrive.</p>
+      <div class="order-list" id="customer-list"></div>
     </section>
 
     <section class="page" id="page-reports">
@@ -705,11 +650,14 @@
       <div class="quote-details" id="quote-details"></div>
       <label for="quote-response">Response to customer</label>
       <textarea class="quote-response" id="quote-response" placeholder="Write your response..."></textarea>
+      <label for="quote-price">Price for this quote (R, excluding VAT)</label>
+      <input type="number" id="quote-price" min="0" step="0.01" placeholder="e.g. 1250.00" style="width:100%; padding:12px; border:1px solid var(--border); border-radius:8px; font:inherit; margin:8px 0 6px;">
+      <p id="quote-price-note" style="font-size:13px; color:#667085; margin-bottom:16px;">The customer sees this price with your response and design draft. VAT (15%) is added at checkout. Once they accept, they go straight to payment.</p>
       <label for="draft-design-input">Upload first draft design</label>
       <input type="file" id="draft-design-input" accept="image/*" style="width:100%; margin-bottom:10px;">
       <div id="draft-design-preview" style="display:none; margin-bottom:12px;"></div>
       <label for="quote-status">Status</label>
-      <select class="quote-status" id="quote-status"><option>Draft Sent</option><option>Reviewed</option><option>Accepted</option><option>Rejected</option></select>
+      <select class="quote-status" id="quote-status"><option>Draft Sent</option><option>Reviewed</option><option>Accepted</option><option>Approved</option><option>Needs Revision</option><option>Rejected</option></select>
       <div class="modal-actions"><button class="quote-close" type="button" id="quote-close">Cancel</button><button class="btn-proceed" type="button" id="quote-save">Send To Client</button></div>
     </div>
   </div>
@@ -728,6 +676,8 @@
     renderAdminOrders(orders.orders || []);
     renderAdminMessages(messages.messages || []);
     renderAdminAdverts(adverts.adverts || []);
+    storedQuotes = quotes.quotes || [];
+    renderQuoteCards();
   }).catch(error => AweSum.showMessage(error.message, 'error'));
   const orderList = document.getElementById('order-list');
   orderList.innerHTML = '';
@@ -758,12 +708,15 @@
       renderAdminOrders(orders);
     } catch (error) { AweSum.showMessage(error.message, 'error'); }
   });
-  const storedQuotes = AweSum.read(AweSum.keys.quotes, []);
+  let storedQuotes = AweSum.read(AweSum.keys.quotes, []);
   const quoteList = document.getElementById('quote-list');
   const quoteModal = document.getElementById('quote-modal-overlay');
   const quoteDetails = document.getElementById('quote-details');
   const quoteResponse = document.getElementById('quote-response');
   const quoteStatus = document.getElementById('quote-status');
+  const quotePrice = document.getElementById('quote-price');
+  const quotePriceNote = document.getElementById('quote-price-note');
+  const quoteSave = document.getElementById('quote-save');
   const draftDesignInput = document.getElementById('draft-design-input');
   const draftDesignPreview = document.getElementById('draft-design-preview');
   let activeQuote = null;
@@ -774,7 +727,7 @@
     storedQuotes.forEach(quote => {
       const card = document.createElement('div');
       card.className = 'order-card';
-      card.innerHTML = '<div class="order-info"><div class="order-top"><span class="order-id">' + AweSum.escapeHtml(quote.id) + '</span><span class="badge awaiting">' + AweSum.escapeHtml(quote.status || 'Pending') + '</span></div><span class="order-customer">' + AweSum.escapeHtml(quote.customer) + ' · ' + AweSum.escapeHtml(quote.email) + '</span><span class="order-meta">' + AweSum.escapeHtml(quote.category) + ' x ' + AweSum.escapeHtml(quote.quantity) + ' · ' + AweSum.escapeHtml(quote.description) + (quote.response ? ' · Response: ' + AweSum.escapeHtml(quote.response) : '') + '</span></div><div><button class="review-btn" data-quote="' + AweSum.escapeHtml(quote.id) + '">Review / Respond</button><button class="review-btn" data-delete-quote="' + AweSum.escapeHtml(quote.id) + '">Delete</button></div>';
+      card.innerHTML = '<div class="order-info"><div class="order-top"><span class="order-id">' + AweSum.escapeHtml(quote.id) + '</span><span class="badge awaiting">' + AweSum.escapeHtml(quote.status || 'Pending') + '</span></div><span class="order-customer">' + AweSum.escapeHtml(quote.customer) + ' · ' + AweSum.escapeHtml(quote.email) + '</span><span class="order-meta">' + AweSum.escapeHtml(quote.category) + ' x ' + AweSum.escapeHtml(quote.quantity) + ' · ' + AweSum.escapeHtml(quote.description) + (quote.quotedPrice !== null && quote.quotedPrice !== undefined ? ' · Price: ' + AweSum.money(quote.quotedPrice) + ' excl. VAT' : '') + (quote.orderReference ? ' · Order ' + AweSum.escapeHtml(quote.orderReference) + ' (' + AweSum.escapeHtml(quote.orderStatus || '') + ')' : '') + (quote.response ? ' · Response: ' + AweSum.escapeHtml(quote.response) : '') + '</span></div><div><button class="review-btn" data-quote="' + AweSum.escapeHtml(quote.id) + '">Review / Respond</button><button class="review-btn" data-delete-quote="' + AweSum.escapeHtml(quote.id) + '">Delete</button></div>';
       quoteList.appendChild(card);
     });
 
@@ -787,6 +740,11 @@
         pendingDraftImage = activeQuote.draftImage || '';
         quoteDetails.innerHTML = '<div><strong>Reference:</strong> ' + AweSum.escapeHtml(activeQuote.id) + '</div><div><strong>Customer:</strong> ' + AweSum.escapeHtml(activeQuote.customer) + ' · ' + AweSum.escapeHtml(activeQuote.email) + '</div><div><strong>Category:</strong> ' + AweSum.escapeHtml(activeQuote.category) + '</div><div><strong>Quantity:</strong> ' + AweSum.escapeHtml(activeQuote.quantity) + '</div><div><strong>Description:</strong> ' + AweSum.escapeHtml(activeQuote.description) + '</div><div><strong>Notes:</strong> ' + AweSum.escapeHtml(activeQuote.notes || 'None provided') + '</div><div><strong>Submitted:</strong> ' + AweSum.escapeHtml(new Date(activeQuote.createdAt).toLocaleString()) + '</div>' + (activeQuote.designImage ? '<div><strong>Original client design:</strong><img class="quote-design-image" src="' + AweSum.escapeHtml(activeQuote.designImage) + '" alt="Customer design upload"></div>' : '<div><strong>Original client design:</strong> None provided</div>') + (activeQuote.draftImage ? '<div><strong>Sent draft:</strong><img class="quote-design-image" src="' + AweSum.escapeHtml(activeQuote.draftImage) + '" alt="Admin draft design"></div>' : '');
         quoteResponse.value = activeQuote.response || '';
+        quotePrice.value = activeQuote.quotedPrice !== null && activeQuote.quotedPrice !== undefined ? activeQuote.quotedPrice : '';
+        const quoteLocked = Boolean(activeQuote.orderReference);
+        quotePrice.disabled = quoteLocked;
+        quoteSave.disabled = quoteLocked;
+        quotePriceNote.textContent = quoteLocked ? 'The customer accepted this quote and order ' + activeQuote.orderReference + ' exists (' + (activeQuote.orderStatus || 'Payment pending') + '). The price and quote are now locked. Follow the order on the Orders page.' : 'The customer sees this price with your response and design draft. VAT (15%) is added at checkout. Once they accept, they go straight to payment.';
         quoteStatus.value = activeQuote.status === 'Pending' ? 'Draft Sent' : (activeQuote.status || 'Draft Sent');
         if (pendingDraftImage) {
           draftDesignPreview.innerHTML = '<img src="' + AweSum.escapeHtml(pendingDraftImage) + '" alt="Draft preview" style="max-width:100%; max-height:220px; border-radius:8px; border:1px solid #ddd;">';
@@ -821,14 +779,21 @@
   document.getElementById('quote-close').addEventListener('click', () => quoteModal.classList.remove('open'));
   document.getElementById('quote-save').addEventListener('click', async () => {
       if (!activeQuote) return;
+      const priceValue = quotePrice.value.trim();
+      if (quoteStatus.value === 'Draft Sent' && (!priceValue || Number(priceValue) <= 0)) {
+        AweSum.showMessage('Please enter the price before sending the quote to the customer.', 'error');
+        quotePrice.focus();
+        return;
+      }
       try {
-        await AweSum.api('quote-status', { method: 'PUT', body: JSON.stringify({ id: activeQuote.id, status: quoteStatus.value, response: quoteResponse.value.trim(), draftImage: pendingDraftImage }) });
+        await AweSum.api('quote-status', { method: 'PUT', body: JSON.stringify({ id: activeQuote.id, status: quoteStatus.value, response: quoteResponse.value.trim(), draftImage: pendingDraftImage, price: priceValue }) });
         const quotes = AweSum.read(AweSum.keys.quotes, []);
         const quote = quotes.find(item => item.id === activeQuote.id);
         if (quote) {
           quote.status = quoteStatus.value;
           quote.response = quoteResponse.value.trim();
           quote.draftImage = pendingDraftImage;
+          quote.quotedPrice = priceValue ? Number(priceValue) : quote.quotedPrice;
         }
         AweSum.write(AweSum.keys.quotes, quotes);
         quoteModal.classList.remove('open');
@@ -998,65 +963,76 @@
     { value: '100%', label: 'Quality Guaranteed' }
   ];
 
-  function populateStatsForm() {
-    const stats = AweSum.read(AweSum.keys.stats, defaultStats);
-    document.getElementById('stat-1-value').value = stats[0]?.value || defaultStats[0].value;
-    document.getElementById('stat-1-label').value = stats[0]?.label || defaultStats[0].label;
-    document.getElementById('stat-2-value').value = stats[1]?.value || defaultStats[1].value;
-    document.getElementById('stat-2-label').value = stats[1]?.label || defaultStats[1].label;
-    document.getElementById('stat-3-value').value = stats[2]?.value || defaultStats[2].value;
-    document.getElementById('stat-3-label').value = stats[2]?.label || defaultStats[2].label;
-    document.getElementById('stat-4-value').value = stats[3]?.value || defaultStats[3].value;
-    document.getElementById('stat-4-label').value = stats[3]?.label || defaultStats[3].label;
+  function populateStatsForm(saved) {
+    const stats = Array.isArray(saved) && saved.length === 4 ? saved : defaultStats;
+    for (let n = 1; n <= 4; n++) {
+      document.getElementById('stat-' + n + '-value').value = stats[n - 1].value;
+      document.getElementById('stat-' + n + '-label').value = stats[n - 1].label;
+    }
   }
 
-  statsForm.addEventListener('submit', event => {
+  statsForm.addEventListener('submit', async event => {
     event.preventDefault();
-    const stats = [
-      { value: document.getElementById('stat-1-value').value.trim(), label: document.getElementById('stat-1-label').value.trim() },
-      { value: document.getElementById('stat-2-value').value.trim(), label: document.getElementById('stat-2-label').value.trim() },
-      { value: document.getElementById('stat-3-value').value.trim(), label: document.getElementById('stat-3-label').value.trim() },
-      { value: document.getElementById('stat-4-value').value.trim(), label: document.getElementById('stat-4-label').value.trim() }
-    ];
-    AweSum.write(AweSum.keys.stats, stats);
-    AweSum.showMessage('Homepage statistics updated.');
+    const stats = [1, 2, 3, 4].map(n => ({ value: document.getElementById('stat-' + n + '-value').value.trim(), label: document.getElementById('stat-' + n + '-label').value.trim() }));
+    try {
+      const result = await AweSum.api('stats', { method: 'PUT', body: JSON.stringify({ stats }) });
+      populateStatsForm(result.stats);
+      AweSum.showMessage('Homepage statistics updated.');
+    } catch (error) {
+      AweSum.showMessage(error.message, 'error');
+    }
   });
 
-  const defaultProjects = [
-    { title: "Louis O'Reilly — Business Cards", category: 'business-cards', image: 'https://picsum.photos/seed/awesum-bizcard2/700/481', size: 'narrow' },
-    { title: 'Marketing Bundle — Flyers', category: 'flyers', image: 'https://picsum.photos/seed/awesum-flyer2/1100/756', size: 'wide' },
-    { title: 'Zachary Eastwood-Bloom — Business Cards', category: 'business-cards', image: 'https://picsum.photos/seed/awesum-bizcard3/700/481', size: 'narrow' },
-    { title: 'Large Format Print — Banners', category: 'banners', image: 'https://picsum.photos/seed/awesum-banner1/1100/756', size: 'wide' },
-    { title: 'Studio Design Work — Banners', category: 'banners', image: 'https://picsum.photos/seed/awesum-banner2/700/481', size: 'narrow' },
-    { title: 'Streetwear Drop — T-Shirts', category: 't-shirts', image: 'https://picsum.photos/seed/awesum-tshirt2/700/481', size: 'narrow' },
-    { title: 'Production Floor — Signage', category: 'signage', image: 'https://picsum.photos/seed/awesum-signage1/700/481', size: 'narrow' },
-    { title: 'Engraved Signage — Posters', category: 'posters', image: 'https://picsum.photos/seed/awesum-poster1/700/481', size: 'narrow' },
-    { title: 'Trucker Cap Run — Caps', category: 'caps', image: 'https://picsum.photos/seed/awesum-cap2/700/481', size: 'narrow' }
-  ];
-
-  function renderAdminProjects(projects) {
-    adminProjects.innerHTML = projects.length ? '' : '<p class="placeholder">No previous projects have been added yet.</p>';
-    projects.forEach((project, index) => {
+  const customerList = document.getElementById('customer-list');
+  function renderCustomers(customers) {
+    customerList.innerHTML = customers.length ? '' : '<p class="placeholder">No customers have registered yet.</p>';
+    customers.forEach(customer => {
       const card = document.createElement('div');
       card.className = 'order-card';
-      const title = project.title || project.name || 'Untitled project';
-      const category = project.category || 'Uncategorized';
-      card.innerHTML = '<div class="order-info"><span class="order-customer">' + AweSum.escapeHtml(title) + '</span><span class="order-meta">' + AweSum.escapeHtml(category) + '</span></div><button type="button" class="review-btn" data-remove-project-index="' + index + '">Remove</button>';
+      card.innerHTML = '<div class="order-info"><span class="order-customer">' + AweSum.escapeHtml(customer.name) + (customer.role === 'admin' ? ' (admin)' : '') + '</span><span class="order-meta">' + AweSum.escapeHtml(customer.email) + (customer.company ? ' · ' + AweSum.escapeHtml(customer.company) : '') + ' · Joined ' + AweSum.escapeHtml(String(customer.created_at || '').slice(0, 10)) + '</span></div><button type="button" class="review-btn" data-reset-customer="' + AweSum.escapeHtml(customer.id) + '" data-reset-name="' + AweSum.escapeHtml(customer.name) + '">Reset password</button>';
+      customerList.appendChild(card);
+    });
+  }
+  AweSum.api('customers').then(result => renderCustomers(result.customers || [])).catch(error => AweSum.showMessage(error.message, 'error'));
+  customerList.addEventListener('click', async event => {
+    const button = event.target.closest('[data-reset-customer]');
+    if (!button) return;
+    if (!confirm('Create a password reset link for ' + button.dataset.resetName + '? We will also email it to them.')) return;
+    button.disabled = true;
+    try {
+      const result = await AweSum.api('admin-reset-password', { method: 'POST', body: JSON.stringify({ userId: button.dataset.resetCustomer }) });
+      if (result.emailSent) AweSum.showMessage('Reset email sent to ' + result.email + '.'); else AweSum.showMessage('The email could not be sent. Copy the link and send it to the customer yourself.', 'error');
+      window.prompt('Reset link for ' + button.dataset.resetName + ' (valid for 1 hour, one use). Press Ctrl+C to copy it:', result.link);
+    } catch (error) {
+      AweSum.showMessage(error.message, 'error');
+    }
+    button.disabled = false;
+  });
+
+  let adminProjectList = [];
+  const projectCategoryLabels = { 'business-cards': 'Business Cards', 'flyers': 'Flyers', 'banners': 'Banners', 't-shirts': 'T-Shirts', 'signage': 'Signage', 'caps': 'Caps', 'posters': 'Posters' };
+
+  function renderAdminProjects(projects) {
+    if (Array.isArray(projects)) adminProjectList = projects;
+    adminProjects.innerHTML = adminProjectList.length ? '' : '<p class="placeholder">No previous projects have been added yet.</p>';
+    adminProjectList.forEach(project => {
+      const card = document.createElement('div');
+      card.className = 'order-card';
+      card.innerHTML = '<div class="order-info"><span class="order-customer">' + AweSum.escapeHtml(project.title) + '</span><span class="order-meta">' + AweSum.escapeHtml(projectCategoryLabels[project.category] || project.category) + '</span></div><button type="button" class="review-btn" data-remove-project="' + AweSum.escapeHtml(project.id) + '">Remove</button>';
       adminProjects.appendChild(card);
     });
   }
 
-  function loadProjects() {
-    const storedProjects = localStorage.getItem(AweSum.keys.projects);
-    const projects = storedProjects === null ? defaultProjects : AweSum.read(AweSum.keys.projects, []);
-    return Array.isArray(projects) ? projects : [];
+  async function refreshAdminProjects() {
+    const result = await AweSum.api('projects');
+    renderAdminProjects(result.projects || []);
   }
 
   projectImageFile.addEventListener('change', () => {
     const file = projectImageFile.files[0];
     if (!file) return;
-    if (!file.type.startsWith('image/') || file.size > 5 * 1024 * 1024) {
-      AweSum.showMessage('Please choose an image smaller than 5MB.', 'error');
+    if (!file.type.startsWith('image/') || file.size > 15 * 1024 * 1024) {
+      AweSum.showMessage('Please choose an image smaller than 15MB.', 'error');
       projectImageFile.value = '';
       return;
     }
@@ -1068,53 +1044,43 @@
     const title = document.getElementById('project-title').value.trim();
     const category = document.getElementById('project-category').value;
     const url = projectImageUrl.value.trim();
-
-    let image = url;
-    if (!image && projectImageFile.files[0]) {
-      image = await new Promise(resolve => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result || '');
-        reader.onerror = () => resolve('');
-        reader.readAsDataURL(projectImageFile.files[0]);
-      });
-    }
-
-    if (!title || (!image && !projectImageFile.files[0])) {
+    const file = projectImageFile.files[0];
+    if (!title || (!url && !file)) {
       AweSum.showMessage('Please add a project title and image.', 'error');
       return;
     }
-
-    const project = {
-      id: 'project-' + Date.now(),
-      title,
-      category,
-      image,
-      size: ['business-cards', 'flyers', 'banners'].includes(category) ? 'wide' : 'narrow'
-    };
-
-    const projects = [...loadProjects(), project];
-    AweSum.write(AweSum.keys.projects, projects);
-    renderAdminProjects(projects);
-    projectForm.reset();
-    projectImageFile.value = '';
-    projectUploadText.textContent = 'Click to upload';
-    projectImageUrl.value = '';
-    AweSum.showMessage('Project added to homepage.');
+    const submitButton = projectForm.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+    try {
+      const image = url || await AweSum.imageToDataUrl(file);
+      await AweSum.api('projects', { method: 'POST', body: JSON.stringify({ title, category, image }) });
+      await refreshAdminProjects();
+      projectForm.reset();
+      projectImageFile.value = '';
+      projectUploadText.textContent = 'Click to upload';
+      projectImageUrl.value = '';
+      AweSum.showMessage('Project added to homepage.');
+    } catch (error) {
+      AweSum.showMessage(error.message, 'error');
+    } finally {
+      submitButton.disabled = false;
+    }
   });
 
-  adminProjects.addEventListener('click', event => {
-    const button = event.target.closest('[data-remove-project-index]');
+  adminProjects.addEventListener('click', async event => {
+    const button = event.target.closest('[data-remove-project]');
     if (!button) return;
-    const projects = loadProjects();
-    const projectIndex = Number(button.dataset.removeProjectIndex);
-    if (!Number.isInteger(projectIndex) || projectIndex < 0 || projectIndex >= projects.length) return;
-    projects.splice(projectIndex, 1);
-    AweSum.write(AweSum.keys.projects, projects);
-    renderAdminProjects(projects);
-    AweSum.showMessage('Project removed from homepage.');
+    if (!confirm('Remove this project from the homepage?')) return;
+    try {
+      await AweSum.api('projects', { method: 'DELETE', body: JSON.stringify({ id: button.dataset.removeProject }) });
+      await refreshAdminProjects();
+      AweSum.showMessage('Project removed from homepage.');
+    } catch (error) {
+      AweSum.showMessage(error.message, 'error');
+    }
   });
 
-  renderAdminProjects(loadProjects());
+  refreshAdminProjects().catch(error => AweSum.showMessage(error.message, 'error'));
 
   function renderAdminAdverts(adverts) {
     adminAdverts.innerHTML = adverts.length ? '' : '<p class="placeholder">No adverts have been published yet.</p>';
@@ -1122,6 +1088,7 @@
   }
   renderAdminAdverts(AweSum.read(AweSum.keys.adverts, []));
   populateStatsForm();
+  AweSum.api('stats').then(result => populateStatsForm(result.stats)).catch(() => {});
   adminAdverts.addEventListener('click', async event => {
     const button = event.target.closest('[data-remove-advert]');
     if (!button) return;

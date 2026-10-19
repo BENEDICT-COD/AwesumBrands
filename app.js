@@ -3,7 +3,7 @@
   const read = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) || fallback; } catch (_) { return fallback; } };
   const write = (key, value) => localStorage.setItem(key, JSON.stringify(value));
   const currentUser = () => read(keys.session, null);
-  const money = value => 'R ' + Math.round(Number(value) || 0).toLocaleString('en-ZA');
+  const money = value => { const amount = Number(value) || 0; const hasCents = Math.round(amount * 100) % 100 !== 0; return 'R ' + amount.toLocaleString('en-ZA', { minimumFractionDigits: hasCents ? 2 : 0, maximumFractionDigits: hasCents ? 2 : 0 }); };
   const getCart = () => read(keys.cart, []);
   const setCart = cart => { write(keys.cart, cart); updateCartBadges(); };
   const escapeHtml = value => String(value == null ? '' : value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
@@ -20,8 +20,25 @@
       window.location.href = required === 'admin' ? 'login.html' : 'login.html';
     }
   };
+  // Keeps the greeting in step with the real server session on pages that do not require a login.
+  const syncSession = async () => {
+    if (document.body.dataset.authRequired) return;
+    const stored = currentUser();
+    try {
+      const result = await api('session');
+      if (result.user) { write(keys.session, result.user); if (!stored) updateAuthControls(); }
+      else if (stored) { localStorage.removeItem(keys.session); window.location.reload(); }
+    } catch (_) {}
+  };
   const addToCart = product => { const cart = getCart(); const existing = cart.find(item => item.id === product.id || item.name === product.name); if (existing) existing.quantity += 1; else cart.push({ ...product, quantity: 1 }); setCart(cart); return cart; };
-  const api = async (action, options = {}) => { const response = await fetch('api.php?action=' + encodeURIComponent(action), { credentials: 'same-origin', headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }, ...options }); const payload = await response.json().catch(() => ({})); if (!response.ok) throw new Error(payload.error || 'Request failed.'); return payload; };
+  // Puts an accepted custom quote in the cart at the price the admin set. A quote can be in the cart only once.
+  const addQuoteToCart = quote => {
+    const cart = getCart().filter(item => item.quoteId !== quote.id);
+    cart.push({ id: 'quote:' + quote.id, quoteId: quote.id, name: 'Custom quote ' + quote.id + ' (' + quote.category + ', qty ' + quote.quantity + ')', price: Number(quote.quotedPrice) || 0, quantity: 1, category: 'Custom quote', image: quote.draftImage || '' });
+    setCart(cart);
+    return cart;
+  };
+  const api = async (action, options = {}) => { const response = await fetch('api.php?action=' + encodeURIComponent(action), { credentials: 'same-origin', headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }, ...options }); const payload = await response.json().catch(() => null); if (response.status === 401 && !['login', 'change-password'].includes(action)) { localStorage.removeItem(keys.session); setTimeout(() => { if (!/login\.html$/.test(window.location.pathname)) window.location.href = 'login.html'; }, 1500); throw new Error('Your session has expired. Please sign in again.'); } if (!response.ok) throw new Error((payload && payload.error) || 'Request failed.'); if (payload === null) throw new Error('The server sent an unexpected response. Please try again.'); return payload; };
   const paymentGatewayUrl = window.AWE_SUM_PAYMENT_GATEWAY_URL || '';
   const updateCartBadges = () => document.querySelectorAll('.cart-badge').forEach(badge => { badge.textContent = getCart().reduce((sum, item) => sum + item.quantity, 0); });
   const updateAuthControls = () => {
@@ -29,7 +46,8 @@
     document.querySelectorAll('.login-link').forEach(loginLink => {
       if (!user) return;
       loginLink.textContent = 'Hello, ' + user.name;
-      loginLink.href = '#';
+      loginLink.href = 'change-password.html';
+      loginLink.title = 'Change password';
     });
     document.querySelectorAll('.nav-right > .btn-primary').forEach(signUpLink => {
       if (!user) return;
@@ -76,9 +94,26 @@
     img.onerror = () => { URL.revokeObjectURL(url); readOriginal(); };
     img.src = url;
   });
-  window.AweSum = { keys, read, write, currentUser, money, getCart, setCart, updateCartBadges, showMessage, escapeHtml, requireUser, addToCart, paymentGatewayUrl, api, imageToDataUrl };
+  // Sends the customer to PayFast's secure payment page for one of their orders.
+  const payWithPayFast = async reference => {
+    const data = await api('payfast-checkout', { method: 'POST', body: JSON.stringify({ reference }) });
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = data.url;
+    Object.entries(data.fields).forEach(([name, value]) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = name;
+      input.value = value;
+      form.appendChild(input);
+    });
+    document.body.appendChild(form);
+    form.submit();
+  };
+  window.AweSum = { keys, read, write, currentUser, money, getCart, setCart, updateCartBadges, showMessage, escapeHtml, requireUser, addToCart, paymentGatewayUrl, api, imageToDataUrl, payWithPayFast, addQuoteToCart };
   document.addEventListener('DOMContentLoaded', () => {
     enforceAccess();
+    syncSession();
     updateCartBadges();
     updateAuthControls();
     const contactForm = document.getElementById('contactForm');

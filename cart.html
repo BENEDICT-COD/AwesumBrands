@@ -6,7 +6,7 @@
 <title>Your Cart — AweSum Brands</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
 <style>
   :root{
     --navy:#0B1B33;
@@ -203,55 +203,13 @@
 <section class="page-hero">
   <div class="wrap">
     <h1>Your Cart</h1>
-    <p id="itemCountLabel">3 items ready to order</p>
+    <p id="itemCountLabel">Your cart is empty</p>
   </div>
 </section>
 
 <section class="cart-section">
   <div class="wrap cart-grid">
     <div class="cart-items" id="cartItems">
-      <div class="cart-item" data-price="1495">
-        <div class="cart-item-img">
-          <img src="https://picsum.photos/seed/cart-bizcard/200/200" alt="Premium Business Cards">
-        </div>
-        <div class="cart-item-info">
-          <h3>Premium Business Cards</h3>
-          <div class="meta">500 units · Matt laminate · Logo uploaded</div>
-          <div class="price">R 1,495</div>
-        </div>
-        <button class="cart-item-remove" aria-label="Remove item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m5 0V4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v2"/></svg>
-        </button>
-      </div>
-
-      <div class="cart-item" data-price="1800">
-        <div class="cart-item-img">
-          <img src="https://picsum.photos/seed/cart-tshirt/200/200" alt="Custom T-Shirt Printing">
-        </div>
-        <div class="cart-item-info">
-          <h3>Custom T-Shirt Printing</h3>
-          <div class="meta">10 units · White · Front print · Size M</div>
-          <div class="price">R 1,800</div>
-        </div>
-        <button class="cart-item-remove" aria-label="Remove item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m5 0V4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v2"/></svg>
-        </button>
-      </div>
-
-      <div class="cart-item" data-price="1900">
-        <div class="cart-item-img">
-          <img src="https://picsum.photos/seed/cart-poster/200/200" alt="A1 Poster Printing">
-        </div>
-        <div class="cart-item-info">
-          <h3>A1 Poster Printing</h3>
-          <div class="meta">5 units · Gloss finish · CMYK colour</div>
-          <div class="price">R 1,900</div>
-        </div>
-        <button class="cart-item-remove" aria-label="Remove item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m5 0V4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v2"/></svg>
-        </button>
-      </div>
-
       <div class="empty-cart" id="emptyCart">
         <p>Your cart is empty.</p>
         <a href="marketplace.html" class="btn btn-primary">Browse Products</a>
@@ -262,11 +220,11 @@
       <h2>Order Summary</h2>
       <div class="summary-row">
         <span class="label">Subtotal</span>
-        <span class="value" id="subtotalVal">R 5,195</span>
+        <span class="value" id="subtotalVal">R 0</span>
       </div>
       <div class="summary-row">
         <span class="label">VAT (15%)</span>
-        <span class="value" id="vatVal">R 779</span>
+        <span class="value" id="vatVal">R 0</span>
       </div>
       <div class="summary-row">
         <span class="label">Delivery</span>
@@ -275,7 +233,7 @@
       <div class="summary-divider"></div>
       <div class="summary-total">
         <span class="label">Total</span>
-        <span class="value" id="totalVal">R 5,974</span>
+        <span class="value" id="totalVal">R 0</span>
       </div>
       <a href="checkout.html" class="btn btn-primary btn-block">Proceed to Checkout</a>
       <a href="marketplace.html" class="btn btn-outline-navy btn-block">Continue Shopping</a>
@@ -314,25 +272,24 @@
       <div>
         <h4>Support</h4>
         <ul>
-          <li><a href="#">Help Center</a></li>
-          <li><a href="#">Track Order</a></li>
-          <li><a href="#">Returns Policy</a></li>
-          <li><a href="#">Contact Us</a></li>
+          <li><a href="index.html#contact">Help Center</a></li>
+          <li><a href="orders.html">Track Order</a></li>
+          <li><a href="returns.html">Returns Policy</a></li>
+          <li><a href="index.html#contact">Contact Us</a></li>
         </ul>
       </div>
       <div>
         <h4>Legal</h4>
         <ul>
-          <li><a href="#">Terms of Service</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Cookie Policy</a></li>
-          <li><a href="#">Sitemap</a></li>
+          <li><a href="terms.html">Terms of Service</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+          <li><a href="privacy.html#cookies">Cookie Policy</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 AweSum Brands (Pty) Ltd. All rights reserved.</span>
-      <span>Registered in South Africa · VAT No. 4560291837</span>
+      <span id="bizCopyright">© 2026 AweSum Brands. All rights reserved.</span>
+      <span id="bizRegistration"></span>
     </div>
   </div>
 </footer>
@@ -340,7 +297,7 @@
 <script src="app.js"></script>
 <script>
   function formatR(n){
-    return 'R ' + Math.round(n).toLocaleString('en-ZA');
+    return AweSum.money(n);
   }
   function recalc(){
     const items = document.querySelectorAll('.cart-item');
@@ -369,7 +326,7 @@
     document.querySelectorAll('.cart-item').forEach(item => item.remove());
     storedCart.forEach(item => {
       const row = document.createElement('div'); row.className = 'cart-item'; row.dataset.price = item.price * item.quantity;
-      row.innerHTML = '<div class="cart-item-img"><img src="' + (item.image || '') + '" alt=""></div><div class="cart-item-info"><h3>' + item.name.replace(/</g, '&lt;') + '</h3><div class="meta">' + item.quantity + ' unit' + (item.quantity === 1 ? '' : 's') + ' · Marketplace product</div><div class="price">' + AweSum.money(item.price * item.quantity) + '</div></div><button class="cart-item-remove" aria-label="Remove item">Remove</button>';
+      row.innerHTML = '<div class="cart-item-img"><img src="' + (item.image || '') + '" alt=""></div><div class="cart-item-info"><h3>' + item.name.replace(/</g, '&lt;') + '</h3><div class="meta">' + (item.quoteId ? 'Custom quote · price agreed with AweSum Brands' : item.quantity + ' unit' + (item.quantity === 1 ? '' : 's') + ' · Marketplace product') + '</div><div class="price">' + AweSum.money(item.price * item.quantity) + '</div></div><button class="cart-item-remove" aria-label="Remove item">Remove</button>';
       document.getElementById('cartItems').insertBefore(row, document.getElementById('emptyCart'));
       row.querySelector('.cart-item-remove').addEventListener('click', () => { AweSum.setCart(AweSum.getCart().filter(cartItem => cartItem.name !== item.name)); row.remove(); recalc(); });
     });
@@ -384,5 +341,6 @@
     mainNav.style.cssText += isOpen ? '' : 'flex-direction:column; position:absolute; top:76px; left:0; right:0; background:#0B1B33; padding:24px 24px; gap:20px; border-bottom:1px solid rgba(255,255,255,0.12);';
   });
 </script>
+<script src="business-info.js"></script>
 </body>
 </html>

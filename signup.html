@@ -6,7 +6,7 @@
 <title>Create Account — AweSum Brands</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Georgia&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
 <style>
   :root{
     --navy:#0B1B33;
@@ -172,6 +172,14 @@
   .pw-hint{ font-size:12.5px; margin-top:7px; color:#667085; min-height:16px; }
   .pw-hint.bad{ color:#b42318; }
   .pw-hint.good{ color:#067647; }
+  .forgot-line{ text-align:right; margin:-8px 0 16px; font-size:13.5px; }
+  .forgot-line a{ color:var(--navy); font-weight:600; text-decoration:underline; text-underline-offset:2px; }
+  .forgot-line a:hover{ color:var(--orange); }
+  .or-divider{ display:flex; align-items:center; gap:14px; margin:22px 0 16px; color:var(--muted); font-size:13px; }
+  .or-divider::before,.or-divider::after{ content:''; flex:1; height:1px; background:var(--border); }
+  .google-btn-wrap{ display:flex; justify-content:center; min-height:44px; }
+  .consent{ text-align:center; font-size:12.5px; color:var(--muted); margin-top:14px; line-height:1.5; }
+  .consent a{ color:var(--navy); font-weight:600; }
 </style>
 </head>
 <body>
@@ -228,7 +236,15 @@
         <input type="text" id="company" name="company" placeholder="Your Business Name">
       </div>
       <button type="submit" class="btn-submit">Create Account</button>
+      <p class="consent">By creating an account you agree to our <a href="terms.html" target="_blank" rel="noopener">Terms &amp; Conditions</a> and <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</p>
     </form>
+
+    <div id="googleSection" style="display:none;">
+      <div class="or-divider"><span>or</span></div>
+      <div id="googleButton" class="google-btn-wrap"></div>
+    </div>
+
+    <p class="switch-line">Already have an account? <a href="login.html">Sign in</a></p>
 
   </div>
 
@@ -267,6 +283,33 @@
     }
     pw.addEventListener('input', check);
     confirmPw.addEventListener('input', check);
+  })();
+</script>
+<script>
+  (function () {
+    AweSum.api('auth-config').then(function (config) {
+      if (!config.googleClientId) return;
+      var script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      script.onload = function () {
+        google.accounts.id.initialize({
+          client_id: config.googleClientId,
+          callback: async function (response) {
+            try {
+              const result = await AweSum.api('google-login', { method: 'POST', body: JSON.stringify({ credential: response.credential }) });
+              if (!result.user) throw new Error('Google sign-in did not complete. Please try again.');
+              AweSum.write(AweSum.keys.session, result.user);
+              window.location.href = result.user.role === 'admin' ? 'admin.html' : 'index.html';
+            } catch (error) { AweSum.showMessage(error.message, 'error'); }
+          }
+        });
+        google.accounts.id.renderButton(document.getElementById('googleButton'), { theme: 'outline', size: 'large', width: 320, text: 'signup_with', shape: 'rectangular' });
+        document.getElementById('googleSection').style.display = '';
+      };
+      document.head.appendChild(script);
+    }).catch(function () {});
   })();
 </script>
 </body>

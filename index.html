@@ -6,7 +6,7 @@
 <title>AweSum Brands — Bring Your Brand to Life</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
 <style>
   :root{
     --navy:#0B1B33;
@@ -221,28 +221,7 @@
     height:100%;
     object-fit:cover;
   }
-  .stat-float{
-    position:absolute;
-    left:-20px;
-    bottom:-28px;
-    background:var(--orange);
-    color:var(--white);
-    padding:22px 28px;
-    border-radius:14px;
-    box-shadow:0 18px 38px rgba(0,0,0,0.35);
-  }
-  .stat-float .num{
-    font-size:27px;
-    font-weight:800;
-    line-height:1;
-    margin-bottom:6px;
-  }
-  .stat-float .lbl{
-    font-size:14px;
-    font-weight:500;
-    color:rgba(255,255,255,0.92);
-  }
-
+ 
   /* ---------- Stats strip ---------- */
   .stats{
     background:var(--white);
@@ -290,14 +269,7 @@
     margin-bottom:44px;
     flex-wrap:wrap;
   }
-  .eyebrow{
-    display:block;
-    color:var(--orange);
-    font-size:13px;
-    font-weight:700;
-    letter-spacing:0.08em;
-    text-transform:uppercase;
-    margin-bottom:10px;
+ 
   }
   .section-head h2{
     font-size:34px;
@@ -616,7 +588,6 @@
 <section class="hero">
   <div class="wrap hero-grid">
     <div class="hero-copy">
-      <span class="hero-eyebrow">SOUTH AFRICA'S PRINT MARKETPLACE</span>
       <h1>Bring Your Brand to Life.</h1>
       <p class="lead">Premium printing and signage for South African businesses. Business cards, flyers, t-shirts, banners — produced fast, delivered to your door.</p>
       <div class="hero-actions">
@@ -628,10 +599,6 @@
       <div class="img-frame">
         <img src="images/hero2.jpg" alt="Designer sketching a brand concept">
       </div>
-      <div class="stat-float">
-        <div class="num">200+</div>
-        <div class="lbl">Happy Clients</div>
-      </div>
     </div>
   </div>
 </section>
@@ -640,12 +607,12 @@
   <div class="wrap stats-grid" id="statsGrid"></div>
 </section>
 
-<section class="section" id="bestsellers">
+<section class="section" id="bestsellers" style="display:none;">
   <div class="wrap">
     <div class="section-head">
       <div>
-        <span class="eyebrow">Top Picks</span>
-        <h2>Our Best Sellers</h2>
+        <span class="eyebrow">Our Products</span>
+        <h2>Featured Products</h2>
       </div>
       <a href="marketplace.html" class="view-all">View all
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
@@ -653,85 +620,6 @@
     </div>
 
     <div class="product-grid" id="homepageProductGrid">
-      <article class="product-card">
-        <div class="product-media">
-          <span class="product-tag">Business Cards</span>
-          <img src="https://picsum.photos/seed/awesum-bizcard1/700/574" alt="Premium business cards">
-        </div>
-        <div class="product-body">
-          <h3>Premium Business Cards</h3>
-          <div class="rating">
-            <span class="stars">★★★★☆</span>
-            <span class="count">(124)</span>
-          </div>
-          <div class="price-row">
-            <span class="price">R 299</span>
-            <button class="add-btn" aria-label="Add to cart">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-            </button>
-          </div>
-        </div>
-      </article>
-
-      <article class="product-card">
-        <div class="product-media">
-          <span class="product-tag">Flyers</span>
-          <img src="https://picsum.photos/seed/awesum-flyer1/700/574" alt="A5 flyers on a phone screen">
-        </div>
-        <div class="product-body">
-          <h3>A5 Flyers Full Colour</h3>
-          <div class="rating">
-            <span class="stars">★★★★☆</span>
-            <span class="count">(89)</span>
-          </div>
-          <div class="price-row">
-            <span class="price">R 450</span>
-            <button class="add-btn" aria-label="Add to cart">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-            </button>
-          </div>
-        </div>
-      </article>
-
-      <article class="product-card">
-        <div class="product-media">
-          <span class="product-tag">T-Shirts</span>
-          <img src="https://picsum.photos/seed/awesum-tshirt1/700/574" alt="Custom printed white t-shirt">
-        </div>
-        <div class="product-body">
-          <h3>Custom T-Shirt Printing</h3>
-          <div class="rating">
-            <span class="stars">★★★★☆</span>
-            <span class="count">(213)</span>
-          </div>
-          <div class="price-row">
-            <span class="price">R 180</span>
-            <button class="add-btn" aria-label="Add to cart">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-            </button>
-          </div>
-        </div>
-      </article>
-
-      <article class="product-card">
-        <div class="product-media">
-          <span class="product-tag">Caps</span>
-          <img src="https://picsum.photos/seed/awesum-cap1/700/574" alt="Branded white cap">
-        </div>
-        <div class="product-body">
-          <h3>Branded Cap Printing</h3>
-          <div class="rating">
-            <span class="stars">★★★★☆</span>
-            <span class="count">(67)</span>
-          </div>
-          <div class="price-row">
-            <span class="price">R 220</span>
-            <button class="add-btn" aria-label="Add to cart">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-            </button>
-          </div>
-        </div>
-      </article>
     </div>
   </div>
 </section>
@@ -743,7 +631,7 @@
   </div>
 </section>
 
-<section class="projects-section">
+<section class="projects-section" id="projectsSection" style="display:none;">
   <div class="wrap">
     <div class="projects-head">
       <div class="copy">
@@ -813,52 +701,46 @@
       <div>
         <h4>Support</h4>
         <ul>
-          <li><a href="#">Help Center</a></li>
-          <li><a href="#">Track Order</a></li>
-          <li><a href="#">Returns Policy</a></li>
+          <li><a href="index.html#contact">Help Center</a></li>
+          <li><a href="orders.html">Track Order</a></li>
+          <li><a href="returns.html">Returns Policy</a></li>
           <li><a href="#contact">Contact Us</a></li>
         </ul>
       </div>
       <div>
         <h4>Legal</h4>
         <ul>
-          <li><a href="#">Terms of Service</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Cookie Policy</a></li>
-          <li><a href="#">Sitemap</a></li>
+          <li><a href="terms.html">Terms of Service</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+          <li><a href="privacy.html#cookies">Cookie Policy</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 AweSum Brands (Pty) Ltd. All rights reserved.</span>
-      <span>Registered in South Africa · VAT No. 4560291837</span>
+      <span id="bizCopyright">© 2026 AweSum Brands. All rights reserved.</span>
+      <span id="bizRegistration"></span>
     </div>
   </div>
 </footer>
 
 <script src="app.js"></script>
 <script>
-  const defaultProjects = [
-    { title: "Louis O'Reilly — Business Cards", category: 'business-cards', image: 'https://picsum.photos/seed/awesum-bizcard2/700/481', size: 'narrow' },
-    { title: 'Marketing Bundle — Flyers', category: 'flyers', image: 'https://picsum.photos/seed/awesum-flyer2/1100/756', size: 'wide' },
-    { title: 'Zachary Eastwood-Bloom — Business Cards', category: 'business-cards', image: 'https://picsum.photos/seed/awesum-bizcard3/700/481', size: 'narrow' },
-    { title: 'Large Format Print — Banners', category: 'banners', image: 'https://picsum.photos/seed/awesum-banner1/1100/756', size: 'wide' },
-    { title: 'Studio Design Work — Banners', category: 'banners', image: 'https://picsum.photos/seed/awesum-banner2/700/481', size: 'narrow' },
-    { title: 'Streetwear Drop — T-Shirts', category: 't-shirts', image: 'https://picsum.photos/seed/awesum-tshirt2/700/481', size: 'narrow' },
-    { title: 'Production Floor — Signage', category: 'signage', image: 'https://picsum.photos/seed/awesum-signage1/700/481', size: 'narrow' },
-    { title: 'Engraved Signage — Posters', category: 'posters', image: 'https://picsum.photos/seed/awesum-poster1/700/481', size: 'narrow' },
-    { title: 'Trucker Cap Run — Caps', category: 'caps', image: 'https://picsum.photos/seed/awesum-cap2/700/481', size: 'narrow' }
-  ];
-
-  function renderProjects() {
+  async function renderProjects() {
     const gallery = document.getElementById('gallery');
     const showingCount = document.getElementById('showingCount');
-    const storedProjects = localStorage.getItem(AweSum.keys.projects);
-    const savedProjects = storedProjects === null ? defaultProjects : AweSum.read(AweSum.keys.projects, []);
-    const projects = Array.isArray(savedProjects) ? savedProjects : [];
+    const projectsSection = document.getElementById('projectsSection');
+    let projects = [];
+    try {
+      const result = await AweSum.api('projects');
+      projects = Array.isArray(result.projects) ? result.projects : [];
+    } catch (error) {
+      projects = [];
+    }
+    if (!projects.length) return; // nothing uploaded by the admin yet: keep the section hidden
+    projectsSection.style.display = '';
     gallery.innerHTML = projects.map(project => (
       '<div class="gallery-item ' + (project.size || 'narrow') + '" data-category="' + AweSum.escapeHtml(project.category || 'all') + '">' +
-      '<img src="' + AweSum.escapeHtml(project.image || 'https://picsum.photos/seed/default/700/481') + '" alt="' + AweSum.escapeHtml(project.title || project.name || 'Project') + '">' +
+      '<img src="' + AweSum.escapeHtml(project.image || 'images/logo.jpg') + '" alt="' + AweSum.escapeHtml(project.title || project.name || 'Project') + '">' +
       '<div class="gallery-caption">' + AweSum.escapeHtml(project.title || project.name || 'Project') + '</div>' +
       '</div>'
     )).join('');
@@ -902,22 +784,27 @@
     { value: '3–5 Days', label: 'Turnaround Time', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 3" stroke-linecap="round" stroke-linejoin="round"/></svg>' },
     { value: '100%', label: 'Quality Guaranteed', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/></svg>' }
   ];
-  function renderStats() {
+  function renderStats(saved) {
     const statsGrid = document.getElementById('statsGrid');
     if (!statsGrid) return;
-    const stats = AweSum.read(AweSum.keys.stats, defaultStats);
-    statsGrid.innerHTML = (stats.length ? stats : defaultStats).map(stat => (
-      '<div class="stat-item">' + stat.icon + '<div class="num">' + AweSum.escapeHtml(stat.value || '') + '</div><div class="lbl">' + AweSum.escapeHtml(stat.label || '') + '</div></div>'
+    const section = statsGrid.closest('section') || statsGrid;
+    // The statistics strip only appears once the admin has saved their own figures.
+    if (!Array.isArray(saved) || !saved.length) { section.style.display = 'none'; return; }
+    statsGrid.innerHTML = saved.slice(0, 4).map((stat, index) => (
+      '<div class="stat-item">' + (defaultStats[index] ? defaultStats[index].icon : '') + '<div class="num">' + AweSum.escapeHtml(stat.value || '') + '</div><div class="lbl">' + AweSum.escapeHtml(stat.label || '') + '</div></div>'
     )).join('');
+    section.style.display = '';
   }
-  const productMarkup = product => '<article class="product-card"><div class="product-media"><span class="product-tag">' + AweSum.escapeHtml(product.category) + '</span>' + (product.image ? '<img src="' + AweSum.escapeHtml(product.image) + '" alt="' + AweSum.escapeHtml(product.name) + '">' : '<div style="width:100%;height:100%;background:#F0F1F4;"></div>') + '</div><div class="product-body"><h3>' + AweSum.escapeHtml(product.name) + '</h3><div class="rating"><span class="stars">★★★★★</span><span class="count">New</span></div><div class="price-row"><span class="price">R ' + Math.round(product.price).toLocaleString('en-ZA') + '</span><button class="add-btn" aria-label="Add to cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button></div></div></article>';
-  function bindHomepageProducts() { homepageProductGrid.querySelectorAll('.add-btn').forEach(button => button.addEventListener('click', () => { const card = button.closest('.product-card'); const product = { id: card.dataset.name, name: card.querySelector('h3').textContent, price: Number(card.querySelector('.price').textContent.replace(/[^0-9.]/g, '')), category: card.querySelector('.product-tag').textContent, image: card.querySelector('img')?.src || '' }; AweSum.addToCart(product); AweSum.showMessage(product.name + ' added to cart.'); })); }
-  function renderHomepageProducts(products) { homepageProductGrid.innerHTML = products.slice(0, 4).map(product => productMarkup(product)).join(''); homepageProductGrid.querySelectorAll('.product-card').forEach((card, index) => { card.dataset.name = products[index].name.toLowerCase(); }); bindHomepageProducts(); }
+  const productMarkup = product => '<article class="product-card" data-price="' + (Number(product.price) || 0) + '"><div class="product-media"><span class="product-tag">' + AweSum.escapeHtml(product.category) + '</span>' + (product.image ? '<img src="' + AweSum.escapeHtml(product.image) + '" alt="' + AweSum.escapeHtml(product.name) + '">' : '<div style="width:100%;height:100%;background:#F0F1F4;"></div>') + '</div><div class="product-body"><h3>' + AweSum.escapeHtml(product.name) + '</h3><div class="rating"><span class="stars">★★★★★</span><span class="count">New</span></div><div class="price-row"><span class="price">' + AweSum.money(product.price) + '</span><button class="add-btn" aria-label="Add to cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button></div></div></article>';
+  function bindHomepageProducts() { homepageProductGrid.querySelectorAll('.add-btn').forEach(button => button.addEventListener('click', () => { const card = button.closest('.product-card'); const product = { id: card.dataset.name, name: card.querySelector('h3').textContent, price: Number(card.dataset.price) || 0, category: card.querySelector('.product-tag').textContent, image: card.querySelector('img')?.src || '' }; AweSum.addToCart(product); AweSum.showMessage(product.name + ' added to cart.'); })); }
+  function renderHomepageProducts(products) { const productsSection = document.getElementById('bestsellers'); if (!products.length) { productsSection.style.display = 'none'; return; } productsSection.style.display = ''; homepageProductGrid.innerHTML = products.slice(0, 4).map(product => productMarkup(product)).join(''); homepageProductGrid.querySelectorAll('.product-card').forEach((card, index) => { card.dataset.name = products[index].name.toLowerCase(); }); bindHomepageProducts(); }
   function renderAdverts(adverts) { if (!adverts.length) return; advertSection.style.display = ''; advertGrid.innerHTML = adverts.map(advert => '<article class="product-card"><div class="product-media">' + (advert.mediaType === 'video' ? '<video controls preload="metadata" src="' + AweSum.escapeHtml(advert.mediaUrl) + '"></video>' : '<img src="' + AweSum.escapeHtml(advert.mediaUrl) + '" alt="' + AweSum.escapeHtml(advert.title) + '">') + '</div><div class="product-body"><h3>' + AweSum.escapeHtml(advert.title) + '</h3><p>' + AweSum.escapeHtml(advert.description) + '</p></div></article>').join(''); }
-  renderStats();
+  renderStats(null);
+  AweSum.api('stats').then(result => renderStats(result.stats)).catch(() => {});
   AweSum.api('products').then(result => { AweSum.write(AweSum.keys.products, result.products || []); renderHomepageProducts(result.products || []); }).catch(() => {});
   AweSum.api('adverts').then(result => { AweSum.write(AweSum.keys.adverts, result.adverts || []); renderAdverts(result.adverts || []); }).catch(() => {});
 </script>
 
+<script src="business-info.js"></script>
 </body>
 </html>
