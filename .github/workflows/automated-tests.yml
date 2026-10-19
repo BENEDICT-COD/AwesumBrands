@@ -1,0 +1,63 @@
+name: Automated Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Unit, system, performance, and stress tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check PHP syntax
+        run: |
+          for file in *.php tests/*.php; do php -l "$file"; done
+
+      - name: Check JavaScript syntax
+        run: |
+          node --check app.js
+          node --check business-info.js
+          for file in tests/*.cjs; do node --check "$file"; done
+
+      - name: Run PHP unit tests
+        run: php tests/unit.php
+
+      - name: Run JavaScript unit tests
+        run: node --test tests/unit.test.cjs
+
+      - name: Start local website server
+        run: |
+          php -S 127.0.0.1:8080 -t . > /tmp/awesum-php-server.log 2>&1 &
+          echo $! > /tmp/awesum-php-server.pid
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8080/index.html > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/awesum-php-server.log
+          exit 1
+
+      - name: Run system tests
+        run: node --test tests/system.test.cjs
+
+      - name: Run performance tests
+        run: node --test tests/performance.test.cjs
+
+      - name: Run stress tests
+        run: node --test tests/stress.test.cjs

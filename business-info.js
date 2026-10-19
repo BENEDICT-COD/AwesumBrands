@@ -29,5 +29,18 @@
       registration.textContent = parts.join(' \u00b7 ');
     }
   }
+  fetch('api.php?action=site-content', { credentials: 'same-origin' })
+    .then(function (response) {
+      if (!response.ok) throw new Error('Could not load saved business details.');
+      return response.json();
+    })
+    .then(function (result) {
+      if (!result.content) return;
+      Object.keys(business).forEach(function (key) {
+        if (Object.prototype.hasOwnProperty.call(result.content, key)) business[key] = result.content[key];
+      });
+      fill();
+    })
+    .catch(function (error) { console.error(error); });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fill); else fill();
 })();

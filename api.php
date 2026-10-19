@@ -184,6 +184,61 @@ try {
         jsonResponse(['user' => $_SESSION['user']]);
     }
 
+    if ($action === 'profile' && in_array($method, ['GET', 'PUT'], true)) {
+        $current = requireUser();
+        if ($method === 'GET') {
+            $statement = $database->prepare('SELECT id, name, email, company, role FROM users WHERE id = ? LIMIT 1');
+            $statement->execute([(int) $current['id']]);
+            $profile = $statement->fetch();
+            if (!$profile) {
+                jsonResponse(['error' => 'Your account could not be found. Please sign in again.'], 404);
+            }
+            jsonResponse(['profile' => $profile]);
+        }
+
+        requireFields($body, ['name', 'email']);
+        $name = trim((string) $body['name']);
+        $email = strtolower(trim((string) $body['email']));
+        $company = trim((string) ($body['company'] ?? ''));
+        if ($name === '' || mb_strlen($name) > 160 || !filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($email) > 255 || mb_strlen($company) > 160) {
+            jsonResponse(['error' => 'Enter a name (up to 160 characters), valid email, and company (up to 160 characters).'], 422);
+        }
+        try {
+            $statement = $database->prepare('UPDATE users SET name = ?, email = ?, company = ? WHERE id = ?');
+            $statement->execute([$name, $email, $company !== '' ? $company : null, (int) $current['id']]);
+        } catch (PDOException $error) {
+            if ($error->getCode() === '23000') {
+                jsonResponse(['error' => 'That email address is already registered to another account.'], 409);
+            }
+            throw $error;
+        }
+        $_SESSION['user']['name'] = $name;
+        $_SESSION['user']['email'] = $email;
+        $_SESSION['user']['company'] = $company;
+        jsonResponse(['profile' => $_SESSION['user']]);
+    }
+
+    if ($action === 'preferences' && in_array($method, ['GET', 'PUT'], true)) {
+        $current = requireUser();
+        ensureSettingsTable($database);
+        $key = 'user_notifications_' . (int) $current['id'];
+        if ($method === 'GET') {
+            $statement = $database->prepare('SELECT setting_value FROM site_settings WHERE setting_key = ? LIMIT 1');
+            $statement->execute([$key]);
+            $stored = $statement->fetchColumn();
+            $preferences = $stored !== false ? json_decode((string) $stored, true) : null;
+            jsonResponse(['preferences' => is_array($preferences) ? $preferences : ['orderUpdates' => true, 'productUpdates' => false]]);
+        }
+        $submitted = $body['preferences'] ?? null;
+        if (!is_array($submitted) || !is_bool($submitted['orderUpdates'] ?? null) || !is_bool($submitted['productUpdates'] ?? null)) {
+            jsonResponse(['error' => 'Please choose valid notification preferences.'], 422);
+        }
+        $preferences = ['orderUpdates' => $submitted['orderUpdates'], 'productUpdates' => $submitted['productUpdates']];
+        $statement = $database->prepare('INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)');
+        $statement->execute([$key, json_encode($preferences)]);
+        jsonResponse(['preferences' => $preferences]);
+    }
+
     if ($action === 'auth-config' && $method === 'GET') {
         jsonResponse(['googleClientId' => GOOGLE_CLIENT_ID]);
     }
@@ -421,6 +476,40 @@ try {
         $statement = $database->prepare('INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)');
         $statement->execute(['homepage_stats', json_encode($cleanStats, JSON_UNESCAPED_UNICODE)]);
         jsonResponse(['stats' => $cleanStats]);
+    }
+
+    if ($action === 'site-content' && $method === 'GET') {
+        ensureSettingsTable($database);
+        $statement = $database->prepare('SELECT setting_value FROM site_settings WHERE setting_key = ? LIMIT 1');
+        $statement->execute(['site_content']);
+        $stored = $statement->fetchColumn();
+        $content = $stored !== false ? json_decode((string) $stored, true) : null;
+        jsonResponse(['content' => is_array($content) ? $content : null]);
+    }
+
+    if ($action === 'site-content' && $method === 'PUT') {
+        requireAdmin();
+        ensureSettingsTable($database);
+        $submitted = $body['content'] ?? null;
+        $fields = ['tradingName', 'legalName', 'email', 'phone', 'address', 'registrationNumber', 'vatNumber'];
+        if (!is_array($submitted)) {
+            jsonResponse(['error' => 'Please provide the business contact details.'], 422);
+        }
+        $content = [];
+        foreach ($fields as $field) {
+            $content[$field] = trim((string) ($submitted[$field] ?? ''));
+        }
+        if ($content['tradingName'] === '' || mb_strlen($content['tradingName']) > 160 || !filter_var($content['email'], FILTER_VALIDATE_EMAIL) || mb_strlen($content['email']) > 255 || $content['phone'] === '' || mb_strlen($content['phone']) > 40 || $content['address'] === '' || mb_strlen($content['address']) > 500) {
+            jsonResponse(['error' => 'Enter a business name, valid contact email, phone (up to 40 characters), and address (up to 500 characters).'], 422);
+        }
+        foreach (['legalName' => 160, 'registrationNumber' => 100, 'vatNumber' => 100] as $field => $limit) {
+            if (mb_strlen($content[$field]) > $limit) {
+                jsonResponse(['error' => 'The ' . $field . ' field is too long.'], 422);
+            }
+        }
+        $statement = $database->prepare('INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)');
+        $statement->execute(['site_content', json_encode($content, JSON_UNESCAPED_UNICODE)]);
+        jsonResponse(['content' => $content]);
     }
 
     if ($action === 'projects' && $method === 'GET') {

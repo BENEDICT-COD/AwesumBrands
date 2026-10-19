@@ -46,11 +46,17 @@
     document.querySelectorAll('.login-link').forEach(loginLink => {
       if (!user) return;
       loginLink.textContent = 'Hello, ' + user.name;
-      loginLink.href = 'change-password.html';
-      loginLink.title = 'Change password';
+      loginLink.href = 'settings.html';
+      loginLink.title = 'Account settings';
     });
     document.querySelectorAll('.nav-right > .btn-primary').forEach(signUpLink => {
       if (!user) return;
+      const settingsLink = document.createElement('a');
+      settingsLink.href = 'settings.html';
+      settingsLink.className = signUpLink.className;
+      settingsLink.textContent = 'Settings';
+      settingsLink.setAttribute('aria-label', 'Account settings');
+      signUpLink.parentNode.insertBefore(settingsLink, signUpLink);
       const signOutButton = document.createElement('button');
       signOutButton.type = 'button';
       signOutButton.className = signUpLink.className;

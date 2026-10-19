@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account Settings — AweSum Brands</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#0B1B33;--orange:#F5820B;--ink:#1B2437;--muted:#6B7385;--line:#E6E9F0;--bg:#F3F5F9;--white:#fff}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+  a{text-decoration:none;color:inherit}
+  header{background:var(--navy);color:var(--white)}
+  .wrap{max-width:900px;margin:0 auto;padding:0 24px}
+  .nav{height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .nav a{font-weight:600}
+  .nav-links{display:flex;gap:20px;font-size:14px;color:#fff}
+  main{padding:42px 0 64px}
+  h1{font-size:32px;color:var(--navy);margin-bottom:8px}
+  .intro{color:var(--muted);margin-bottom:28px;line-height:1.6}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:28px;margin-bottom:20px;box-shadow:0 8px 26px rgba(11,27,51,.04)}
+  h2{font-size:19px;color:var(--navy);margin-bottom:8px}
+  .description{font-size:14px;color:var(--muted);line-height:1.5;margin-bottom:20px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .field{margin-bottom:18px}
+  label{display:block;font-size:14px;font-weight:600;margin-bottom:8px}
+  input[type=text],input[type=email]{width:100%;padding:13px;border:1px solid #d8dce5;border-radius:9px;font:inherit}
+  input:focus{outline:2px solid rgba(245,130,11,.25);border-color:var(--orange)}
+  .toggle{display:flex;align-items:flex-start;gap:12px;margin:16px 0;line-height:1.5;font-size:14px}
+  .toggle input{margin-top:4px;accent-color:var(--orange)}
+  .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
+  .button{display:inline-flex;justify-content:center;align-items:center;border:0;border-radius:9px;padding:12px 18px;background:var(--orange);color:white;font:600 14px Inter, sans-serif;cursor:pointer}
+  .button.secondary{background:#eef1f6;color:var(--navy)}
+  .button.danger{background:#b42318}
+  .button:disabled{opacity:.6;cursor:wait}
+  @media(max-width:600px){.grid{grid-template-columns:1fr;gap:0}.card{padding:22px}.nav-links{gap:12px;font-size:12px}}
+</style>
+</head>
+<body data-auth-required="user">
+<header><div class="wrap nav"><a href="index.html">AweSum Brands</a><nav class="nav-links"><a href="marketplace.html">Marketplace</a><a href="orders.html">Orders</a><a href="settings.html" aria-current="page">Settings</a></nav></div></header>
+<main class="wrap">
+  <h1>Account settings</h1>
+  <p class="intro">Manage your account details, email preferences, and security.</p>
+  <section class="card">
+    <h2>Profile details</h2>
+    <p class="description">Your contact details are used for your account and orders.</p>
+    <form id="profileForm">
+      <div class="grid">
+        <div class="field"><label for="profileName">Full name</label><input id="profileName" name="name" type="text" maxlength="160" autocomplete="name" required></div>
+        <div class="field"><label for="profileEmail">Email address</label><input id="profileEmail" name="email" type="email" maxlength="255" autocomplete="email" required></div>
+      </div>
+      <div class="field"><label for="profileCompany">Company (optional)</label><input id="profileCompany" name="company" type="text" maxlength="160" autocomplete="organization"></div>
+      <button class="button" type="submit">Save profile</button>
+    </form>
+  </section>
+  <section class="card">
+    <h2>Email preferences</h2>
+    <p class="description">Choose optional email updates to allow. Your choices are saved to your account; they do not change essential account or support messages.</p>
+    <form id="preferencesForm">
+      <label class="toggle"><input id="orderUpdates" type="checkbox"><span>Receive optional email updates about my orders.</span></label>
+      <label class="toggle"><input id="productUpdates" type="checkbox"><span>Receive occasional product news and offers.</span></label>
+      <button class="button" type="submit">Save preferences</button>
+    </form>
+  </section>
+  <section class="card">
+    <h2>Security and sign out</h2>
+    <p class="description">Update your password or securely end your current session.</p>
+    <div class="actions"><a class="button secondary" href="change-password.html">Change password</a><button class="button danger" id="signOut" type="button">Sign out</button></div>
+  </section>
+</main>
+<script src="app.js"></script>
+<script>
+  const profileForm = document.getElementById('profileForm');
+  const preferencesForm = document.getElementById('preferencesForm');
+  const profileFields = {
+    name: document.getElementById('profileName'),
+    email: document.getElementById('profileEmail'),
+    company: document.getElementById('profileCompany')
+  };
+  function showProfile(profile) {
+    profileFields.name.value = profile.name || '';
+    profileFields.email.value = profile.email || '';
+    profileFields.company.value = profile.company || '';
+  }
+  AweSum.api('profile').then(result => showProfile(result.profile)).catch(error => AweSum.showMessage(error.message, 'error'));
+  AweSum.api('preferences').then(result => {
+    document.getElementById('orderUpdates').checked = result.preferences.orderUpdates;
+    document.getElementById('productUpdates').checked = result.preferences.productUpdates;
+  }).catch(error => AweSum.showMessage(error.message, 'error'));
+  profileForm.addEventListener('submit', async event => {
+    event.preventDefault();
+    const button = profileForm.querySelector('button[type="submit"]');
+    button.disabled = true;
+    try {
+      const profile = Object.fromEntries(new FormData(profileForm));
+      const result = await AweSum.api('profile', { method: 'PUT', body: JSON.stringify(profile) });
+      showProfile(result.profile);
+      const session = AweSum.currentUser();
+      AweSum.write(AweSum.keys.session, { ...session, ...result.profile });
+      AweSum.showMessage('Profile updated.');
+    } catch (error) {
+      AweSum.showMessage(error.message, 'error');
+    } finally {
+      button.disabled = false;
+    }
+  });
+  preferencesForm.addEventListener('submit', async event => {
+    event.preventDefault();
+    const button = preferencesForm.querySelector('button[type="submit"]');
+    button.disabled = true;
+    try {
+      const preferences = {
+        orderUpdates: document.getElementById('orderUpdates').checked,
+        productUpdates: document.getElementById('productUpdates').checked
+      };
+      await AweSum.api('preferences', { method: 'PUT', body: JSON.stringify({ preferences }) });
+      AweSum.showMessage('Email preferences saved.');
+    } catch (error) {
+      AweSum.showMessage(error.message, 'error');
+    } finally {
+      button.disabled = false;
+    }
+  });
+  document.getElementById('signOut').addEventListener('click', async event => {
+    event.currentTarget.disabled = true;
+    try {
+      await AweSum.api('logout', { method: 'POST' });
+      localStorage.removeItem(AweSum.keys.session);
+      window.location.href = 'index.html';
+    } catch (error) {
+      event.currentTarget.disabled = false;
+      AweSum.showMessage(error.message, 'error');
+    }
+  });
+</script>
+</body>
+</html>

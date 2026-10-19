@@ -95,6 +95,15 @@
     background:var(--orange);
     color:#fff;
   }
+  body.compact-settings .main{padding:28px 36px;}
+  body.compact-settings .order-card{padding:14px 18px;}
+  .settings-panel{max-width:760px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:22px;}
+  .settings-panel h2{font-size:19px;margin-bottom:8px;}
+  .settings-panel p{color:var(--text-grey);font-size:14px;line-height:1.6;margin-bottom:18px;}
+  .settings-toggle{display:flex;align-items:flex-start;gap:10px;margin:16px 0;color:var(--text-dark);font-size:14px;line-height:1.5;}
+  .settings-toggle input{margin-top:4px;accent-color:var(--orange);}
+  .settings-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px;}
+  .settings-link{display:inline-flex;align-items:center;border:0;border-radius:9px;padding:12px 18px;background:var(--navy);color:#fff;text-decoration:none;font:inherit;font-size:14px;font-weight:600;cursor:pointer;}
   
 
   /* ---------------- Main content ---------------- */
@@ -302,6 +311,7 @@
     margin-bottom:10px;
   }
   .field input[type="text"],
+  .field input[type="email"],
   .field input[type="number"],
   .field select,
   .field textarea{
@@ -456,6 +466,7 @@
       <button class="nav-item" data-page="quotes">Quotes</button>
       <button class="nav-item" data-page="adverts">Adverts</button>
       <button class="nav-item" data-page="messages">Messages</button>
+      <button class="nav-item" data-page="settings">Settings</button>
       <a href="change-password.html" style="display:flex;align-items:center;padding:13px 16px;border-radius:10px;color:#8f9bb5;font-size:15px;font-weight:600;text-decoration:none;">Change Password</a>
     </nav>
   </aside>
@@ -544,6 +555,40 @@
       <div class="order-list" id="customer-list"></div>
     </section>
 
+    <section class="page" id="page-settings">
+      <h1 class="page-title">Admin Settings</h1>
+      <section class="settings-panel">
+        <h2>Business contact details</h2>
+        <p>These details are displayed on the site's legal pages and contact sections. Existing details stay in place until you save new ones.</p>
+        <form id="site-content-form" class="form-wrap">
+          <div class="field"><label for="site-trading-name">Trading name</label><input type="text" id="site-trading-name" maxlength="160" required></div>
+          <div class="field"><label for="site-legal-name">Legal name (optional)</label><input type="text" id="site-legal-name" maxlength="160"></div>
+          <div class="field"><label for="site-email">Contact email</label><input type="email" id="site-email" maxlength="255" required></div>
+          <div class="field"><label for="site-phone">Contact phone</label><input type="text" id="site-phone" maxlength="40" required></div>
+          <div class="field"><label for="site-address">Business address</label><textarea id="site-address" maxlength="500" required></textarea></div>
+          <div class="field"><label for="site-registration">Registration number (optional)</label><input type="text" id="site-registration" maxlength="100"></div>
+          <div class="field"><label for="site-vat">VAT number (optional)</label><input type="text" id="site-vat" maxlength="100"></div>
+          <button type="submit" class="submit-btn">Save business details</button>
+        </form>
+      </section>
+      <section class="settings-panel">
+        <h2>Admin preferences</h2>
+        <p>These preferences are saved in this browser. They do not enable background alerts or change how orders or messages are processed.</p>
+        <label class="settings-toggle"><input type="checkbox" id="admin-order-notifications"><span>Order alert preference</span></label>
+        <label class="settings-toggle"><input type="checkbox" id="admin-message-notifications"><span>Message alert preference</span></label>
+        <div class="field"><label for="admin-appearance">Admin display density</label><select id="admin-appearance"><option value="comfortable">Comfortable</option><option value="compact">Compact</option></select></div>
+        <button type="button" class="submit-btn" id="save-admin-preferences">Save admin preferences</button>
+      </section>
+      <section class="settings-panel">
+        <h2>Account and users</h2>
+        <p>Manage customer accounts from the existing customer list, or change the administrator password.</p>
+        <div class="settings-actions">
+          <button type="button" class="settings-link" id="open-customer-settings">Manage customer accounts</button>
+          <a class="settings-link" href="change-password.html">Change admin password</a>
+        </div>
+      </section>
+    </section>
+
     <section class="page" id="page-reports">
       <h1 class="page-title">Manage Homepage</h1>
       <form class="form-wrap" id="stats-form">
@@ -630,7 +675,7 @@
 
   </main>
 
-  <button class="exit-admin">← Exit Admin</button>
+  <button class="exit-admin" type="button">Sign Out</button>
 
   <!-- Review Modal -->
   <div class="modal-overlay" id="modal-overlay">
@@ -823,7 +868,84 @@
     if (e.target.dataset.message) { const reply = prompt('Write a reply to this customer:'); if (!reply) return; const messages = AweSum.read(AweSum.keys.messages, []); const message = messages.find(item => item.id === e.target.dataset.message); if (message) { message.status = 'Responded'; message.reply = reply.trim(); message.repliedAt = new Date().toISOString(); AweSum.write(AweSum.keys.messages, messages); AweSum.api('message-reply', { method: 'PUT', body: JSON.stringify({ id: message.id, reply: message.reply }) }).catch(() => {}); } e.target.textContent = 'Responded'; e.target.disabled = true; }
     if (e.target.dataset.deleteMessage) { const messageId = e.target.dataset.deleteMessage; if (!confirm('Delete this customer message?')) return; AweSum.api('message', { method: 'DELETE', body: JSON.stringify({ id: messageId }) }).then(() => { const messages = AweSum.read(AweSum.keys.messages, []).filter(item => item.id !== messageId); AweSum.write(AweSum.keys.messages, messages); e.target.closest('.order-card').remove(); toast.textContent = 'Message deleted'; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2200); }).catch(error => AweSum.showMessage(error.message, 'error')); }
   });
-  document.querySelector('.exit-admin').addEventListener('click', () => { window.location.href = 'index.html'; });
+  document.querySelector('.exit-admin').addEventListener('click', async event => {
+    event.currentTarget.disabled = true;
+    try {
+      await AweSum.api('logout', { method: 'POST' });
+      localStorage.removeItem(AweSum.keys.session);
+      window.location.href = 'index.html';
+    } catch (error) {
+      event.currentTarget.disabled = false;
+      AweSum.showMessage(error.message, 'error');
+    }
+  });
+
+  const siteContentForm = document.getElementById('site-content-form');
+  const siteContentFields = {
+    tradingName: 'site-trading-name',
+    legalName: 'site-legal-name',
+    email: 'site-email',
+    phone: 'site-phone',
+    address: 'site-address',
+    registrationNumber: 'site-registration',
+    vatNumber: 'site-vat'
+  };
+  const defaultSiteContent = {
+    tradingName: 'AweSum Brands',
+    legalName: '',
+    email: 'info@awesumbrands.co.za',
+    phone: '0657350139',
+    address: '447 anton lembede street',
+    registrationNumber: '',
+    vatNumber: ''
+  };
+  function populateSiteContent(content) {
+    Object.keys(siteContentFields).forEach(key => {
+      document.getElementById(siteContentFields[key]).value = content[key] || '';
+    });
+  }
+  populateSiteContent(defaultSiteContent);
+  AweSum.api('site-content').then(result => {
+    if (result.content) populateSiteContent({ ...defaultSiteContent, ...result.content });
+  }).catch(error => AweSum.showMessage(error.message, 'error'));
+  siteContentForm.addEventListener('submit', async event => {
+    event.preventDefault();
+    const button = siteContentForm.querySelector('button[type="submit"]');
+    button.disabled = true;
+    try {
+      const content = Object.fromEntries(Object.entries(siteContentFields).map(([key, id]) => [key, document.getElementById(id).value.trim()]));
+      const result = await AweSum.api('site-content', { method: 'PUT', body: JSON.stringify({ content }) });
+      populateSiteContent(result.content);
+      AweSum.showMessage('Business contact details updated.');
+    } catch (error) {
+      AweSum.showMessage(error.message, 'error');
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+  const adminPreferences = AweSum.read('awesum_admin_preferences', {
+    orderNotifications: false,
+    messageNotifications: false,
+    appearance: 'comfortable'
+  });
+  document.getElementById('admin-order-notifications').checked = Boolean(adminPreferences.orderNotifications);
+  document.getElementById('admin-message-notifications').checked = Boolean(adminPreferences.messageNotifications);
+  document.getElementById('admin-appearance').value = adminPreferences.appearance === 'compact' ? 'compact' : 'comfortable';
+  document.body.classList.toggle('compact-settings', adminPreferences.appearance === 'compact');
+  document.getElementById('save-admin-preferences').addEventListener('click', () => {
+    const preferences = {
+      orderNotifications: document.getElementById('admin-order-notifications').checked,
+      messageNotifications: document.getElementById('admin-message-notifications').checked,
+      appearance: document.getElementById('admin-appearance').value
+    };
+    AweSum.write('awesum_admin_preferences', preferences);
+    document.body.classList.toggle('compact-settings', preferences.appearance === 'compact');
+    AweSum.showMessage('Admin preferences saved.');
+  });
+  document.getElementById('open-customer-settings').addEventListener('click', () => {
+    document.querySelector('[data-page="sellers"]').click();
+  });
 
   // Navigation
   const navItems = document.querySelectorAll('.nav-item');
