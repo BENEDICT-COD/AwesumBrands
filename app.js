@@ -42,12 +42,14 @@
   const paymentGatewayUrl = window.AWE_SUM_PAYMENT_GATEWAY_URL || '';
   const updateCartBadges = () => document.querySelectorAll('.cart-badge').forEach(badge => { badge.textContent = getCart().reduce((sum, item) => sum + item.quantity, 0); });
   const updateAuthControls = () => {
+    if (window.AweSumNav) window.AweSumNav.render();   // shared navigation (nav.js)
     const user = currentUser();
     document.querySelectorAll('.login-link').forEach(loginLink => {
       if (!user) return;
       loginLink.textContent = 'Hello, ' + user.name;
       loginLink.href = 'settings.html';
       loginLink.title = 'Account settings';
+      loginLink.classList.add('nav-acct');   // pages hide these on phones; the same actions are offered in the menu
     });
     document.querySelectorAll('.nav-right > .btn-primary').forEach(signUpLink => {
       if (!user) return;
@@ -56,11 +58,13 @@
       settingsLink.className = signUpLink.className;
       settingsLink.textContent = 'Settings';
       settingsLink.setAttribute('aria-label', 'Account settings');
+      settingsLink.classList.add('nav-acct');
       signUpLink.parentNode.insertBefore(settingsLink, signUpLink);
       const signOutButton = document.createElement('button');
       signOutButton.type = 'button';
       signOutButton.className = signUpLink.className;
       signOutButton.textContent = 'Sign Out';
+      signOutButton.classList.add('nav-acct');
       signOutButton.addEventListener('click', async () => {
         signOutButton.disabled = true;
         try { await api('logout', { method: 'POST' }); }
@@ -69,6 +73,18 @@
         window.location.href = 'index.html';
       });
       signUpLink.replaceWith(signOutButton);
+      // On phones the header only has room for the cart and the menu button, so account actions live in the menu.
+      const header = signOutButton.closest('header');   // signUpLink was just replaced, so it is no longer in the page
+      const menu = header && header.querySelector('.nav-toggle') ? header.querySelector('nav.main-nav') : null;   // only pages with a phone menu button
+      if (menu && !menu.querySelector('.nav-acct-m')) {
+        const account = document.createElement('a');
+        account.href = 'settings.html'; account.className = 'nav-acct-m'; account.textContent = 'My account';
+        menu.appendChild(account);
+        const signOut = document.createElement('a');
+        signOut.href = '#'; signOut.className = 'nav-acct-m'; signOut.textContent = 'Sign out';
+        signOut.addEventListener('click', event => { event.preventDefault(); signOutButton.click(); });
+        menu.appendChild(signOut);
+      }
     });
   };
   const showMessage = (text, type) => {

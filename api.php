@@ -203,6 +203,28 @@ try {
         if ($name === '' || mb_strlen($name) > 160 || !filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($email) > 255 || mb_strlen($company) > 160) {
             jsonResponse(['error' => 'Enter a name (up to 160 characters), valid email, and company (up to 160 characters).'], 422);
         }
+        $statement = $database->prepare('SELECT email, password_hash FROM users WHERE id = ? LIMIT 1');
+        $statement->execute([(int) $current['id']]);
+        $existing = $statement->fetch();
+        if (!$existing) {
+            jsonResponse(['error' => 'Your account could not be found. Please sign in again.'], 404);
+        }
+        $previousEmail = strtolower((string) $existing['email']);
+        $emailChanged = $previousEmail !== $email;
+        if ($emailChanged) {
+            // The email address controls password resets, so changing it needs the current password.
+            // (A wrong password answers 403, not 401: the browser treats a 401 as "session expired" and signs the user out.)
+            $bucket = 'emailchange-user:' . (int) $current['id'];
+            rateLimitGuard($database, $bucket, 5, 900, 'Too many incorrect attempts. Please wait 15 minutes and try again.');
+            $confirmPassword = (string) ($body['currentPassword'] ?? '');
+            if ($confirmPassword === '') {
+                jsonResponse(['error' => 'Enter your current password to change your email address.'], 422);
+            }
+            if (!password_verify($confirmPassword, (string) $existing['password_hash'])) {
+                rateLimitHit($database, $bucket);
+                jsonResponse(['error' => 'Your current password is incorrect.'], 403);
+            }
+        }
         try {
             $statement = $database->prepare('UPDATE users SET name = ?, email = ?, company = ? WHERE id = ?');
             $statement->execute([$name, $email, $company !== '' ? $company : null, (int) $current['id']]);
@@ -211,6 +233,16 @@ try {
                 jsonResponse(['error' => 'That email address is already registered to another account.'], 409);
             }
             throw $error;
+        }
+        if ($emailChanged) {
+            session_regenerate_id(true);
+            // Best-effort heads-up to the old address so the real owner can spot an unwanted change.
+            $firstName = trim(explode(' ', $name)[0]);
+            sendSiteEmail($previousEmail, 'Your AweSum Brands email address was changed',
+                'Hi ' . ($firstName !== '' ? $firstName : 'there') . ",\r\n\r\n"
+                . 'The email address on your AweSum Brands account was changed to ' . $email . ".\r\n\r\n"
+                . "If you made this change, you can ignore this message.\r\n"
+                . 'If you did not, please contact us straight away: ' . SITE_URL . "/index.html#contact\r\n\r\nAweSum Brands\r\n");
         }
         $_SESSION['user']['name'] = $name;
         $_SESSION['user']['email'] = $email;

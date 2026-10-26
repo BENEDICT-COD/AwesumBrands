@@ -26,7 +26,7 @@
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
   .field{margin-bottom:18px}
   label{display:block;font-size:14px;font-weight:600;margin-bottom:8px}
-  input[type=text],input[type=email]{width:100%;padding:13px;border:1px solid #d8dce5;border-radius:9px;font:inherit}
+  input[type=text],input[type=email],input[type=password]{width:100%;padding:13px;border:1px solid #d8dce5;border-radius:9px;font:inherit}
   input:focus{outline:2px solid rgba(245,130,11,.25);border-color:var(--orange)}
   .toggle{display:flex;align-items:flex-start;gap:12px;margin:16px 0;line-height:1.5;font-size:14px}
   .toggle input{margin-top:4px;accent-color:var(--orange)}
@@ -36,6 +36,17 @@
   .button.danger{background:#b42318}
   .button:disabled{opacity:.6;cursor:wait}
   @media(max-width:600px){.grid{grid-template-columns:1fr;gap:0}.card{padding:22px}.nav-links{gap:12px;font-size:12px}}
+  /* ===== Responsive fixes (added) ===== */
+  main.wrap{ padding-top:42px; padding-bottom:64px; }   /* .wrap's padding was overriding main's, removing the top/bottom space */
+  .nav-links a{ padding:12px 4px; }
+  @media(max-width:600px){
+    .wrap{ padding-left:16px; padding-right:16px; }
+    main.wrap{ padding-top:28px; padding-bottom:48px; }
+    .nav{ height:auto; min-height:64px; padding-top:6px; padding-bottom:6px; }
+    .nav-links{ gap:2px; flex-wrap:wrap; justify-content:flex-end; }
+    .nav-links a{ padding:12px 7px; }
+  }
+  /* ===== end responsive fixes ===== */
 </style>
 </head>
 <body data-auth-required="user">
@@ -52,6 +63,11 @@
         <div class="field"><label for="profileEmail">Email address</label><input id="profileEmail" name="email" type="email" maxlength="255" autocomplete="email" required></div>
       </div>
       <div class="field"><label for="profileCompany">Company (optional)</label><input id="profileCompany" name="company" type="text" maxlength="160" autocomplete="organization"></div>
+      <div class="field" id="emailPasswordField" hidden>
+        <label for="profileCurrentPassword">Current password</label>
+        <input id="profileCurrentPassword" name="currentPassword" type="password" autocomplete="current-password">
+        <p class="description" style="margin:8px 0 0">Needed to change your email address. Signed up with Google and never set a password? Use <a href="forgot-password.html"><u>Forgot password</u></a> first.</p>
+      </div>
       <button class="button" type="submit">Save profile</button>
     </form>
   </section>
@@ -79,11 +95,27 @@
     email: document.getElementById('profileEmail'),
     company: document.getElementById('profileCompany')
   };
+  const emailPasswordField = document.getElementById('emailPasswordField');
+  const currentPasswordInput = document.getElementById('profileCurrentPassword');
+  let savedEmail = '';
+  // The password is only asked for when the email address is being changed.
+  function emailIsChanging() {
+    return profileFields.email.value.trim().toLowerCase() !== savedEmail.toLowerCase();
+  }
+  function syncEmailPasswordField() {
+    const changing = emailIsChanging();
+    emailPasswordField.hidden = !changing;
+    currentPasswordInput.required = changing;
+    if (!changing) currentPasswordInput.value = '';
+  }
   function showProfile(profile) {
     profileFields.name.value = profile.name || '';
     profileFields.email.value = profile.email || '';
     profileFields.company.value = profile.company || '';
+    savedEmail = profile.email || '';
+    syncEmailPasswordField();
   }
+  profileFields.email.addEventListener('input', syncEmailPasswordField);
   AweSum.api('profile').then(result => showProfile(result.profile)).catch(error => AweSum.showMessage(error.message, 'error'));
   AweSum.api('preferences').then(result => {
     document.getElementById('orderUpdates').checked = result.preferences.orderUpdates;
@@ -95,6 +127,7 @@
     button.disabled = true;
     try {
       const profile = Object.fromEntries(new FormData(profileForm));
+      if (!emailIsChanging()) delete profile.currentPassword;
       const result = await AweSum.api('profile', { method: 'PUT', body: JSON.stringify(profile) });
       showProfile(result.profile);
       const session = AweSum.currentUser();

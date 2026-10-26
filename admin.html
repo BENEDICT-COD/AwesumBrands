@@ -3,1237 +3,1424 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AweSum Brands — Admin Panel</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0B1B33">
+<title>Admin · AweSum Brands</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
 <style>
-  :root{
-    --navy:#0c1a31;
-    --navy-light:#16294a;
-    --orange:#e97e10;
-    --orange-light:#fdf0e2;
-    --text-dark:#0c1a31;
-    --text-grey:#8a94a6;
-    --border:#ececec;
-    --bg:#fffffc;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:var(--bg);
-    color:var(--text-dark);
-    display:flex;
-    min-height:100vh;
-  }
+:root{
+  --navy:#0B1B33; --navy-2:#122747; --navy-3:#1D3763;
+  --orange:#F5820B; --orange-600:#D96F00; --orange-50:#FFF3E5; --orange-100:#FFE2BF;
+  --bg:#F3F5F9; --card:#FFFFFF; --text:#101828; --muted:#667085; --faint:#98A2B3;
+  --line:#E6E9F0; --line-2:#EFF1F6;
+  --green:#12B76A; --green-50:#E7F8EF; --green-700:#067647;
+  --blue-50:#EAF1FF; --blue-700:#1D4FBF;
+  --amber-50:#FFF4DB; --amber-700:#A15C07;
+  --red:#F04438; --red-50:#FEECEB; --red-700:#B42318;
+  --violet-50:#F0ECFF; --violet-700:#5B3CC4;
+  --slate-50:#F2F4F7; --slate-700:#475467;
+  --r:14px; --r-sm:10px;
+  --shadow-sm:0 1px 2px rgba(16,24,40,.05);
+  --shadow:0 8px 28px rgba(16,24,40,.08);
+  --shadow-lg:0 30px 70px rgba(11,27,51,.30);
+  --sidebar:268px; --topbar:72px;
+  --pad:28px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);font-size:14.5px;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh}
+body.compact{--pad:20px;font-size:14px}
+body.lock{overflow:hidden}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+img{display:block;max-width:100%}
+[hidden]{display:none!important}
+:focus-visible{outline:3px solid rgba(245,130,11,.45);outline-offset:2px;border-radius:6px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.muted{color:var(--muted)} .faint{color:var(--faint)} .nowrap{white-space:nowrap}
 
-  /* ---------------- Sidebar ---------------- */
-  .sidebar{
-    width:280px;
-    min-width:280px;
-    background:var(--navy);
-    color:#fff;
-    display:flex;
-    flex-direction:column;
-    padding:28px 20px;
-    position:relative;
-    border-right:6px repeating-linear-gradient(45deg,#e97e10,#e97e10 4px,#0c1a31 4px,#0c1a31 8px);
-  }
-  .sidebar::after{
-    content:"";
-    position:absolute;
-    top:0; right:0;
-    width:6px;
-    height:100%;
-    background:repeating-linear-gradient(45deg,#e97e10 0,#e97e10 6px,#0c1a31 6px,#0c1a31 12px);
-  }
-  .brand-label{
-    font-size:11px;
-    letter-spacing:1.5px;
-    color:#7c88a3;
-    text-transform:uppercase;
-    margin-bottom:4px;
-  }
-  .brand-name{
-    font-size:20px;
-    font-weight:700;
-    margin-bottom:22px;
-  }
-  .sidebar-divider{
-    border:none;
-    border-top:1px solid #253656;
-    margin-bottom:18px;
-  }
-  .nav{
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-    flex:1;
-  }
-  .nav-item{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:13px 16px;
-    border-radius:10px;
-    color:#8f9bb5;
-    font-size:15px;
-    font-weight:600;
-    cursor:pointer;
-    transition:background .15s ease, color .15s ease;
-    background:transparent;
-    border:none;
-    text-align:left;
-    width:100%;
-  }
-  .nav-item svg{
-    width:18px;
-    height:18px;
-    flex-shrink:0;
-  }
-  .nav-item:hover{
-    color:#fff;
-  }
-  .nav-item.active{
-    background:var(--orange);
-    color:#fff;
-  }
-  body.compact-settings .main{padding:28px 36px;}
-  body.compact-settings .order-card{padding:14px 18px;}
-  .settings-panel{max-width:760px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:22px;}
-  .settings-panel h2{font-size:19px;margin-bottom:8px;}
-  .settings-panel p{color:var(--text-grey);font-size:14px;line-height:1.6;margin-bottom:18px;}
-  .settings-toggle{display:flex;align-items:flex-start;gap:10px;margin:16px 0;color:var(--text-dark);font-size:14px;line-height:1.5;}
-  .settings-toggle input{margin-top:4px;accent-color:var(--orange);}
-  .settings-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px;}
-  .settings-link{display:inline-flex;align-items:center;border:0;border-radius:9px;padding:12px 18px;background:var(--navy);color:#fff;text-decoration:none;font:inherit;font-size:14px;font-weight:600;cursor:pointer;}
-  
+/* ---------- boot screen ---------- */
+.boot{position:fixed;inset:0;z-index:300;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;color:var(--muted);font-weight:600}
+.spinner{width:34px;height:34px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--orange);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-  /* ---------------- Main content ---------------- */
-  .main{
-    flex:1;
-    padding:48px 56px;
-    max-width:1280px;
-  }
-  .page-title{
-    font-size:32px;
-    font-weight:700;
-    color:var(--navy);
-    margin-bottom:32px;
-  }
-  .exit-admin{
-    position:fixed;
-    bottom:32px;
-    right:40px;
-    background:var(--navy);
-    color:#fff;
-    border:none;
-    padding:14px 22px;
-    border-radius:10px;
-    font-size:14px;
-    font-weight:600;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    gap:8px;
-  }
+/* ---------- shell ---------- */
+.app{display:grid;grid-template-columns:var(--sidebar) minmax(0,1fr);min-height:100vh}
+.sidebar{position:sticky;top:0;height:100vh;background:linear-gradient(180deg,var(--navy) 0%,#0a1730 100%);color:#fff;display:flex;flex-direction:column;z-index:60}
+.side-brand{display:flex;align-items:center;gap:12px;padding:22px 20px 18px}
+.logo-chip{width:46px;height:46px;border-radius:12px;background:#fff;display:grid;place-items:center;padding:4px;flex:none;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.logo-chip img{width:100%;height:100%;object-fit:contain}
+.side-brand strong{display:block;font-size:16px;letter-spacing:-.2px}
+.side-brand small{display:block;color:#8FA0BF;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;margin-top:1px}
+.side-nav{flex:1;overflow-y:auto;padding:6px 12px 12px;scrollbar-width:thin;scrollbar-color:#27406b transparent}
+.nav-group{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#6E81A6;font-weight:700;padding:16px 12px 6px}
+.nav-link{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;color:#B5C2DA;font-weight:600;font-size:14px;position:relative;transition:background .15s,color .15s}
+.nav-link svg{width:19px;height:19px;flex:none;opacity:.9}
+.nav-link:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav-link.active{background:rgba(245,130,11,.16);color:#fff}
+.nav-link.active::before{content:"";position:absolute;left:-12px;top:9px;bottom:9px;width:4px;border-radius:0 4px 4px 0;background:var(--orange)}
+.nav-link.active svg{color:var(--orange);opacity:1}
+.nav-badge{margin-left:auto;background:var(--orange);color:#fff;font-size:11.5px;font-weight:700;min-width:22px;height:22px;padding:0 7px;border-radius:999px;display:grid;place-items:center}
+.side-foot{padding:14px;border-top:1px solid rgba(255,255,255,.08)}
+.me{display:flex;align-items:center;gap:11px;padding:6px 6px 12px}
+.me b{display:block;font-size:13.5px;line-height:1.25}
+.me small{display:block;color:#8FA0BF;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:168px}
+.side-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.side-actions .btn{justify-content:center;padding:9px 10px;font-size:13px}
+.btn-side{background:rgba(255,255,255,.08);color:#E3EAF7}
+.btn-side:hover{background:rgba(255,255,255,.14)}
+.scrim{position:fixed;inset:0;background:rgba(7,14,28,.55);z-index:55;opacity:0;pointer-events:none;transition:opacity .2s}
 
-  /* ---------------- Orders Queue ---------------- */
-  .order-list{
-    display:flex;
-    flex-direction:column;
-    gap:16px;
-    max-width:1080px;
-  }
-  .order-card{
-    border:1px solid var(--border);
-    border-radius:12px;
-    padding:22px 26px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    transition:box-shadow .15s ease;
-  }
-  .order-card:hover{
-    box-shadow:0 2px 10px rgba(12,26,49,0.05);
-  }
-  .order-info{
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-  }
-  .order-top{
-    display:flex;
-    align-items:center;
-    gap:12px;
-  }
-  .order-id{
-    font-size:16px;
-    font-weight:700;
-    color:var(--navy);
-  }
-  .badge{
-    display:inline-flex;
-    align-items:center;
-    padding:5px 14px;
-    border-radius:20px;
-    font-size:12px;
-    font-weight:700;
-  }
-  .badge.awaiting{
-    background:var(--orange);
-    color:#fff;
-  }
-  .badge.accepted{
-    background:var(--navy);
-    color:#fff;
-  }
-  .badge.reviewed{
-    background:#e7edf7;
-    color:var(--navy);
-  }
-  .badge.rejected{
-    background:#eee;
-    color:#9aa2b1;
-  }
-  .order-customer{
-    font-size:16px;
-    font-weight:600;
-    color:var(--navy);
-  }
-  .order-meta{
-    font-size:14px;
-    color:var(--text-grey);
-  }
-  .review-btn{
-    border:1px solid var(--orange);
-    background:transparent;
-    color:var(--orange);
-    padding:12px 22px;
-    border-radius:10px;
-    font-size:14px;
-    font-weight:600;
-    cursor:pointer;
-    white-space:nowrap;
-    transition:background .15s ease;
-  }
-  .review-btn:hover{
-    background:var(--orange-light);
-  }
-  .review-btn:disabled{
-    opacity:0;
-    pointer-events:none;
-  }
+.main{min-width:0;display:flex;flex-direction:column}
+.topbar{position:sticky;top:0;z-index:40;height:var(--topbar);display:flex;align-items:center;gap:16px;padding:0 var(--pad);background:rgba(243,245,249,.86);backdrop-filter:saturate(1.4) blur(12px);-webkit-backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--line)}
+.tb-title{min-width:0;flex:1}
+.tb-title h1{font-size:21px;letter-spacing:-.4px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-title p{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-actions{display:flex;gap:8px;align-items:center}
+.icon-btn.menu-btn{display:none}
+.view{padding:var(--pad);max-width:1380px;width:100%;margin:0 auto;outline:none}
+.view>*+*{margin-top:22px}
 
-  /* ---------------- Modal ---------------- */
-  .modal-overlay{
-    position:fixed;
-    inset:0;
-    background:rgba(20,24,33,0.45);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    opacity:0;
-    pointer-events:none;
-    transition:opacity .15s ease;
-    z-index:50;
-  }
-  .modal-overlay.open{
-    opacity:1;
-    pointer-events:auto;
-  }
-  .modal{
-    background:#fff;
-    border-radius:16px;
-    padding:36px 40px;
-    width:420px;
-    max-width:90vw;
-    box-shadow:0 20px 60px rgba(12,26,49,0.25);
-    transform:translateY(10px);
-    transition:transform .15s ease;
-  }
-  .modal-overlay.open .modal{
-    transform:translateY(0);
-  }
-  .modal h3{
-    font-size:22px;
-    color:var(--navy);
-    margin-bottom:10px;
-  }
-  .modal p{
-    color:var(--text-grey);
-    font-size:15px;
-    margin-bottom:26px;
-  }
-  .modal-actions{
-    display:flex;
-    gap:14px;
-  }
-  .quote-modal{ max-height:90vh; overflow:auto; }
-  .quote-details{ display:grid; gap:8px; margin:18px 0 22px; color:var(--text-grey); font-size:14px; }
-  .quote-details strong{ color:var(--navy); }
-  .quote-design-image{ display:block; max-width:100%; max-height:280px; object-fit:contain; border:1px solid var(--border); border-radius:8px; margin-top:6px; }
-  .quote-response{ width:100%; min-height:100px; padding:12px; border:1px solid var(--border); border-radius:8px; font:inherit; resize:vertical; margin:8px 0 16px; }
-  .quote-status{ width:100%; padding:12px; border:1px solid var(--border); border-radius:8px; font:inherit; margin-bottom:16px; }
-  .quote-close{ background:transparent; border:1px solid var(--border); color:var(--text-grey); padding:12px 18px; border-radius:10px; font-weight:600; cursor:pointer; }
-  .btn-proceed{
-    flex:1;
-    background:var(--orange);
-    color:#fff;
-    border:none;
-    padding:15px 0;
-    border-radius:10px;
-    font-size:15px;
-    font-weight:700;
-    cursor:pointer;
-  }
-  .btn-reject{
-    flex:1;
-    background:#fff;
-    color:var(--navy);
-    border:1px solid #e2e5ea;
-    padding:15px 0;
-    border-radius:10px;
-    font-size:15px;
-    font-weight:700;
-    cursor:pointer;
-  }
+/* ---------- controls ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border-radius:10px;font-weight:600;font-size:14px;line-height:1.2;white-space:nowrap;transition:background .15s,box-shadow .15s,transform .05s,border-color .15s;border:1.5px solid transparent}
+.btn svg{width:17px;height:17px;flex:none}
+.btn:active{transform:translateY(1px)}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+.btn-primary{background:var(--orange);color:#fff;box-shadow:0 2px 8px rgba(245,130,11,.28)}
+.btn-primary:hover:not([disabled]){background:var(--orange-600)}
+.btn-dark{background:var(--navy);color:#fff}.btn-dark:hover:not([disabled]){background:var(--navy-2)}
+.btn-ghost{background:#fff;border-color:var(--line);color:var(--text);box-shadow:var(--shadow-sm)}
+.btn-ghost:hover:not([disabled]){border-color:#cfd5e2;background:#fafbfd}
+.btn-danger{background:var(--red);color:#fff}.btn-danger:hover:not([disabled]){background:#d92d20}
+.btn-soft-danger{background:var(--red-50);color:var(--red-700)}.btn-soft-danger:hover:not([disabled]){background:#fddcda}
+.btn-sm{padding:7px 12px;font-size:13px;border-radius:9px}
+.btn-block{width:100%}
+.btn.busy{position:relative;color:transparent!important;pointer-events:none}
+.btn.busy::after{content:"";position:absolute;width:17px;height:17px;border-radius:50%;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;animation:spin .7s linear infinite}
+.btn-ghost.busy::after{border-color:#d0d5dd;border-top-color:var(--orange)}
+.icon-btn{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:#fff;border:1.5px solid var(--line);color:var(--text)}
+.icon-btn svg{width:20px;height:20px}
+.icon-btn:hover{border-color:#cfd5e2}
+.link-btn{color:var(--orange-600);font-weight:600}.link-btn:hover{text-decoration:underline}
 
-  /* ---------------- Marketplace Items form ---------------- */
-  .form-wrap{
-    max-width:744px;
-  }
-  .field{
-    margin-bottom:26px;
-  }
-  .field label{
-    display:block;
-    font-size:15px;
-    font-weight:600;
-    color:var(--navy);
-    margin-bottom:10px;
-  }
-  .field input[type="text"],
-  .field input[type="email"],
-  .field input[type="number"],
-  .field select,
-  .field textarea{
-    width:100%;
-    border:1px solid #e2e5ea;
-    border-radius:10px;
-    padding:14px 16px;
-    font-size:15px;
-    color:var(--navy);
-    background:#fff;
-    font-family:inherit;
-  }
-  .field input::placeholder,
-  .field textarea::placeholder{
-    color:#b7bcc6;
-  }
-  .field select{
-    appearance:none;
-    -webkit-appearance:none;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'><path d='M1 1l6 6 6-6' stroke='%230c1a31' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
-    background-repeat:no-repeat;
-    background-position:right 18px center;
-    cursor:pointer;
-  }
-  .field textarea{
-    resize:vertical;
-    min-height:110px;
-  }
-  .upload-box{
-    border:2px dashed #d7dae1;
-    border-radius:12px;
-    padding:44px 20px;
-    text-align:center;
-    color:var(--navy);
-    cursor:pointer;
-    transition:border-color .15s ease, background .15s ease;
-  }
-  .upload-box:hover{
-    border-color:var(--orange);
-    background:#fffaf4;
-  }
-  .upload-box svg{
-    margin-bottom:14px;
-  }
-  .upload-box .upload-title{
-    font-size:15px;
-    font-weight:500;
-    margin-bottom:4px;
-  }
-  .upload-box .upload-sub{
-    font-size:13px;
-    color:var(--text-grey);
-  }
-  .upload-box input{
-    display:none;
-  }
-  .submit-btn{
-    width:100%;
-    background:var(--orange);
-    color:#fff;
-    border:none;
-    padding:17px 0;
-    border-radius:10px;
-    font-size:16px;
-    font-weight:700;
-    cursor:pointer;
-    margin-top:6px;
-  }
-  .submit-btn:hover{
-    background:#d67209;
-  }
+input[type=text],input[type=email],input[type=url],input[type=number],input[type=search],input[type=password],select,textarea{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:10px;background:#fff;transition:border-color .15s,box-shadow .15s}
+textarea{resize:vertical;min-height:96px;line-height:1.5}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 4px rgba(245,130,11,.14)}
+input:disabled,select:disabled,textarea:disabled{background:var(--slate-50);color:var(--muted);cursor:not-allowed}
+label.lbl,.lbl{display:block;font-weight:600;font-size:13px;margin-bottom:6px}
+.field{margin-bottom:16px}
+.field .help{font-size:12.5px;color:var(--muted);margin-top:6px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.input-affix{position:relative}
+.input-affix>span{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted);font-weight:600;pointer-events:none}
+.input-affix input{padding-left:32px}
+.search{position:relative;flex:1;min-width:200px;max-width:420px}
+.search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--faint);pointer-events:none}
+.search input{padding-left:40px;background:#fff}
 
-  /* ---------------- Placeholder pages ---------------- */
-  .placeholder{
-    max-width:640px;
-    color:var(--text-grey);
-    font-size:15px;
-    line-height:1.6;
-  }
-  .placeholder-icon{
-    width:56px;
-    height:56px;
-    border-radius:14px;
-    background:var(--orange-light);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    margin-bottom:20px;
-    color:var(--orange);
-  }
+/* ---------- cards ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-sm)}
+.card-pad{padding:22px}
+.card-head{display:flex;align-items:center;gap:12px;padding:18px 22px;border-bottom:1px solid var(--line-2)}
+.card-head h2{font-size:16px;letter-spacing:-.2px}
+.card-head p{color:var(--muted);font-size:13px}
+.card-head .grow{flex:1;min-width:0}
+.card-body{padding:22px}
+.grid-2{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:22px}
+.pill{display:inline-grid;place-items:center;min-width:24px;height:24px;padding:0 8px;border-radius:999px;background:var(--orange-50);color:var(--orange-600);font-size:12.5px;font-weight:700}
 
-  .page{
-    display:none;
-  }
-  .page.active{
-    display:block;
-  }
+/* chips */
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:999px;font-size:12.5px;font-weight:600;white-space:nowrap;line-height:1.35}
+.chip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.85}
+.chip-amber{background:var(--amber-50);color:var(--amber-700)}
+.chip-blue{background:var(--blue-50);color:var(--blue-700)}
+.chip-green{background:var(--green-50);color:var(--green-700)}
+.chip-red{background:var(--red-50);color:var(--red-700)}
+.chip-violet{background:var(--violet-50);color:var(--violet-700)}
+.chip-slate{background:var(--slate-50);color:var(--slate-700)}
+.chip-orange{background:var(--orange-50);color:var(--orange-600)}
+.tag{display:inline-block;padding:2px 8px;border-radius:6px;background:var(--slate-50);color:var(--slate-700);font-size:11.5px;font-weight:700;letter-spacing:.02em}
+.tag-orange{background:var(--orange-50);color:var(--orange-600)}
 
-  .toast{
-    position:fixed;
-    top:28px;
-    right:40px;
-    background:var(--navy);
-    color:#fff;
-    padding:16px 24px;
-    border-radius:10px;
-    font-size:14px;
-    font-weight:600;
-    box-shadow:0 10px 30px rgba(12,26,49,0.25);
-    transform:translateY(-20px);
-    opacity:0;
-    pointer-events:none;
-    transition:transform .2s ease, opacity .2s ease;
-    z-index:60;
-  }
-  .toast.show{
-    transform:translateY(0);
-    opacity:1;
-  }
+/* filter chips */
+.toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.fchip{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;background:#fff;border:1.5px solid var(--line);font-weight:600;font-size:13px;color:var(--slate-700);transition:all .15s}
+.fchip:hover{border-color:#cdd3e0}
+.fchip .n{background:var(--slate-50);color:var(--slate-700);border-radius:999px;font-size:11.5px;padding:1px 8px;font-weight:700}
+.fchip[aria-pressed=true]{background:var(--navy);border-color:var(--navy);color:#fff}
+.fchip[aria-pressed=true] .n{background:rgba(255,255,255,.18);color:#fff}
+.fchip.attn .n{background:var(--orange);color:#fff}
 
-  @media (max-width:820px){
-    body{flex-direction:column;}
-    .sidebar{width:100%;min-width:0;}
-    .main{padding:32px 24px 100px;}
-  }
+/* avatar */
+.avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:13.5px;color:#fff;flex:none;letter-spacing:.02em}
+.avatar.sm{width:30px;height:30px;font-size:11.5px}
+.avatar.lg{width:52px;height:52px;font-size:18px}
+
+/* ---------- KPI ---------- */
+.hello{display:flex;align-items:center;gap:20px;padding:24px 28px;border-radius:var(--r);background:linear-gradient(120deg,var(--navy) 0%,var(--navy-3) 70%,#27478a 100%);color:#fff;position:relative;overflow:hidden}
+.hello::after{content:"";position:absolute;right:-60px;top:-80px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(245,130,11,.55),transparent 65%)}
+.hello h2{font-size:22px;letter-spacing:-.4px}
+.hello p{color:#BFCBE3;margin-top:4px}
+.hello .grow{flex:1;position:relative;z-index:1}
+.hello .btns{display:flex;gap:10px;flex-wrap:wrap;position:relative;z-index:1}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.kpi{display:flex;flex-direction:column;gap:10px;padding:18px 20px;background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-sm);transition:transform .15s,box-shadow .15s,border-color .15s}
+a.kpi:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:#d6dbe7}
+.kpi-top{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-weight:600;font-size:13px}
+.kpi-ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center}
+.kpi-ic svg{width:20px;height:20px}
+.kpi-val{font-size:30px;font-weight:800;letter-spacing:-1px;line-height:1.05}
+.kpi-hint{font-size:12.5px;color:var(--muted)}
+.ic-orange{background:var(--orange-50);color:var(--orange-600)}.ic-blue{background:var(--blue-50);color:var(--blue-700)}.ic-green{background:var(--green-50);color:var(--green-700)}.ic-violet{background:var(--violet-50);color:var(--violet-700)}
+.kpi.hot .kpi-val{color:var(--orange-600)}
+
+/* attention list */
+.attn-list{list-style:none}
+.attn-item{display:flex;align-items:center;gap:14px;padding:14px 22px;border-bottom:1px solid var(--line-2);transition:background .12s}
+.attn-item:last-child{border-bottom:0}
+.attn-item:hover{background:#fafbfd}
+.attn-ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;flex:none}
+.attn-ic svg{width:18px;height:18px}
+.attn-main{flex:1;min-width:0}
+.attn-main b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.attn-main span{display:block;color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.attn-time{color:var(--faint);font-size:12.5px;white-space:nowrap}
+
+/* pipeline */
+.pipe{display:flex;height:12px;border-radius:999px;overflow:hidden;background:var(--slate-50);margin:4px 0 14px}
+.pipe i{display:block;height:100%}
+.pipe-legend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px;font-size:13px}
+.pipe-legend a{display:flex;align-items:center;gap:8px;color:var(--slate-700);padding:3px 0}
+.pipe-legend a:hover{color:var(--text)}
+.pipe-legend b{margin-left:auto;color:var(--text)}
+.pipe-legend i{width:10px;height:10px;border-radius:3px;flex:none}
+/* chart */
+.chart{width:100%;height:auto;display:block}
+.chart .bar{fill:#D9E1F0;transition:fill .15s}
+.chart .bar.paid{fill:var(--orange)}
+.chart g:hover .bar{fill:var(--navy-3)}
+.chart g:hover .bar.paid{fill:var(--orange-600)}
+.chart text{fill:var(--faint);font-size:11px;font-family:inherit}
+.chart line{stroke:var(--line-2)}
+.legend{display:flex;gap:16px;color:var(--muted);font-size:12.5px;margin-top:10px;flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+
+/* ---------- data rows ---------- */
+.rows{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-sm);overflow:hidden}
+.row-head,.row{display:grid;align-items:center;gap:16px;padding:0 22px}
+.row-head{height:44px;background:#FAFBFD;border-bottom:1px solid var(--line);font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.row{min-height:68px;padding-top:12px;padding-bottom:12px;border-bottom:1px solid var(--line-2);transition:background .12s;position:relative}
+.row:last-child{border-bottom:0}
+a.row:hover,.row.hov:hover{background:#FBFCFE}
+.row .c{min-width:0}
+.row .c b{display:block;font-weight:700}
+.row .c small{display:block;color:var(--muted);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .ell{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.c-person{display:flex;align-items:center;gap:12px}
+.c-person>span:last-child{min-width:0}
+.c-chev{color:var(--faint);justify-self:end}
+.c-chev svg{width:18px;height:18px}
+.cols-orders{grid-template-columns:minmax(150px,1fr) minmax(170px,1.3fr) minmax(0,1.6fr) 100px 150px 24px}
+.cols-customers{grid-template-columns:minmax(200px,1.6fr) minmax(0,1.1fr) 120px 150px 110px 200px}
+.money{font-weight:700;font-variant-numeric:tabular-nums}
+.amount-r{text-align:right}
+
+/* empty / error / skeleton */
+.empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:54px 24px;color:var(--muted)}
+.empty .ei{width:60px;height:60px;border-radius:18px;background:var(--orange-50);color:var(--orange-600);display:grid;place-items:center;margin-bottom:8px}
+.empty .ei svg{width:28px;height:28px}
+.empty h3{color:var(--text);font-size:17px}
+.empty p{max-width:380px}
+.alert{display:flex;gap:12px;align-items:center;padding:14px 18px;border-radius:12px;font-size:14px}
+.alert-error{background:var(--red-50);color:var(--red-700)}
+.alert-info{background:var(--blue-50);color:var(--blue-700)}
+.alert-warn{background:var(--amber-50);color:var(--amber-700)}
+.alert-ok{background:var(--green-50);color:var(--green-700)}
+.alert svg{width:20px;height:20px;flex:none}
+.alert .grow{flex:1}
+.skel{background:linear-gradient(90deg,#eef1f6 25%,#f7f8fb 37%,#eef1f6 63%);background-size:400% 100%;animation:shimmer 1.3s ease infinite;border-radius:8px;height:14px}
+@keyframes shimmer{0%{background-position:100% 50%}100%{background-position:0 50%}}
+.skel-row{display:flex;gap:16px;align-items:center;padding:20px 22px;border-bottom:1px solid var(--line-2)}
+
+/* ---------- quotes grid ---------- */
+.qgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.qcard{display:flex;gap:16px;padding:16px;background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-sm);transition:transform .15s,box-shadow .15s,border-color .15s;min-width:0}
+.qcard:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:#d6dbe7}
+.qthumb{width:92px;height:92px;border-radius:12px;background:var(--slate-50);flex:none;display:grid;place-items:center;color:var(--faint);overflow:hidden;border:1px solid var(--line-2)}
+.qthumb img{width:100%;height:100%;object-fit:cover}
+.qthumb svg{width:30px;height:30px}
+.qbody{min-width:0;flex:1;display:flex;flex-direction:column;gap:4px}
+.qtop{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.qtop b{font-weight:700}
+.qmeta{color:var(--muted);font-size:13px}
+.qdesc{color:var(--slate-700);font-size:13.5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.qfoot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:6px;font-size:13px;color:var(--muted)}
+
+/* ---------- inbox ---------- */
+.inbox{display:grid;grid-template-columns:340px minmax(0,1fr);height:calc(100vh - var(--topbar) - var(--pad)*2);min-height:520px;background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-sm);overflow:hidden}
+.conv-pane{border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.conv-search{padding:14px;border-bottom:1px solid var(--line-2)}
+.conv-list{overflow-y:auto;flex:1}
+.conv{display:flex;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line-2);align-items:flex-start;transition:background .12s}
+.conv:hover{background:#FBFCFE}
+.conv.active{background:var(--orange-50);box-shadow:inset 3px 0 0 var(--orange)}
+.conv-main{min-width:0;flex:1}
+.conv-top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.conv-top b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.conv-top span{color:var(--faint);font-size:12px;white-space:nowrap}
+.conv-prev{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.conv.unread .conv-prev{color:var(--text);font-weight:600}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--orange);flex:none;margin-top:6px}
+.thread-pane{display:flex;flex-direction:column;min-height:0;min-width:0}
+.thread-head{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--line)}
+.thread-head .grow{flex:1;min-width:0}
+.thread-head b{display:block;font-size:15px}
+.thread-head small{color:var(--muted)}
+.back-btn{display:none}
+.thread{flex:1;overflow-y:auto;padding:22px 20px;background:#F7F8FB;display:flex;flex-direction:column;gap:14px}
+.daysep{align-self:center;font-size:12px;font-weight:600;color:var(--muted);background:#fff;border:1px solid var(--line);padding:3px 12px;border-radius:999px}
+.bub-row{display:flex;gap:10px;align-items:flex-end;max-width:78%}
+.bub-row.them{align-self:flex-start}
+.bub-row.us{align-self:flex-end;flex-direction:row-reverse}
+.bub{padding:11px 15px;border-radius:16px;white-space:pre-wrap;word-break:break-word;line-height:1.5}
+.them .bub{background:#fff;border:1px solid var(--line);border-bottom-left-radius:5px}
+.us .bub{background:var(--navy);color:#fff;border-bottom-right-radius:5px}
+.bub-meta{display:flex;align-items:center;gap:10px;margin-top:4px;font-size:12px;color:var(--faint)}
+.us .bub-meta{justify-content:flex-end}
+.bub-meta button{color:var(--muted);font-weight:600;font-size:12px}
+.bub-meta button:hover{color:var(--orange-600)}
+.bub-meta .del:hover{color:var(--red-700)}
+.reply-box{align-self:flex-end;width:min(560px,92%);background:#fff;border:1.5px solid var(--orange-100);border-radius:14px;padding:12px;box-shadow:var(--shadow-sm)}
+.reply-box textarea{min-height:84px;border-color:var(--line)}
+.reply-box .reply-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:10px;flex-wrap:wrap}
+.composer{border-top:1px solid var(--line);padding:14px 20px;background:#fff}
+.composer form{display:flex;gap:10px;align-items:flex-end}
+.composer textarea{min-height:46px;max-height:140px;resize:none;flex:1}
+.thread-empty{margin:auto;text-align:center;color:var(--muted)}
+.thread-empty .ei{width:64px;height:64px;border-radius:20px;background:var(--orange-50);color:var(--orange-600);display:grid;place-items:center;margin:0 auto 12px}
+.thread-empty .ei svg{width:30px;height:30px}
+
+/* ---------- products / projects ---------- */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px}
+.pcard{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-sm);overflow:hidden;display:flex;flex-direction:column;transition:transform .15s,box-shadow .15s}
+.pcard:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.pimg{aspect-ratio:4/3;background:var(--slate-50);display:grid;place-items:center;color:var(--faint);overflow:hidden;position:relative}
+.pimg img{width:100%;height:100%;object-fit:cover}
+.pimg svg{width:34px;height:34px}
+.pimg .tag{position:absolute;left:10px;top:10px;background:rgba(255,255,255,.92);backdrop-filter:blur(4px)}
+.pinfo{padding:14px 16px 16px;display:flex;flex-direction:column;gap:4px;flex:1}
+.pinfo b{font-size:15px}
+.pinfo .price{color:var(--orange-600);font-weight:800;font-size:16px}
+.pinfo p{color:var(--muted);font-size:13px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pact{display:flex;gap:8px;margin-top:auto;padding-top:12px}
+.pact .btn{flex:1}
+.ad-item{display:flex;gap:16px;align-items:center;padding:16px 22px;border-bottom:1px solid var(--line-2)}
+.ad-item:last-child{border-bottom:0}
+.ad-ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;flex:none}
+.ad-ic svg{width:22px;height:22px}
+.ad-main{flex:1;min-width:0}
+.ad-main b{display:block}
+.ad-main p{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ad-main a{color:var(--blue-700);font-size:12.5px;font-weight:600}
+
+/* stats editor */
+.stats-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.stat-card{border:1.5px solid var(--line);border-radius:12px;padding:14px;background:#FBFCFE}
+.stat-card .n{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:8px}
+.stat-card input+input{margin-top:8px}
+.stat-card input:first-of-type{font-weight:800;font-size:18px}
+.stat-preview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;background:var(--navy);border-radius:12px;padding:18px;margin-bottom:18px}
+.stat-preview div{text-align:center;color:#fff}
+.stat-preview b{display:block;font-size:22px;color:var(--orange);letter-spacing:-.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat-preview span{font-size:12px;color:#B5C2DA}
+
+/* settings */
+.settings{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.8fr);gap:22px;align-items:start}
+.stack>*+*{margin-top:22px}
+.switch{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--line-2)}
+.switch:last-of-type{border-bottom:0}
+.switch .grow{flex:1}
+.switch b{display:block}
+.switch small{color:var(--muted);font-size:13px}
+.toggle{position:relative;width:44px;height:26px;flex:none}
+.toggle input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;z-index:2}
+.toggle i{position:absolute;inset:0;border-radius:999px;background:#CDD3E0;transition:background .2s}
+.toggle i::after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s}
+.toggle input:checked+i{background:var(--orange)}
+.toggle input:checked+i::after{transform:translateX(18px)}
+.toggle input:focus-visible+i{outline:3px solid rgba(245,130,11,.45);outline-offset:2px}
+.check-list{list-style:none;margin-top:12px}
+.check-list li{display:flex;gap:10px;align-items:flex-start;padding:7px 0;font-size:13.5px}
+.check-list svg{width:18px;height:18px;flex:none;margin-top:2px}
+.ok{color:var(--green-700)}.bad{color:var(--red-700)}
+
+/* ---------- dialogs ---------- */
+.backdrop{position:fixed;inset:0;z-index:120;background:rgba(9,17,33,.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:24px;animation:fade .18s ease}
+.backdrop.drawer-wrap{justify-content:flex-end;padding:0;align-items:stretch}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes slide{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
+.dialog:focus,.dialog:focus-visible,.view:focus-visible{outline:none}
+.dialog{background:#fff;border-radius:18px;box-shadow:var(--shadow-lg);width:100%;max-width:560px;max-height:calc(100vh - 48px);display:flex;flex-direction:column;animation:pop .22s cubic-bezier(.2,.8,.2,1)}
+.dialog.sm{max-width:440px}
+.dialog.lg{max-width:1000px}
+.dialog.drawer{max-width:560px;height:100%;max-height:none;border-radius:0;animation:slide .26s cubic-bezier(.2,.8,.2,1)}
+.dlg-head{display:flex;align-items:flex-start;gap:14px;padding:20px 24px 16px;border-bottom:1px solid var(--line-2)}
+.dlg-head h2{font-size:18px;letter-spacing:-.3px;line-height:1.3}
+.dlg-head .sub{color:var(--muted);font-size:13px;margin-top:2px}
+.dlg-head .grow{flex:1;min-width:0}
+.dlg-x{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;color:var(--muted);flex:none}
+.dlg-x:hover{background:var(--slate-50);color:var(--text)}
+.dlg-x svg{width:20px;height:20px}
+.dlg-body{padding:22px 24px;overflow-y:auto;flex:1}
+.dlg-foot{display:flex;gap:10px;justify-content:flex-end;padding:16px 24px;border-top:1px solid var(--line-2);background:#FBFCFE;border-radius:0 0 18px 18px;flex-wrap:wrap}
+.dialog.drawer .dlg-foot{border-radius:0}
+.dlg-foot .left{margin-right:auto}
+.dlg-text{color:var(--slate-700);line-height:1.6}
+.two-col{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px}
+.sect-title{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:10px}
+.kv{display:grid;grid-template-columns:110px minmax(0,1fr);gap:8px 14px;font-size:14px}
+.kv dt{color:var(--muted)}
+.kv dd{min-width:0;word-break:break-word}
+.box{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:#FBFCFE}
+.box+.box{margin-top:12px}
+.thumb-btn{display:block;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--slate-50);position:relative;width:100%}
+.thumb-btn img{width:100%;max-height:220px;object-fit:contain;background:var(--slate-50)}
+.thumb-btn::after{content:"Click to enlarge";position:absolute;right:8px;bottom:8px;background:rgba(11,27,51,.8);color:#fff;font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:999px;opacity:0;transition:opacity .15s}
+.thumb-btn:hover::after{opacity:1}
+.lightbox{background:rgba(5,10,20,.9);z-index:200;cursor:zoom-out}
+.lightbox img{max-width:min(96vw,1200px);max-height:92vh;border-radius:10px;box-shadow:var(--shadow-lg);background:#fff}
+.dropzone{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:24px 16px;border:2px dashed #CBD2E0;border-radius:12px;background:#FBFCFE;cursor:pointer;color:var(--muted);transition:border-color .15s,background .15s;position:relative}
+.dropzone:hover,.dropzone.over{border-color:var(--orange);background:var(--orange-50)}
+.dropzone svg{width:30px;height:30px;color:var(--orange-600)}
+.dropzone b{color:var(--text)}
+.dropzone small{font-size:12.5px}
+.dropzone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.dropzone.has{padding:10px}
+.dropzone.has img{max-height:190px;border-radius:8px;object-fit:contain}
+.dropzone.has .dz-hint{font-size:12.5px;margin-top:6px}
+.calc{display:flex;gap:18px;flex-wrap:wrap;margin-top:8px;padding:10px 14px;border-radius:10px;background:var(--slate-50);font-size:13px;color:var(--slate-700)}
+.calc b{color:var(--text)}
+.seg{display:inline-flex;background:var(--slate-50);border-radius:10px;padding:3px;gap:2px;margin-bottom:12px}
+.seg button{padding:7px 14px;border-radius:8px;font-weight:600;font-size:13px;color:var(--muted)}
+.seg button[aria-pressed=true]{background:#fff;color:var(--text);box-shadow:var(--shadow-sm)}
+
+/* order drawer */
+.steps{display:flex;gap:0;margin:2px 0 4px}
+.step{flex:1;text-align:center;position:relative;font-size:11.5px;font-weight:600;color:var(--faint);padding-top:26px}
+.step::before{content:"";position:absolute;left:50%;top:8px;width:12px;height:12px;border-radius:50%;background:#fff;border:2.5px solid #D5DAE6;transform:translateX(-50%);z-index:1}
+.step::after{content:"";position:absolute;left:-50%;top:13px;width:100%;height:2.5px;background:#E3E7F0}
+.step:first-child::after{display:none}
+.step.done{color:var(--slate-700)}.step.done::before{background:var(--green);border-color:var(--green)}.step.done::after{background:var(--green)}
+.step.now{color:var(--orange-600)}.step.now::before{border-color:var(--orange);background:#fff;box-shadow:0 0 0 4px rgba(245,130,11,.18)}.step.now::after{background:var(--green)}
+.items-t{width:100%;border-collapse:collapse;font-size:14px}
+.items-t th{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);text-align:left;padding:0 0 8px;font-weight:700}
+.items-t td{padding:10px 0;border-top:1px solid var(--line-2);vertical-align:top}
+.items-t th:last-child,.items-t td:last-child{text-align:right}
+.items-t td.q{white-space:nowrap;color:var(--muted);padding-right:12px}
+.totals{margin-top:6px;border-top:1px solid var(--line);padding-top:10px;font-size:14px}
+.totals div{display:flex;justify-content:space-between;padding:3px 0;color:var(--slate-700)}
+.totals .grand{font-size:17px;font-weight:800;color:var(--text);padding-top:8px}
+.copy-line{display:flex;gap:8px;align-items:flex-start}
+.copy-line span{flex:1;min-width:0}
+.next-actions{display:flex;gap:10px;flex-wrap:wrap}
+.status-set{display:flex;gap:8px}
+.status-set select{flex:1}
+
+/* toasts */
+.toasts{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:400;display:flex;flex-direction:column;gap:10px;align-items:center;pointer-events:none;width:max-content;max-width:calc(100vw - 32px)}
+.toast{pointer-events:none;display:flex;align-items:flex-start;gap:12px;background:var(--navy);color:#fff;padding:13px 16px;border-radius:12px;box-shadow:var(--shadow-lg);font-weight:600;font-size:14px;max-width:400px;animation:pop .25s ease}
+.toast svg{width:20px;height:20px;flex:none;margin-top:1px}
+.toast.ok svg{color:#4ADE80}.toast.err{background:#7A1912}.toast.err svg{color:#FFB4AE}.toast.info svg{color:var(--orange)}
+.toast a{color:var(--orange-100);text-decoration:underline;font-weight:700;pointer-events:auto}
+.toast.out{opacity:0;transform:translateY(-8px);transition:all .25s}
+
+/* ---------- responsive ---------- */
+@media (max-width:1180px){
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid-2,.settings{grid-template-columns:minmax(0,1fr)}
+  .cols-orders{grid-template-columns:minmax(130px,1fr) minmax(150px,1.2fr) minmax(0,1.3fr) 100px 150px 24px}
+}
+@media (max-width:980px){
+  .app{display:block}
+  .sidebar{position:fixed;left:0;top:0;bottom:0;width:min(86vw,300px);transform:translateX(-102%);transition:transform .25s cubic-bezier(.2,.8,.2,1);box-shadow:var(--shadow-lg)}
+  body.nav-open .sidebar{transform:none}
+  body.nav-open .scrim{opacity:1;pointer-events:auto}
+  .icon-btn.menu-btn{display:grid}
+  :root{--pad:18px;--topbar:64px}
+  .qgrid{grid-template-columns:minmax(0,1fr)}
+  .two-col{grid-template-columns:minmax(0,1fr);gap:22px}
+  .inbox{grid-template-columns:minmax(0,1fr);height:calc(100vh - var(--topbar) - var(--pad)*2)}
+  .inbox .thread-pane{display:none}
+  .inbox.show-thread .conv-pane{display:none}
+  .inbox.show-thread .thread-pane{display:flex}
+  .back-btn{display:grid}
+  .bub-row{max-width:90%}
+  .hello{flex-direction:column;align-items:flex-start;padding:20px}
+}
+@media (max-width:820px){
+  .row-head{display:none}
+  .row{grid-template-columns:1fr auto!important;grid-template-areas:"a b" "c c" "d e";gap:6px 12px;padding:14px 16px}
+  .cols-orders .c-ref{grid-area:a}.cols-orders .c-status{grid-area:b;justify-self:end}.cols-orders .c-cust{grid-area:c}.cols-orders .c-items{grid-area:d;color:var(--muted)}.cols-orders .c-total{grid-area:e;justify-self:end}.cols-orders .c-chev{display:none}
+  .cols-customers .c-cust{grid-area:a}.cols-customers .c-co{grid-area:c;color:var(--muted)}.cols-customers .c-spend{grid-area:b;justify-self:end}.cols-customers .c-join{grid-area:d;color:var(--muted)}.cols-customers .c-orders{display:none}.cols-customers .c-act{grid-area:e;justify-self:end}
+  .row .c-items small{display:none}
+}
+@media (max-width:640px){
+  .kpis{grid-template-columns:1fr 1fr;gap:12px}
+  .kpi{padding:14px}.kpi-val{font-size:25px}
+  .field-row,.stats-grid{grid-template-columns:1fr}
+  .stat-preview{grid-template-columns:1fr 1fr}
+  .tb-actions .txt{display:none}
+  .btn-ghost.tb-btn{padding:10px}
+  .backdrop{padding:0;align-items:flex-end}
+  .dialog{max-width:none;border-radius:18px 18px 0 0;max-height:94vh}
+  .dialog.drawer{border-radius:0;max-height:none}
+  .dlg-foot{border-radius:0}
+  .toasts{left:12px;right:12px;top:10px;transform:none;width:auto;align-items:stretch}.toast{max-width:none}
+  .steps .step{font-size:10.5px}
+  .kv{grid-template-columns:90px minmax(0,1fr)}
+  .pgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .qcard{flex-direction:column}.qthumb{width:100%;height:150px}
+}
+@media (max-width:420px){
+  .attn-item{padding:12px 16px;gap:10px}
+  .attn-item.recent .chip{font-size:0;gap:0;padding:5px}   /* very small phones: status shown as its coloured dot (text still read by screen readers) */
+}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 </style>
 </head>
 <body data-auth-required="admin">
 
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="brand-label">ADMIN PANEL</div>
-    <div class="brand-name">AweSum Brands</div>
-    <hr class="sidebar-divider">
-    <nav class="nav">
-      <button class="nav-item active" data-page="orders">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
-        Orders Queue
+<div class="app">
+  <aside class="sidebar" id="sidebar" aria-label="Main navigation"></aside>
+  <div class="main">
+    <header class="topbar">
+      <button type="button" class="icon-btn menu-btn" id="menuBtn" aria-label="Open menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
       </button>
-      <button class="nav-item" data-page="marketplace">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/></svg>
-        Marketplace Items
-      </button>
-      <button class="nav-item" data-page="sellers">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.5 2.9-6 6.5-6s6.5 2.5 6.5 6"/><circle cx="17" cy="8.5" r="2.4"/><path d="M15.5 14.2c2.6.4 4.5 2.4 4.5 5.3"/></svg>
-        Customers
-      </button>
-      <button class="nav-item" data-page="reports">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
-        Homepage Content
-      </button>
-      <button class="nav-item" data-page="quotes">Quotes</button>
-      <button class="nav-item" data-page="adverts">Adverts</button>
-      <button class="nav-item" data-page="messages">Messages</button>
-      <button class="nav-item" data-page="settings">Settings</button>
-      <a href="change-password.html" style="display:flex;align-items:center;padding:13px 16px;border-radius:10px;color:#8f9bb5;font-size:15px;font-weight:600;text-decoration:none;">Change Password</a>
-    </nav>
-  </aside>
-
-  <!-- Main content -->
-  <main class="main">
-
-    <!-- Orders Queue page -->
-    <section class="page active" id="page-orders">
-      <h1 class="page-title">New Orders Queue</h1>
-      <div class="order-list" id="order-list">
-    </div>
-    </section>
-
-    <!-- Marketplace Items page -->
-    <section class="page" id="page-marketplace">
-      <h1 class="page-title">Add New Marketplace Item</h1>
-      <div class="order-list" id="admin-products" style="margin-bottom:32px;"></div>
-      <form class="form-wrap" id="marketplace-form">
-        <div class="field">
-          <label for="prod-name">Product Name</label>
-          <input type="text" id="prod-name" placeholder="e.g. Premium Business Cards" required>
-        </div>
-        <div class="field">
-          <label for="prod-price">Price(ZAR)</label>
-          <input type="number" id="prod-price" placeholder="299" min="1" required>
-        </div>
-        <div class="field">
-          <label for="prod-category">Category</label>
-          <select id="prod-category">
-            <option>Business Cards</option>
-            <option>Flyers</option>
-            <option>T-Shirts</option>
-            <option>Caps</option>
-            <option>Posters</option>
-            <option>Signage</option>
-            <option>Banners</option>
-            <option>Brochures</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="prod-desc">Description</label>
-          <textarea id="prod-desc" placeholder="Describe this product..."></textarea>
-        </div>
-        <div class="field">
-          <label>Product Image</label>
-          <label class="upload-box" id="upload-box">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8a94a6" stroke-width="1.8"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
-            <div class="upload-title" id="upload-text">Click or drag to upload</div>
-            <div class="upload-sub">JPG, PNG up to 10MB</div>
-            <input type="file" accept=".jpg,.jpeg,.png" id="prod-image">
-          </label>
-        </div>
-        <button type="submit" class="submit-btn">Add to Marketplace</button>
-      </form>
-    </section>
-
-    <section class="page" id="page-adverts">
-      <h1 class="page-title">Adverts and Previous Work</h1>
-      <div class="order-list" id="admin-adverts" style="margin-bottom:32px;"></div>
-      <form class="form-wrap" id="advert-form">
-        <div class="field">
-          <label for="advert-title">Advert Title</label>
-          <input type="text" id="advert-title" placeholder="e.g. 20% off branded t-shirts" required>
-        </div>
-        <div class="field">
-          <label for="advert-description">Message</label>
-          <textarea id="advert-description" placeholder="Tell customers about this special or project..." required></textarea>
-        </div>
-        <div class="field">
-          <label for="advert-type">Media Type</label>
-          <select id="advert-type"><option value="video">Video</option><option value="image">Image</option></select>
-        </div>
-        <div class="field">
-          <label for="advert-url">Media URL</label>
-          <input type="url" id="advert-url" placeholder="https://example.com/special.mp4" required>
-        </div>
-        <button type="submit" class="submit-btn">Publish Advert</button>
-      </form>
-    </section>
-
-    <!-- Sellers page (placeholder) -->
-    <section class="page" id="page-sellers">
-      <h1 class="page-title">Customers</h1>
-      <p style="color:#8f9bb5;margin-bottom:18px;">Everyone with an account. If a customer is locked out, click "Reset password": we email them a reset link and show you the same link to send by WhatsApp if the email does not arrive.</p>
-      <div class="order-list" id="customer-list"></div>
-    </section>
-
-    <section class="page" id="page-settings">
-      <h1 class="page-title">Admin Settings</h1>
-      <section class="settings-panel">
-        <h2>Business contact details</h2>
-        <p>These details are displayed on the site's legal pages and contact sections. Existing details stay in place until you save new ones.</p>
-        <form id="site-content-form" class="form-wrap">
-          <div class="field"><label for="site-trading-name">Trading name</label><input type="text" id="site-trading-name" maxlength="160" required></div>
-          <div class="field"><label for="site-legal-name">Legal name (optional)</label><input type="text" id="site-legal-name" maxlength="160"></div>
-          <div class="field"><label for="site-email">Contact email</label><input type="email" id="site-email" maxlength="255" required></div>
-          <div class="field"><label for="site-phone">Contact phone</label><input type="text" id="site-phone" maxlength="40" required></div>
-          <div class="field"><label for="site-address">Business address</label><textarea id="site-address" maxlength="500" required></textarea></div>
-          <div class="field"><label for="site-registration">Registration number (optional)</label><input type="text" id="site-registration" maxlength="100"></div>
-          <div class="field"><label for="site-vat">VAT number (optional)</label><input type="text" id="site-vat" maxlength="100"></div>
-          <button type="submit" class="submit-btn">Save business details</button>
-        </form>
-      </section>
-      <section class="settings-panel">
-        <h2>Admin preferences</h2>
-        <p>These preferences are saved in this browser. They do not enable background alerts or change how orders or messages are processed.</p>
-        <label class="settings-toggle"><input type="checkbox" id="admin-order-notifications"><span>Order alert preference</span></label>
-        <label class="settings-toggle"><input type="checkbox" id="admin-message-notifications"><span>Message alert preference</span></label>
-        <div class="field"><label for="admin-appearance">Admin display density</label><select id="admin-appearance"><option value="comfortable">Comfortable</option><option value="compact">Compact</option></select></div>
-        <button type="button" class="submit-btn" id="save-admin-preferences">Save admin preferences</button>
-      </section>
-      <section class="settings-panel">
-        <h2>Account and users</h2>
-        <p>Manage customer accounts from the existing customer list, or change the administrator password.</p>
-        <div class="settings-actions">
-          <button type="button" class="settings-link" id="open-customer-settings">Manage customer accounts</button>
-          <a class="settings-link" href="change-password.html">Change admin password</a>
-        </div>
-      </section>
-    </section>
-
-    <section class="page" id="page-reports">
-      <h1 class="page-title">Manage Homepage</h1>
-      <form class="form-wrap" id="stats-form">
-        <div class="field">
-          <label for="stat-1-value">Stat 1 value</label>
-          <input type="text" id="stat-1-value" value="2,400+" required>
-        </div>
-        <div class="field">
-          <label for="stat-1-label">Stat 1 label</label>
-          <input type="text" id="stat-1-label" value="Happy Clients" required>
-        </div>
-        <div class="field">
-          <label for="stat-2-value">Stat 2 value</label>
-          <input type="text" id="stat-2-value" value="18,000+" required>
-        </div>
-        <div class="field">
-          <label for="stat-2-label">Stat 2 label</label>
-          <input type="text" id="stat-2-label" value="Projects Completed" required>
-        </div>
-        <div class="field">
-          <label for="stat-3-value">Stat 3 value</label>
-          <input type="text" id="stat-3-value" value="3–5 Days" required>
-        </div>
-        <div class="field">
-          <label for="stat-3-label">Stat 3 label</label>
-          <input type="text" id="stat-3-label" value="Turnaround Time" required>
-        </div>
-        <div class="field">
-          <label for="stat-4-value">Stat 4 value</label>
-          <input type="text" id="stat-4-value" value="100%" required>
-        </div>
-        <div class="field">
-          <label for="stat-4-label">Stat 4 label</label>
-          <input type="text" id="stat-4-label" value="Quality Guaranteed" required>
-        </div>
-        <button type="submit" class="submit-btn">Save Homepage Statistics</button>
-      </form>
-
-      <h1 class="page-title" style="margin-top:48px;">Previous Projects</h1>
-      <div class="order-list" id="admin-projects" style="margin-bottom:32px;"></div>
-      <form class="form-wrap" id="project-form">
-        <div class="field">
-          <label for="project-title">Project Title</label>
-          <input type="text" id="project-title" placeholder="e.g. Brand Launch Campaign" required>
-        </div>
-        <div class="field">
-          <label for="project-category">Category</label>
-          <select id="project-category">
-            <option value="business-cards">Business Cards</option>
-            <option value="flyers">Flyers</option>
-            <option value="banners">Banners</option>
-            <option value="t-shirts">T-Shirts</option>
-            <option value="signage">Signage</option>
-            <option value="caps">Caps</option>
-            <option value="posters">Posters</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="project-image-url">Image URL</label>
-          <input type="url" id="project-image-url" placeholder="https://example.com/project-image.jpg">
-        </div>
-        <div class="field">
-          <label>Or upload a project image</label>
-          <label class="upload-box" id="project-upload-box">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8a94a6" stroke-width="1.8"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
-            <div class="upload-title" id="project-upload-text">Click to upload</div>
-            <div class="upload-sub">JPG, PNG up to 5MB</div>
-            <input type="file" accept="image/*" id="project-image-file">
-          </label>
-        </div>
-        <button type="submit" class="submit-btn">Add Project to Homepage</button>
-      </form>
-    </section>
-
-    <section class="page" id="page-quotes">
-      <h1 class="page-title">Customer Quotes</h1>
-      <div class="order-list" id="quote-list"></div>
-    </section>
-
-    <section class="page" id="page-messages">
-      <h1 class="page-title">Customer Messages</h1>
-      <div class="order-list" id="message-list"></div>
-    </section>
-
-  </main>
-
-  <button class="exit-admin" type="button">Sign Out</button>
-
-  <!-- Review Modal -->
-  <div class="modal-overlay" id="modal-overlay">
-    <div class="modal">
-      <h3>Can This Be Done?</h3>
-      <p id="modal-item">Custom T-Shirts × 200</p>
-      <div class="modal-actions">
-        <button class="btn-proceed" id="btn-proceed">Yes - Proceed</button>
-        <button class="btn-reject" id="btn-reject">No - Reject</button>
+      <div class="tb-title">
+        <h1 id="pageTitle">Dashboard</h1>
+        <p id="pageSub"></p>
       </div>
-    </div>
+      <div class="tb-actions">
+        <button type="button" class="btn btn-ghost tb-btn" id="refreshBtn" title="Check for new orders, quotes and messages">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+          <span class="txt">Refresh</span>
+        </button>
+      </div>
+    </header>
+    <main class="view" id="view" tabindex="-1" aria-live="polite"></main>
   </div>
-
-  <div class="modal-overlay" id="quote-modal-overlay">
-    <div class="modal quote-modal">
-      <h3>Review Quote Request</h3>
-      <div class="quote-details" id="quote-details"></div>
-      <label for="quote-response">Response to customer</label>
-      <textarea class="quote-response" id="quote-response" placeholder="Write your response..."></textarea>
-      <label for="quote-price">Price for this quote (R, excluding VAT)</label>
-      <input type="number" id="quote-price" min="0" step="0.01" placeholder="e.g. 1250.00" style="width:100%; padding:12px; border:1px solid var(--border); border-radius:8px; font:inherit; margin:8px 0 6px;">
-      <p id="quote-price-note" style="font-size:13px; color:#667085; margin-bottom:16px;">The customer sees this price with your response and design draft. VAT (15%) is added at checkout. Once they accept, they go straight to payment.</p>
-      <label for="draft-design-input">Upload first draft design</label>
-      <input type="file" id="draft-design-input" accept="image/*" style="width:100%; margin-bottom:10px;">
-      <div id="draft-design-preview" style="display:none; margin-bottom:12px;"></div>
-      <label for="quote-status">Status</label>
-      <select class="quote-status" id="quote-status"><option>Draft Sent</option><option>Reviewed</option><option>Accepted</option><option>Approved</option><option>Needs Revision</option><option>Rejected</option></select>
-      <div class="modal-actions"><button class="quote-close" type="button" id="quote-close">Cancel</button><button class="btn-proceed" type="button" id="quote-save">Send To Client</button></div>
-    </div>
-  </div>
-
-  <div class="toast" id="toast">Product added to marketplace</div>
+</div>
+<div class="scrim" id="scrim"></div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<div class="boot" id="boot"><div class="spinner"></div><span>Loading your dashboard…</span></div>
 
 <script src="app.js"></script>
 <script>
-  Promise.all([AweSum.api('quotes'), AweSum.api('messages'), AweSum.api('products'), AweSum.api('adverts'), AweSum.api('orders')]).then(([quotes, messages, products, adverts, orders]) => {
-    AweSum.write(AweSum.keys.quotes, quotes.quotes || []);
-    AweSum.write(AweSum.keys.messages, messages.messages || []);
-    AweSum.write(AweSum.keys.products, products.products || []);
-    AweSum.write(AweSum.keys.adverts, adverts.adverts || []);
-    AweSum.write(AweSum.keys.orders, orders.orders || []);
-    renderAdminProducts(products.products || []);
-    renderAdminOrders(orders.orders || []);
-    renderAdminMessages(messages.messages || []);
-    renderAdminAdverts(adverts.adverts || []);
-    storedQuotes = quotes.quotes || [];
-    renderQuoteCards();
-  }).catch(error => AweSum.showMessage(error.message, 'error'));
-  const orderList = document.getElementById('order-list');
-  orderList.innerHTML = '';
-  function renderAdminOrders(orders) {
-    orderList.innerHTML = orders.length ? '' : '<p class="placeholder">No customer orders have been placed yet.</p>';
-    orders.forEach(order => {
-      const card = document.createElement('div');
-      card.className = 'order-card';
-      const items = (Array.isArray(order.items) ? order.items : []).map(item => item.name + ' x ' + item.quantity).join(', ');
-      card.innerHTML = '<div class="order-info"><div class="order-top"><span class="order-id">' + AweSum.escapeHtml(order.id) + '</span><span class="badge ' + (['Accepted', 'Payment received', 'Completed'].includes(order.status) ? 'accepted' : order.status === 'Rejected' ? 'rejected' : 'awaiting') + '">' + AweSum.escapeHtml(order.status || 'Pending') + '</span></div><span class="order-customer">' + AweSum.escapeHtml(order.customer || '') + ' · ' + AweSum.escapeHtml(order.email || '') + '</span><span class="order-meta">' + AweSum.escapeHtml(items) + ' · ' + AweSum.escapeHtml(order.address || '') + '</span></div><button class="review-btn" data-order-response="' + AweSum.escapeHtml(order.id) + '">Review / Respond</button>';
-      orderList.appendChild(card);
-    });
-  }
-  orderList.addEventListener('click', async event => {
-    const button = event.target.closest('[data-order-response]');
-    if (!button) return;
-    const orderStatuses = ['Payment pending', 'Payment received', 'Pending', 'Accepted', 'Rejected', 'Processing', 'Completed'];
-    const response = prompt('Enter a status: ' + orderStatuses.join(', '));
-    if (!response) return;
-    const status = orderStatuses.find(option => option.toLowerCase() === response.trim().toLowerCase());
-    if (!status) { AweSum.showMessage('That is not a valid status. Please type one exactly as listed.', 'error'); return; }
-    try {
-      await AweSum.api('order-status', { method: 'PUT', body: JSON.stringify({ id: button.dataset.orderResponse, status }) });
-      const orders = AweSum.read(AweSum.keys.orders, []);
-      const order = orders.find(item => item.id === button.dataset.orderResponse);
-      if (order) order.status = status;
-      AweSum.write(AweSum.keys.orders, orders);
-      renderAdminOrders(orders);
-    } catch (error) { AweSum.showMessage(error.message, 'error'); }
-  });
-  let storedQuotes = AweSum.read(AweSum.keys.quotes, []);
-  const quoteList = document.getElementById('quote-list');
-  const quoteModal = document.getElementById('quote-modal-overlay');
-  const quoteDetails = document.getElementById('quote-details');
-  const quoteResponse = document.getElementById('quote-response');
-  const quoteStatus = document.getElementById('quote-status');
-  const quotePrice = document.getElementById('quote-price');
-  const quotePriceNote = document.getElementById('quote-price-note');
-  const quoteSave = document.getElementById('quote-save');
-  const draftDesignInput = document.getElementById('draft-design-input');
-  const draftDesignPreview = document.getElementById('draft-design-preview');
-  let activeQuote = null;
-  let pendingDraftImage = '';
+(function () {
+'use strict';
+if (!window.AweSum) { document.body.innerHTML = '<p style="padding:40px;font-family:sans-serif">The admin page could not load its scripts. Please refresh the page.</p>'; return; }
+const A = window.AweSum;
+const esc = A.escapeHtml;
+const $ = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+const enc = encodeURIComponent;
+const VAT = 0.15;
+const PAID = ['Payment received', 'Accepted', 'Processing', 'Completed'];
+const ORDER_ACTION = ['Payment received', 'Pending'];
+const ORDER_STATUSES = ['Payment pending', 'Payment received', 'Pending', 'Accepted', 'Processing', 'Completed', 'Rejected'];
+const ORDER_FLOW = ['Payment pending', 'Payment received', 'Accepted', 'Processing', 'Completed'];
+const QUOTE_ACTION = ['Awaiting Review', 'Pending', 'Needs Revision'];
+const CATEGORIES = ['Business Cards', 'Flyers', 'T-Shirts', 'Caps', 'Posters', 'Signage', 'Banners', 'Brochures'];
+const PROJECT_CATS = { 'business-cards': 'Business Cards', 'flyers': 'Flyers', 'banners': 'Banners', 't-shirts': 'T-Shirts', 'signage': 'Signage', 'caps': 'Caps', 'posters': 'Posters' };
+const DEFAULT_STATS = [{ value: '2,400+', label: 'Happy Clients' }, { value: '18,000+', label: 'Projects Completed' }, { value: '3–5 Days', label: 'Turnaround Time' }, { value: '100%', label: 'Quality Guaranteed' }];
+const DEFAULT_CONTENT = { tradingName: 'AweSum Brands', legalName: '', email: 'info@awesumbrands.co.za', phone: '0657350139', address: '447 anton lembede street', registrationNumber: '', vatNumber: '' };
+const PREF_KEY = 'awesum_admin_preferences';
 
-  function renderQuoteCards() {
-    quoteList.innerHTML = '';
-    storedQuotes.forEach(quote => {
-      const card = document.createElement('div');
-      card.className = 'order-card';
-      card.innerHTML = '<div class="order-info"><div class="order-top"><span class="order-id">' + AweSum.escapeHtml(quote.id) + '</span><span class="badge awaiting">' + AweSum.escapeHtml(quote.status || 'Pending') + '</span></div><span class="order-customer">' + AweSum.escapeHtml(quote.customer) + ' · ' + AweSum.escapeHtml(quote.email) + '</span><span class="order-meta">' + AweSum.escapeHtml(quote.category) + ' x ' + AweSum.escapeHtml(quote.quantity) + ' · ' + AweSum.escapeHtml(quote.description) + (quote.quotedPrice !== null && quote.quotedPrice !== undefined ? ' · Price: ' + AweSum.money(quote.quotedPrice) + ' excl. VAT' : '') + (quote.orderReference ? ' · Order ' + AweSum.escapeHtml(quote.orderReference) + ' (' + AweSum.escapeHtml(quote.orderStatus || '') + ')' : '') + (quote.response ? ' · Response: ' + AweSum.escapeHtml(quote.response) : '') + '</span></div><div><button class="review-btn" data-quote="' + AweSum.escapeHtml(quote.id) + '">Review / Respond</button><button class="review-btn" data-delete-quote="' + AweSum.escapeHtml(quote.id) + '">Delete</button></div>';
-      quoteList.appendChild(card);
-    });
+/* ---------------- icons ---------------- */
+const ICONS = {
+  dashboard: '<rect x="3" y="3" width="7" height="9" rx="1.6"/><rect x="14" y="3" width="7" height="5" rx="1.6"/><rect x="14" y="12" width="7" height="9" rx="1.6"/><rect x="3" y="16" width="7" height="5" rx="1.6"/>',
+  orders: '<path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/>',
+  quotes: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/>',
+  messages: '<path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  products: '<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>',
+  adverts: '<path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/>',
+  homepage: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/>',
+  customers: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  settings: '<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3"/><path d="M1 14h6M9 8h6M17 16h6"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',
+  refresh: '<path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/>',
+  external: '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/>',
+  logout: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/>',
+  menu: '<path d="M3 6h18M3 12h18M3 18h18"/>',
+  x: '<path d="M18 6L6 18M6 6l12 12"/>',
+  chevron: '<path d="M9 18l6-6-6-6"/>',
+  back: '<path d="M15 18l-6-6 6-6"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  check: '<path d="M20 6L9 17l-5-5"/>',
+  alert: '<circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>',
+  bell: '<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>',
+  upload: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/>',
+  image: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/>',
+  trash: '<path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>',
+  mail: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/>',
+  key: '<circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3L21 2M16 7l3 3"/>',
+  copy: '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+  video: '<rect x="2" y="5" width="15" height="14" rx="2"/><path d="M17 10l5-3v10l-5-3"/>',
+  user: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  trend: '<path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/>',
+  clock: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+  send: '<path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/>',
+  shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>',
+  edit: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+  inbox: '<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5.1L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.5-6.9A2 2 0 0 0 16.7 4H7.3a2 2 0 0 0-1.8 1.1z"/>'
+};
+const icon = (n) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICONS[n] || '') + '</svg>';
 
-    document.querySelectorAll('#quote-list [data-quote]').forEach(button => {
-      button.textContent = 'Review / Respond';
-      button.addEventListener('click', event => {
-        event.stopPropagation();
-        activeQuote = storedQuotes.find(quote => quote.id === button.dataset.quote);
-        if (!activeQuote) return;
-        pendingDraftImage = activeQuote.draftImage || '';
-        quoteDetails.innerHTML = '<div><strong>Reference:</strong> ' + AweSum.escapeHtml(activeQuote.id) + '</div><div><strong>Customer:</strong> ' + AweSum.escapeHtml(activeQuote.customer) + ' · ' + AweSum.escapeHtml(activeQuote.email) + '</div><div><strong>Category:</strong> ' + AweSum.escapeHtml(activeQuote.category) + '</div><div><strong>Quantity:</strong> ' + AweSum.escapeHtml(activeQuote.quantity) + '</div><div><strong>Description:</strong> ' + AweSum.escapeHtml(activeQuote.description) + '</div><div><strong>Notes:</strong> ' + AweSum.escapeHtml(activeQuote.notes || 'None provided') + '</div><div><strong>Submitted:</strong> ' + AweSum.escapeHtml(new Date(activeQuote.createdAt).toLocaleString()) + '</div>' + (activeQuote.designImage ? '<div><strong>Original client design:</strong><img class="quote-design-image" src="' + AweSum.escapeHtml(activeQuote.designImage) + '" alt="Customer design upload"></div>' : '<div><strong>Original client design:</strong> None provided</div>') + (activeQuote.draftImage ? '<div><strong>Sent draft:</strong><img class="quote-design-image" src="' + AweSum.escapeHtml(activeQuote.draftImage) + '" alt="Admin draft design"></div>' : '');
-        quoteResponse.value = activeQuote.response || '';
-        quotePrice.value = activeQuote.quotedPrice !== null && activeQuote.quotedPrice !== undefined ? activeQuote.quotedPrice : '';
-        const quoteLocked = Boolean(activeQuote.orderReference);
-        quotePrice.disabled = quoteLocked;
-        quoteSave.disabled = quoteLocked;
-        quotePriceNote.textContent = quoteLocked ? 'The customer accepted this quote and order ' + activeQuote.orderReference + ' exists (' + (activeQuote.orderStatus || 'Payment pending') + '). The price and quote are now locked. Follow the order on the Orders page.' : 'The customer sees this price with your response and design draft. VAT (15%) is added at checkout. Once they accept, they go straight to payment.';
-        quoteStatus.value = activeQuote.status === 'Pending' ? 'Draft Sent' : (activeQuote.status || 'Draft Sent');
-        if (pendingDraftImage) {
-          draftDesignPreview.innerHTML = '<img src="' + AweSum.escapeHtml(pendingDraftImage) + '" alt="Draft preview" style="max-width:100%; max-height:220px; border-radius:8px; border:1px solid #ddd;">';
-          draftDesignPreview.style.display = 'block';
-        } else {
-          draftDesignPreview.innerHTML = '';
-          draftDesignPreview.style.display = 'none';
-        }
-        draftDesignInput.value = '';
-        quoteModal.classList.add('open');
-      });
-    });
-  }
+/* ---------------- formatting helpers ---------------- */
+const num = (v) => Number(v) || 0;
+const money = (v) => A.money(num(v));
+const lc = (v) => String(v || '').trim().toLowerCase();
+function parseDate(v) { if (!v) return null; const s = String(v); const d = new Date(/^\d{4}-\d{2}-\d{2} /.test(s) ? s.replace(' ', 'T') : s); return isNaN(d.getTime()) ? null : d; }
+const fmtDate = (v) => { const d = parseDate(v); return d ? d.toLocaleDateString('en-ZA', { day: 'numeric', month: 'short', year: 'numeric' }) : ''; };
+const fmtDateTime = (v) => { const d = parseDate(v); return d ? d.toLocaleDateString('en-ZA', { day: 'numeric', month: 'short', year: 'numeric' }) + ', ' + d.toLocaleTimeString('en-ZA', { hour: '2-digit', minute: '2-digit' }) : ''; };
+const timeOf = (v) => { const d = parseDate(v); return d ? d.toLocaleTimeString('en-ZA', { hour: '2-digit', minute: '2-digit' }) : ''; };
+function ago(v) {
+  const d = parseDate(v); if (!d) return '';
+  const s = Math.max(0, (Date.now() - d.getTime()) / 1000);   // never show a time in the future (server clock may differ)
+  if (s < 60) return 'just now';
+  if (s < 3600) return Math.floor(s / 60) + ' min ago';
+  if (s < 86400) return Math.floor(s / 3600) + ' h ago';
+  if (s < 7 * 86400) return Math.floor(s / 86400) + ' d ago';
+  return fmtDate(v);
+}
+function dateLine(v) { const d = parseDate(v); if (!d) return ''; return (Date.now() - d.getTime()) < 7 * 86400000 ? fmtDate(v) + ' · ' + ago(v) : fmtDate(v); }   // no 'date · date' for older items
+const initials = (n) => { const p = String(n || '?').trim().split(/\s+/).filter(Boolean); return ((p[0] || '?')[0] + (p.length > 1 ? p[p.length - 1][0] : '')).toUpperCase(); };
+const PALETTE = ['#2E6BE6', '#12A15D', '#E8730A', '#7A5AF8', '#D9427C', '#0E8F9C', '#B4470F', '#475467'];
+function avatar(name, cls) { let h = 0; String(name || '').split('').forEach(c => { h = (h * 31 + c.charCodeAt(0)) >>> 0; }); return '<span class="avatar ' + (cls || '') + '" style="background:' + PALETTE[h % PALETTE.length] + '" aria-hidden="true">' + esc(initials(name)) + '</span>'; }
+const chip = (label, tone) => '<span class="chip chip-' + tone + '">' + esc(label) + '</span>';
+function orderChip(s) { const m = { 'Payment pending': 'amber', 'Payment received': 'blue', 'Pending': 'amber', 'Accepted': 'green', 'Processing': 'violet', 'Completed': 'green', 'Rejected': 'red' }; return chip(s || 'Pending', m[s] || 'slate'); }
+const QLABEL = { 'Awaiting Review': 'Awaiting review', 'Needs Revision': 'Changes requested', 'Draft Sent': 'Sent to customer' };
+function quoteChip(s) { const m = { 'Awaiting Review': 'amber', 'Pending': 'amber', 'Needs Revision': 'orange', 'Draft Sent': 'blue', 'Approved': 'green', 'Accepted': 'green', 'Reviewed': 'slate', 'Rejected': 'red' }; return chip(QLABEL[s] || s || 'Pending', m[s] || 'slate'); }
+const imgSrc = (p) => esc(p || '');
+const isHttp = (u) => /^https?:\/\//i.test(String(u || ''));
 
-  renderQuoteCards();
+/* ---------------- state ---------------- */
+const S = {
+  me: null, orders: [], quotes: [], messages: [], products: [], adverts: [], projects: [], customers: [], stats: null, content: null,
+  loaded: {}, errors: {},
+  filters: { orders: 'all', quotes: 'all' }, search: { orders: '', quotes: '', customers: '', products: '', messages: '' },
+  route: { page: 'dashboard', id: '' }, renderedPage: null, detail: null, replyOpen: '', msgSel: '', pendingRender: false, lastUpdated: null, sig: ''
+};
+const LOADERS = {
+  orders: async () => (await A.api('orders')).orders || [],
+  quotes: async () => (await A.api('quotes')).quotes || [],
+  messages: async () => (await A.api('messages')).messages || [],
+  products: async () => (await A.api('products')).products || [],
+  adverts: async () => (await A.api('adverts')).adverts || [],
+  projects: async () => (await A.api('projects')).projects || [],
+  customers: async () => (await A.api('customers')).customers || [],
+  stats: async () => (await A.api('stats')).stats || null,
+  content: async () => (await A.api('site-content')).content || null
+};
+async function load(keys) {
+  await Promise.all(keys.map(async (k) => {
+    try { S[k] = await LOADERS[k](); S.errors[k] = null; } catch (e) { S.errors[k] = e.message || 'Could not load this section.'; }
+    S.loaded[k] = true;
+  }));
+  if (keys.includes('products')) { try { A.write(A.keys.products, S.products); } catch (e) {} }   // the storefront shows this saved copy instantly
+}
+const prefs = () => Object.assign({ orderNotifications: true, quoteNotifications: true, messageNotifications: true, appearance: 'comfortable' }, A.read(PREF_KEY, {}) || {});
 
-  draftDesignInput.addEventListener('change', () => {
-    const file = draftDesignInput.files[0];
-    if (!file) return;
-    if (file.size > 15 * 1024 * 1024) {
-      AweSum.showMessage('Please choose a draft image smaller than 15MB.', 'error');
-      draftDesignInput.value = '';
-      return;
+/* ---------------- derived data ---------------- */
+const unanswered = () => S.messages.filter(m => m.senderRole !== 'admin' && !m.reply);
+const quoteNeedsAction = (q) => QUOTE_ACTION.includes(q.status) && !q.orderReference;
+const needs = {
+  orders: () => S.orders.filter(o => ORDER_ACTION.includes(o.status)).length,
+  quotes: () => S.quotes.filter(quoteNeedsAction).length,
+  messages: () => unanswered().length
+};
+const customerByEmail = (email) => S.customers.find(c => lc(c.email) === lc(email));
+const customerById = (id) => S.customers.find(c => String(c.id) === String(id));
+const convKey = (m) => m.userId ? 'u' + m.userId : 'g' + lc(m.email);
+const orderItems = (o) => Array.isArray(o.items) ? o.items : [];
+function itemsSummary(o) { const it = orderItems(o); if (!it.length) return '—'; const first = it[0].name + (num(it[0].quantity) > 1 ? ' × ' + it[0].quantity : ''); return it.length > 1 ? first + ' +' + (it.length - 1) + ' more' : first; }
+function orderTotals(o) {
+  const total = num(o.total); const lines = orderItems(o).reduce((s, i) => s + num(i.lineTotal), 0);
+  const sub = lines > 0 && Math.abs(lines * (1 + VAT) - total) < 0.06 ? lines : Math.round(total / (1 + VAT) * 100) / 100;
+  return { sub, vat: Math.round((total - sub) * 100) / 100, total };
+}
+
+/* ---------------- toasts, busy buttons ---------------- */
+function toast(msg, type, opts) {
+  opts = opts || {}; type = type || 'ok';
+  const box = $('#toasts'); const t = document.createElement('div');
+  t.className = 'toast ' + type; t.setAttribute('role', type === 'err' ? 'alert' : 'status');
+  t.innerHTML = icon(type === 'err' ? 'alert' : type === 'info' ? 'bell' : 'check') + '<span>' + (opts.html ? msg : esc(msg)) + '</span>';
+  box.appendChild(t);
+  while (box.children.length > 4) box.removeChild(box.firstChild);
+  setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 300); }, opts.ttl || (type === 'err' ? 6500 : 3800));
+}
+async function busy(btn, fn) {
+  if (btn) { btn.disabled = true; btn.classList.add('busy'); }
+  try { return await fn(); }
+  finally { if (btn && btn.isConnected) { btn.disabled = false; btn.classList.remove('busy'); } }
+}
+
+/* ---------------- dialogs ---------------- */
+const overlays = [];
+function openDialog(o) {
+  const prevFocus = document.activeElement; const id = 'dlg' + Date.now() + Math.floor(Math.random() * 999);
+  const wrap = document.createElement('div'); wrap.className = 'backdrop' + (o.drawer ? ' drawer-wrap' : '');
+  wrap.innerHTML = '<section class="dialog ' + (o.size || '') + (o.drawer ? ' drawer' : '') + '" role="dialog" aria-modal="true" aria-labelledby="' + id + 't" tabindex="-1">' +
+    '<header class="dlg-head"><div class="grow"><h2 id="' + id + 't">' + o.title + '</h2>' + (o.sub ? '<p class="sub">' + o.sub + '</p>' : '') + '</div><button type="button" class="dlg-x" data-dlg-close aria-label="Close">' + icon('x') + '</button></header>' +
+    '<div class="dlg-body">' + (o.body || '') + '</div>' + (o.footer ? '<footer class="dlg-foot">' + o.footer + '</footer>' : '') + '</section>';
+  let closed = false;
+  const d = {
+    el: wrap, dialog: wrap.firstElementChild,
+    body: wrap.querySelector('.dlg-body'),
+    setFooter(html) { let f = wrap.querySelector('.dlg-foot'); if (!f) { f = document.createElement('footer'); f.className = 'dlg-foot'; d.dialog.appendChild(f); } f.innerHTML = html; },
+    close(result) {
+      if (closed) return; closed = true; wrap.remove();
+      const i = overlays.indexOf(d); if (i >= 0) overlays.splice(i, 1);
+      if (!overlays.length) document.body.classList.remove('lock');
+      try { if (prevFocus && prevFocus.isConnected && prevFocus.focus) prevFocus.focus({ preventScroll: true }); } catch (e) {}
+      if (o.onClose) o.onClose(result);
     }
-    AweSum.imageToDataUrl(file).then(dataUrl => {
-      pendingDraftImage = dataUrl;
-      draftDesignPreview.innerHTML = '<img src="' + AweSum.escapeHtml(pendingDraftImage) + '" alt="Draft preview" style="max-width:100%; max-height:220px; border-radius:8px; border:1px solid #ddd;">';
-      draftDesignPreview.style.display = 'block';
-    }).catch(error => { AweSum.showMessage(error.message, 'error'); draftDesignInput.value = ''; });
+  };
+  wrap.addEventListener('mousedown', (e) => { if (e.target === wrap && !o.sticky) d.close(); });
+  wrap.addEventListener('click', (e) => { if (e.target.closest('[data-dlg-close]')) d.close(); });
+  overlays.push(d); document.body.appendChild(wrap); document.body.classList.add('lock');
+  setTimeout(() => { const f = wrap.querySelector('[autofocus]') || d.dialog; try { f.focus({ preventScroll: true }); } catch (e) {} }, 40);
+  return d;
+}
+document.addEventListener('keydown', (e) => {
+  if (!overlays.length) return;
+  const top = overlays[overlays.length - 1];
+  if (e.key === 'Escape') { e.preventDefault(); top.close(); return; }
+  if (e.key === 'Tab') {
+    const f = $$('a[href],button:not([disabled]),input:not([disabled]):not([type=hidden]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])', top.dialog).filter(x => x.offsetParent !== null);
+    if (!f.length) return; const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && (document.activeElement === first || document.activeElement === top.dialog)) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+});
+function confirmDialog(o) {
+  return new Promise((resolve) => {
+    let answered = false;
+    const d = openDialog({
+      title: esc(o.title), size: 'sm', body: '<p class="dlg-text">' + esc(o.message) + '</p>',
+      footer: '<button type="button" class="btn btn-ghost" data-dlg-close>Cancel</button><button type="button" class="btn ' + (o.danger ? 'btn-danger' : 'btn-primary') + '" data-ok autofocus>' + esc(o.confirmText || 'Confirm') + '</button>',
+      onClose: () => { if (!answered) resolve(false); }
+    });
+    d.el.querySelector('[data-ok]').addEventListener('click', () => { answered = true; resolve(true); d.close(); });
   });
+}
+function lightbox(src) {
+  const wrap = document.createElement('div'); wrap.className = 'backdrop lightbox'; wrap.setAttribute('role', 'dialog'); wrap.setAttribute('aria-label', 'Image preview');
+  wrap.innerHTML = '<img src="' + imgSrc(src) + '" alt="Enlarged image">';
+  const d = { el: wrap, dialog: wrap, close() { wrap.remove(); const i = overlays.indexOf(d); if (i >= 0) overlays.splice(i, 1); if (!overlays.length) document.body.classList.remove('lock'); } };
+  wrap.addEventListener('click', () => d.close()); overlays.push(d); document.body.appendChild(wrap); document.body.classList.add('lock');
+}
 
-  document.getElementById('quote-close').addEventListener('click', () => quoteModal.classList.remove('open'));
-  document.getElementById('quote-save').addEventListener('click', async () => {
-      if (!activeQuote) return;
-      const priceValue = quotePrice.value.trim();
-      if (quoteStatus.value === 'Draft Sent' && (!priceValue || Number(priceValue) <= 0)) {
-        AweSum.showMessage('Please enter the price before sending the quote to the customer.', 'error');
-        quotePrice.focus();
-        return;
-      }
+/* image picker: drag & drop or click; resizes through the same helper the old page used */
+function bindDropzone(root, onChange, existing) {
+  const zone = $('.dropzone', root), input = $('input[type=file]', zone);
+  function show(src, name) { zone.classList.add('has'); zone.innerHTML = '<img src="' + imgSrc(src) + '" alt="Preview"><div class="dz-hint">' + esc(name || 'Current image') + ' · click or drop to replace</div>'; zone.appendChild(input); }
+  if (existing) show(existing, 'Current image');
+  async function take(file) {
+    if (!file) return;
+    if (!/^image\//.test(file.type)) { toast('Please choose an image file (JPG, PNG, GIF or WebP).', 'err'); return; }
+    if (file.size > 15 * 1024 * 1024) { toast('Please choose an image smaller than 15 MB.', 'err'); return; }
+    try { const url = await A.imageToDataUrl(file); show(url, file.name); onChange(url); } catch (e) { toast(e.message || 'That image could not be read.', 'err'); }
+  }
+  input.addEventListener('change', () => take(input.files[0]));
+  ['dragenter', 'dragover'].forEach(ev => zone.addEventListener(ev, (e) => { e.preventDefault(); zone.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(ev => zone.addEventListener(ev, (e) => { e.preventDefault(); zone.classList.remove('over'); }));
+  zone.addEventListener('drop', (e) => take(e.dataTransfer && e.dataTransfer.files[0]));
+}
+const dropzoneHtml = (hint) => '<label class="dropzone">' + icon('upload') + '<b>Click to upload or drag an image here</b><small>' + esc(hint || 'JPG, PNG, GIF or WebP · large images are resized automatically') + '</small><input type="file" accept="image/*"></label>';
+
+/* ================= page scaffolding ================= */
+const view = () => $('#view');
+function gate(keys, fn) {
+  const failed = keys.filter(k => S.errors[k]);
+  if (keys.some(k => !S.loaded[k])) return skeletonRows(5);
+  if (failed.length) return '<div class="alert alert-error">' + icon('alert') + '<span class="grow">We could not load this section: ' + esc(S.errors[failed[0]]) + '</span><button type="button" class="btn btn-ghost btn-sm" data-retry="' + keys.join(',') + '">Try again</button></div>';
+  return fn();
+}
+function skeletonRows(n) { let h = '<div class="rows">'; for (let i = 0; i < n; i++) h += '<div class="skel-row"><div class="skel" style="width:40px;height:40px;border-radius:50%"></div><div style="flex:1"><div class="skel" style="width:' + (30 + (i * 13) % 35) + '%;margin-bottom:9px"></div><div class="skel" style="width:' + (45 + (i * 17) % 35) + '%;height:11px"></div></div><div class="skel" style="width:70px"></div></div>'; return h + '</div>'; }
+const emptyState = (ic, title, text, action) => '<div class="empty"><div class="ei">' + icon(ic) + '</div><h3>' + esc(title) + '</h3><p>' + esc(text) + '</p>' + (action || '') + '</div>';
+const searchBox = (id, ph, val) => '<label class="search" for="' + id + '">' + icon('search') + '<span class="sr-only">Search</span><input type="search" id="' + id + '" placeholder="' + esc(ph) + '" value="' + esc(val || '') + '" autocomplete="off"></label>';
+function filterChips(list, active, group, counts) {
+  return list.map(f => '<button type="button" class="fchip ' + (f.attn && counts[f.id] ? 'attn' : '') + '" data-filter="' + group + ':' + f.id + '" aria-pressed="' + (active === f.id) + '">' + esc(f.label) + '<span class="n">' + (counts[f.id] || 0) + '</span></button>').join('');
+}
+const PAGES = {};
+
+/* ================= dashboard ================= */
+function attentionItems() {
+  const items = [];
+  S.orders.filter(o => ORDER_ACTION.includes(o.status)).forEach(o => items.push({ t: parseDate(o.createdAt), ic: 'orders', cls: 'ic-blue', title: 'Order ' + o.id + ' is paid: ready to accept', sub: (o.customer || 'Customer') + ' · ' + money(o.total), href: '#orders/' + enc(o.id) }));
+  S.quotes.filter(quoteNeedsAction).forEach(q => items.push({ t: parseDate(q.createdAt), ic: 'quotes', cls: q.status === 'Needs Revision' ? 'ic-orange' : 'ic-violet', title: q.status === 'Needs Revision' ? (q.customer || 'A customer') + ' asked for changes' : 'New quote request ' + q.id, sub: (q.customer || 'Customer') + ' · ' + q.category + ' × ' + q.quantity, href: '#quotes/' + enc(q.id) }));
+  const seen = {};
+  unanswered().forEach(m => { const k = convKey(m); if (seen[k]) return; seen[k] = 1; items.push({ t: parseDate(m.createdAt), ic: 'messages', cls: 'ic-green', title: (m.name || 'A customer') + ' is waiting for a reply', sub: String(m.text || '').slice(0, 90), href: '#messages/' + enc(k) }); });
+  return items.sort((a, b) => (a.t || 0) - (b.t || 0));   // oldest first: whoever has waited longest is most urgent
+}
+function chartSvg() {
+  const days = []; const now = new Date(); now.setHours(0, 0, 0, 0);
+  for (let i = 13; i >= 0; i--) { const d = new Date(now); d.setDate(d.getDate() - i); days.push({ d, key: d.toDateString(), n: 0, paid: 0, rev: 0 }); }
+  S.orders.forEach(o => { const od = parseDate(o.createdAt); if (!od) return; const b = days.find(x => x.key === od.toDateString()); if (!b) return; b.n++; if (PAID.includes(o.status)) { b.paid++; b.rev += num(o.total); } });
+  const max = Math.max(4, Math.ceil(Math.max(...days.map(x => x.n)) / 2) * 2); const W = 560, H = 190, L = 26, B = 28, T = 10, bw = (W - L) / 14;
+  let g = '';
+  [0, 0.5, 1].forEach(f => { const y = T + (H - B - T) * (1 - f); g += '<line x1="' + L + '" x2="' + W + '" y1="' + y + '" y2="' + y + '"/><text x="0" y="' + (y + 4) + '">' + Math.round(max * f) + '</text>'; });
+  days.forEach((x, i) => {
+    const bx = L + i * bw + bw * 0.18, w = bw * 0.64, h1 = (H - B - T) * (x.n / max), h2 = (H - B - T) * (x.paid / max);
+    const label = x.d.toLocaleDateString('en-ZA', { weekday: 'short', day: 'numeric', month: 'short' }) + ': ' + x.n + ' order' + (x.n === 1 ? '' : 's') + (x.rev ? ', ' + money(x.rev) + ' paid' : '');
+    g += '<g><title>' + esc(label) + '</title><rect x="' + (L + i * bw) + '" y="' + T + '" width="' + bw + '" height="' + (H - B - T) + '" fill="transparent"/>' +
+      '<rect class="bar" x="' + bx + '" y="' + (H - B - h1) + '" width="' + w + '" height="' + Math.max(h1, x.n ? 3 : 0) + '" rx="4"/>' +
+      (x.paid ? '<rect class="bar paid" x="' + bx + '" y="' + (H - B - h2) + '" width="' + w + '" height="' + Math.max(h2, 3) + '" rx="4"/>' : '') +
+      '<text x="' + (bx + w / 2) + '" y="' + (H - 9) + '" text-anchor="middle">' + x.d.getDate() + '</text></g>';
+  });
+  return { svg: '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Orders per day for the last 14 days">' + g + '</svg>', total: days.reduce((s, x) => s + x.n, 0), rev: days.reduce((s, x) => s + x.rev, 0) };
+}
+const PIPE = [['Payment pending', '#F5B544', 'unpaid'], ['Payment received', '#4C86F0', 'action'], ['Accepted', '#34C38F', 'progress'], ['Processing', '#8B6CF0', 'progress'], ['Completed', '#0B9E63', 'done'], ['Rejected', '#F06B62', 'rejected']];
+function pipelineHtml() {
+  const counts = PIPE.map(p => S.orders.filter(o => o.status === p[0]).length); const total = counts.reduce((a, b) => a + b, 0);
+  if (!total) return '';
+  return '<div style="margin-top:20px;padding-top:18px;border-top:1px solid var(--line-2)"><div class="sect-title">Order pipeline</div><div class="pipe" role="img" aria-label="Orders by status">' + PIPE.map((p, i) => counts[i] ? '<i style="width:' + (counts[i] / total * 100) + '%;background:' + p[1] + '" title="' + esc(p[0]) + ': ' + counts[i] + '"></i>' : '').join('') + '</div><div class="pipe-legend">' + PIPE.map((p, i) => '<a href="#orders" data-kpi-filter="orders:' + p[2] + '"><i style="background:' + p[1] + '"></i>' + esc(p[0]) + '<b>' + counts[i] + '</b></a>').join('') + '</div></div>';
+}
+PAGES.dashboard = {
+  keys: ['orders', 'quotes', 'messages', 'customers', 'products'],
+  sub: () => new Date().toLocaleDateString('en-ZA', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
+  html() {
+    return gate(this.keys, () => {
+      const h = new Date().getHours(); const greet = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+      const first = String((S.me && S.me.name) || '').split(' ')[0] || 'there';
+      const attn = attentionItems(); const nO = needs.orders(), nQ = needs.quotes(), nM = needs.messages();
+      const cutoff = Date.now() - 30 * 86400000;
+      const rev30 = S.orders.filter(o => PAID.includes(o.status) && (parseDate(o.createdAt) || 0) >= cutoff).reduce((s, o) => s + num(o.total), 0);
+      const unpaid = S.orders.filter(o => o.status === 'Payment pending').length;
+      const ch = chartSvg();
+      const recent = S.orders.slice().sort((a, b) => (parseDate(b.createdAt) || 0) - (parseDate(a.createdAt) || 0)).slice(0, 5);
+      const total = nO + nQ + nM;
+      return '<section class="hello"><div class="grow"><h2>' + greet + ', ' + esc(first) + '</h2><p>' + (total ? 'You have <b>' + total + ' item' + (total === 1 ? '' : 's') + '</b> that need your attention today.' : 'You are all caught up. Nothing is waiting for you right now.') + '</p></div><div class="btns"><a class="btn btn-primary" href="#products" data-new="product">' + icon('plus') + 'Add product</a><a class="btn btn-side" href="#orders">View orders</a></div></section>' +
+        '<section class="kpis">' +
+        kpi('#orders', 'orders:action', 'Orders to action', nO, unpaid ? unpaid + ' awaiting payment' : 'Paid and ready to accept', 'orders', 'ic-blue', nO > 0) +
+        kpi('#quotes', 'quotes:action', 'Quotes waiting', nQ, 'New requests and revisions', 'quotes', 'ic-violet', nQ > 0) +
+        kpi('#messages', '', 'Unanswered messages', nM, 'From customers and visitors', 'messages', 'ic-green', nM > 0) +
+        kpi('#orders', 'orders:all', 'Paid, last 30 days', money(rev30), 'Incl. VAT · ' + S.customers.length + ' customers', 'trend', 'ic-orange', false) +
+        '</section>' +
+        '<section class="grid-2"><div class="card"><div class="card-head"><div class="grow"><h2>Needs your attention</h2><p>The oldest items have waited longest</p></div>' + (attn.length ? '<span class="pill">' + attn.length + '</span>' : '') + '</div>' +
+        (attn.length ? '<ul class="attn-list">' + attn.slice(0, 7).map(a => '<li><a class="attn-item" href="' + a.href + '"><span class="attn-ic ' + a.cls + '">' + icon(a.ic) + '</span><span class="attn-main"><b>' + esc(a.title) + '</b><span>' + esc(a.sub) + '</span></span><span class="attn-time">' + esc(ago(a.t)) + '</span></a></li>').join('') + '</ul>' : emptyState('check', 'All caught up', 'New orders, quote requests and messages will show up here.')) + '</div>' +
+        '<div class="card"><div class="card-head"><div class="grow"><h2>Orders, last 14 days</h2><p>' + ch.total + ' order' + (ch.total === 1 ? '' : 's') + ' · ' + money(ch.rev) + ' paid</p></div></div><div class="card-body">' + ch.svg + '<div class="legend"><span><i style="background:#D9E1F0"></i>All orders</span><span><i style="background:var(--orange)"></i>Paid</span></div>' + pipelineHtml() + '</div></div></section>' +
+        '<section class="card"><div class="card-head"><div class="grow"><h2>Recent orders</h2></div><a class="btn btn-ghost btn-sm" href="#orders">View all</a></div>' +
+        (recent.length ? recent.map(o => '<a class="attn-item recent" href="#orders/' + enc(o.id) + '">' + avatar(o.customer, 'sm') + '<span class="attn-main"><b>' + esc(o.id) + ' · ' + esc(o.customer || '') + '</b><span>' + esc(itemsSummary(o)) + '</span></span><span class="money nowrap">' + money(o.total) + '</span>' + orderChip(o.status) + '</a>').join('') : emptyState('orders', 'No orders yet', 'Orders will appear here as soon as customers check out.')) + '</section>';
+    });
+  }
+};
+function kpi(href, filter, label, value, hint, ic, cls, hot) {
+  return '<a class="kpi ' + (hot ? 'hot' : '') + '" href="' + href + '"' + (filter ? ' data-kpi-filter="' + filter + '"' : '') + '><div class="kpi-top"><span>' + esc(label) + '</span><span class="kpi-ic ' + cls + '">' + icon(ic) + '</span></div><div class="kpi-val">' + esc(value) + '</div><div class="kpi-hint">' + esc(hint) + '</div></a>';
+}
+
+/* ================= orders ================= */
+const STEP_LABEL = { 'Payment pending': 'Unpaid', 'Payment received': 'Paid', 'Accepted': 'Accepted', 'Processing': 'In production', 'Completed': 'Completed' };
+const ORDER_FILTERS = [
+  { id: 'all', label: 'All', test: () => true },
+  { id: 'action', label: 'Needs action', attn: true, test: o => ORDER_ACTION.includes(o.status) },
+  { id: 'unpaid', label: 'Awaiting payment', test: o => o.status === 'Payment pending' },
+  { id: 'progress', label: 'In progress', test: o => ['Accepted', 'Processing'].includes(o.status) },
+  { id: 'done', label: 'Completed', test: o => o.status === 'Completed' },
+  { id: 'rejected', label: 'Rejected', test: o => o.status === 'Rejected' }
+];
+function ordersFiltered() {
+  const f = ORDER_FILTERS.find(x => x.id === S.filters.orders) || ORDER_FILTERS[0]; const q = lc(S.search.orders);
+  return S.orders.filter(f.test).filter(o => !q || [o.id, o.customer, o.email, o.address, o.status, itemsSummary(o), orderItems(o).map(i => i.name).join(' ')].some(v => lc(v).includes(q)))
+    .sort((a, b) => (parseDate(b.createdAt) || 0) - (parseDate(a.createdAt) || 0));
+}
+function ordersListHtml() {
+  const list = ordersFiltered();
+  if (!S.orders.length) return emptyState('orders', 'No orders yet', 'When a customer checks out, their order will appear here.');
+  if (!list.length) return emptyState('search', 'No orders match', 'Try a different search or filter.');
+  return '<div class="rows"><div class="row-head cols-orders"><span>Order</span><span>Customer</span><span>Items</span><span class="amount-r">Total</span><span>Status</span><span></span></div>' +
+    list.map(o => '<a class="row cols-orders" href="#orders/' + enc(o.id) + '"><span class="c c-ref"><b>' + esc(o.id) + '</b><small>' + esc(dateLine(o.createdAt)) + '</small></span>' +
+      '<span class="c c-cust c-person">' + avatar(o.customer, 'sm') + '<span><b class="ell">' + esc(o.customer || 'Customer') + '</b><small>' + esc(o.email || '') + '</small></span></span>' +
+      '<span class="c c-items"><span class="ell" style="display:block">' + esc(itemsSummary(o)) + '</span><small>' + esc(o.address || '') + '</small></span>' +
+      '<span class="c c-total money amount-r">' + money(o.total) + '</span><span class="c c-status">' + orderChip(o.status) + '</span><span class="c c-chev">' + icon('chevron') + '</span></a>').join('') + '</div>';
+}
+function ordersChipsHtml() { const counts = {}; ORDER_FILTERS.forEach(f => counts[f.id] = S.orders.filter(f.test).length); return filterChips(ORDER_FILTERS, S.filters.orders, 'orders', counts); }
+PAGES.orders = {
+  keys: ['orders'],
+  sub() { return S.loaded.orders && !S.errors.orders ? S.orders.length + ' order' + (S.orders.length === 1 ? '' : 's') + ' · ' + needs.orders() + ' need action' : ''; },
+  html() { return gate(this.keys, () => '<div class="toolbar">' + searchBox('searchOrders', 'Search by order, customer, item…', S.search.orders) + '<div class="filters" id="chipsBox">' + ordersChipsHtml() + '</div></div><div id="listBox">' + ordersListHtml() + '</div>'); }
+};
+function updateOrdersView() { const c = $('#chipsBox'), l = $('#listBox'); if (c) c.innerHTML = ordersChipsHtml(); if (l) l.innerHTML = ordersListHtml(); }
+
+function orderDrawerBody(o) {
+  const t = orderTotals(o); const cust = customerByEmail(o.email); const idx = ORDER_FLOW.indexOf(o.status);
+  const rejected = o.status === 'Rejected';
+  const steps = rejected ? '<div class="alert alert-error">' + icon('alert') + '<span class="grow">This order was rejected.</span></div>' :
+    '<div class="steps" aria-label="Order progress">' + ORDER_FLOW.map((s, i) => '<div class="step ' + (idx > i ? 'done' : idx === i ? 'now' : '') + '">' + esc(STEP_LABEL[s] || s) + '</div>').join('') + '</div>';
+  const quoteRefs = orderItems(o).map(i => i.quoteId).filter(Boolean);
+  let next = '';
+  if (ORDER_ACTION.includes(o.status)) next = '<button type="button" class="btn btn-primary" data-set-status="Accepted">' + icon('check') + 'Accept order</button><button type="button" class="btn btn-soft-danger" data-set-status="Rejected">Reject</button>';
+  else if (o.status === 'Accepted') next = '<button type="button" class="btn btn-primary" data-set-status="Processing">Start processing</button>';
+  else if (o.status === 'Processing') next = '<button type="button" class="btn btn-primary" data-set-status="Completed">' + icon('check') + 'Mark as completed</button>';
+  else if (o.status === 'Payment pending') next = '<div class="alert alert-warn" style="flex:1">' + icon('clock') + '<span class="grow">Waiting for the customer to pay. If they paid by EFT, set the status to “Payment received” below.</span></div>';
+  return '<div class="stack">' + steps +
+    (next ? '<div class="next-actions">' + next + '</div>' : '') +
+    '<div class="box"><div class="sect-title">Customer</div><div class="c-person" style="margin-bottom:10px">' + avatar(o.customer, '') + '<span><b>' + esc(o.customer || 'Customer') + '</b><br><a class="link-btn" href="mailto:' + esc(o.email || '') + '">' + esc(o.email || '') + '</a></span></div>' +
+    (cust ? '<button type="button" class="btn btn-ghost btn-sm" data-compose="' + esc(cust.id) + '">' + icon('send') + 'Message customer</button>' : '') + '</div>' +
+    '<div><div class="sect-title">Items</div><table class="items-t"><thead><tr><th>Item</th><th>Qty</th><th>Amount</th></tr></thead><tbody>' +
+    (orderItems(o).map(i => '<tr><td>' + esc(i.name) + (i.quoteId ? '<br><a class="link-btn" href="#quotes/' + enc(i.quoteId) + '">Custom quote ' + esc(i.quoteId) + '</a>' : '') + '</td><td class="q">× ' + esc(i.quantity) + '</td><td>' + money(i.lineTotal) + '</td></tr>').join('') || '<tr><td colspan="3" class="muted">No item details.</td></tr>') +
+    '</tbody></table><div class="totals"><div><span>Subtotal</span><span>' + money(t.sub) + '</span></div><div><span>VAT (15%)</span><span>' + money(t.vat) + '</span></div><div class="grand"><span>Total</span><span>' + money(t.total) + '</span></div></div></div>' +
+    '<div class="box"><div class="sect-title">Delivery address</div><div class="copy-line"><span>' + esc(o.address || 'No address given') + '</span>' + (o.address ? '<button type="button" class="btn btn-ghost btn-sm" data-copy="' + esc(o.address) + '">' + icon('copy') + 'Copy</button>' : '') + '</div></div>' +
+    '<div class="box"><div class="sect-title">Change status manually</div><div class="status-set"><select id="orderStatusSel" aria-label="Order status">' + ORDER_STATUSES.map(s => '<option' + (s === o.status ? ' selected' : '') + '>' + esc(s) + '</option>').join('') + '</select><button type="button" class="btn btn-dark" data-save-status>Update</button></div><p class="muted" style="font-size:12.5px;margin-top:8px">Customers see the current status on their Orders page.</p></div>' +
+    '</div>';
+}
+function openOrder(id) {
+  const o = S.orders.find(x => x.id === id);
+  if (!o) { toast('That order could not be found. It may have been removed.', 'err'); location.hash = '#orders'; return; }
+  const d = openDialog({
+    drawer: true, title: esc(o.id) + ' <span style="margin-left:6px;vertical-align:2px" id="drawerChip">' + orderChip(o.status) + '</span>', sub: 'Placed ' + esc(fmtDateTime(o.createdAt)),
+    body: orderDrawerBody(o), onClose: (r) => { if (r !== 'route') location.hash = '#orders'; }
+  });
+  d.kind = 'orders'; d.id = id;
+  d.el.addEventListener('click', async (e) => {
+    const cur = S.orders.find(x => x.id === id); if (!cur) return;
+    const setBtn = e.target.closest('[data-set-status]'), saveBtn = e.target.closest('[data-save-status]'), copyBtn = e.target.closest('[data-copy]'), comp = e.target.closest('[data-compose]');
+    if (copyBtn) { copyText(copyBtn.dataset.copy, 'Address copied.'); return; }
+    if (comp) { openCompose(comp.dataset.compose); return; }
+    const status = setBtn ? setBtn.dataset.setStatus : saveBtn ? $('#orderStatusSel', d.el).value : null;
+    if (!status || status === cur.status) { if (saveBtn) toast('The order already has that status.', 'info'); return; }
+    if (status === 'Rejected' && !(await confirmDialog({ title: 'Reject this order?', message: 'Order ' + cur.id + ' will be marked as rejected and the customer will see this on their Orders page.', confirmText: 'Reject order', danger: true }))) return;
+    await busy(setBtn || saveBtn, async () => {
       try {
-        await AweSum.api('quote-status', { method: 'PUT', body: JSON.stringify({ id: activeQuote.id, status: quoteStatus.value, response: quoteResponse.value.trim(), draftImage: pendingDraftImage, price: priceValue }) });
-        const quotes = AweSum.read(AweSum.keys.quotes, []);
-        const quote = quotes.find(item => item.id === activeQuote.id);
-        if (quote) {
-          quote.status = quoteStatus.value;
-          quote.response = quoteResponse.value.trim();
-          quote.draftImage = pendingDraftImage;
-          quote.quotedPrice = priceValue ? Number(priceValue) : quote.quotedPrice;
-        }
-        AweSum.write(AweSum.keys.quotes, quotes);
-        quoteModal.classList.remove('open');
-        location.reload();
-      } catch (error) { AweSum.showMessage(error.message, 'error'); }
-  });
-  quoteList.addEventListener('click', async event => {
-    const button = event.target.closest('[data-delete-quote]');
-    if (!button || !confirm('Delete this quote request?')) return;
-    try {
-      await AweSum.api('quote', { method: 'DELETE', body: JSON.stringify({ id: button.dataset.deleteQuote }) });
-      const quotes = AweSum.read(AweSum.keys.quotes, []).filter(quote => String(quote.id) !== button.dataset.deleteQuote);
-      AweSum.write(AweSum.keys.quotes, quotes);
-      button.closest('.order-card').remove();
-    } catch (error) { AweSum.showMessage(error.message, 'error'); }
-  });
-  const messageList = document.getElementById('message-list');
-  function renderAdminMessages(messages) {
-    messageList.innerHTML = '';
-    messages.forEach(message => { const card = document.createElement('div'); card.className = 'order-card'; card.innerHTML = '<div class="order-info"><div class="order-top"><span class="order-id">' + AweSum.escapeHtml(message.id) + '</span><span class="badge ' + (message.reply ? 'accepted' : 'awaiting') + '">' + AweSum.escapeHtml(message.status) + '</span></div><span class="order-customer">' + AweSum.escapeHtml(message.name) + ' · ' + AweSum.escapeHtml(message.email) + '</span><span class="order-meta">' + AweSum.escapeHtml(message.text) + (message.reply ? ' · Reply: ' + AweSum.escapeHtml(message.reply) : '') + '</span></div><button class="review-btn" data-new-message="' + AweSum.escapeHtml(message.userId || '') + '">New Message</button><button class="review-btn" data-message="' + AweSum.escapeHtml(message.id) + '"' + (message.reply ? ' disabled' : '') + '>' + (message.reply ? 'Responded' : 'Respond') + '</button><button class="review-btn" data-delete-message="' + AweSum.escapeHtml(message.id) + '">Delete</button>'; messageList.appendChild(card); });
-  }
-  renderAdminMessages(AweSum.read(AweSum.keys.messages, []));
-  setInterval(() => AweSum.api('messages').then(result => { AweSum.write(AweSum.keys.messages, result.messages || []); renderAdminMessages(result.messages || []); }).catch(() => {}), 15000);
-  document.addEventListener('click', e => {
-    if (e.target.dataset.newMessage) { const text = prompt('Write a new message to this user:'); if (!text || !text.trim()) return; AweSum.api('admin-message', { method: 'POST', body: JSON.stringify({ userId: e.target.dataset.newMessage, text: text.trim() }) }).then(() => AweSum.showMessage('Message sent to the user.')).catch(error => AweSum.showMessage(error.message, 'error')); }
-    if (e.target.dataset.quote) { const quotes = AweSum.read(AweSum.keys.quotes, []); const quote = quotes.find(item => item.id === e.target.dataset.quote); if (quote) { quote.status = 'Reviewed'; AweSum.write(AweSum.keys.quotes, quotes); AweSum.api('quote-status', { method: 'PUT', body: JSON.stringify({ id: quote.id, status: 'Reviewed' }) }).catch(() => {}); } e.target.textContent = 'Reviewed'; e.target.disabled = true; }
-    if (e.target.dataset.message) { const reply = prompt('Write a reply to this customer:'); if (!reply) return; const messages = AweSum.read(AweSum.keys.messages, []); const message = messages.find(item => item.id === e.target.dataset.message); if (message) { message.status = 'Responded'; message.reply = reply.trim(); message.repliedAt = new Date().toISOString(); AweSum.write(AweSum.keys.messages, messages); AweSum.api('message-reply', { method: 'PUT', body: JSON.stringify({ id: message.id, reply: message.reply }) }).catch(() => {}); } e.target.textContent = 'Responded'; e.target.disabled = true; }
-    if (e.target.dataset.deleteMessage) { const messageId = e.target.dataset.deleteMessage; if (!confirm('Delete this customer message?')) return; AweSum.api('message', { method: 'DELETE', body: JSON.stringify({ id: messageId }) }).then(() => { const messages = AweSum.read(AweSum.keys.messages, []).filter(item => item.id !== messageId); AweSum.write(AweSum.keys.messages, messages); e.target.closest('.order-card').remove(); toast.textContent = 'Message deleted'; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2200); }).catch(error => AweSum.showMessage(error.message, 'error')); }
-  });
-  document.querySelector('.exit-admin').addEventListener('click', async event => {
-    event.currentTarget.disabled = true;
-    try {
-      await AweSum.api('logout', { method: 'POST' });
-      localStorage.removeItem(AweSum.keys.session);
-      window.location.href = 'index.html';
-    } catch (error) {
-      event.currentTarget.disabled = false;
-      AweSum.showMessage(error.message, 'error');
-    }
-  });
-
-  const siteContentForm = document.getElementById('site-content-form');
-  const siteContentFields = {
-    tradingName: 'site-trading-name',
-    legalName: 'site-legal-name',
-    email: 'site-email',
-    phone: 'site-phone',
-    address: 'site-address',
-    registrationNumber: 'site-registration',
-    vatNumber: 'site-vat'
-  };
-  const defaultSiteContent = {
-    tradingName: 'AweSum Brands',
-    legalName: '',
-    email: 'info@awesumbrands.co.za',
-    phone: '0657350139',
-    address: '447 anton lembede street',
-    registrationNumber: '',
-    vatNumber: ''
-  };
-  function populateSiteContent(content) {
-    Object.keys(siteContentFields).forEach(key => {
-      document.getElementById(siteContentFields[key]).value = content[key] || '';
-    });
-  }
-  populateSiteContent(defaultSiteContent);
-  AweSum.api('site-content').then(result => {
-    if (result.content) populateSiteContent({ ...defaultSiteContent, ...result.content });
-  }).catch(error => AweSum.showMessage(error.message, 'error'));
-  siteContentForm.addEventListener('submit', async event => {
-    event.preventDefault();
-    const button = siteContentForm.querySelector('button[type="submit"]');
-    button.disabled = true;
-    try {
-      const content = Object.fromEntries(Object.entries(siteContentFields).map(([key, id]) => [key, document.getElementById(id).value.trim()]));
-      const result = await AweSum.api('site-content', { method: 'PUT', body: JSON.stringify({ content }) });
-      populateSiteContent(result.content);
-      AweSum.showMessage('Business contact details updated.');
-    } catch (error) {
-      AweSum.showMessage(error.message, 'error');
-    } finally {
-      button.disabled = false;
-    }
-  });
-
-  const adminPreferences = AweSum.read('awesum_admin_preferences', {
-    orderNotifications: false,
-    messageNotifications: false,
-    appearance: 'comfortable'
-  });
-  document.getElementById('admin-order-notifications').checked = Boolean(adminPreferences.orderNotifications);
-  document.getElementById('admin-message-notifications').checked = Boolean(adminPreferences.messageNotifications);
-  document.getElementById('admin-appearance').value = adminPreferences.appearance === 'compact' ? 'compact' : 'comfortable';
-  document.body.classList.toggle('compact-settings', adminPreferences.appearance === 'compact');
-  document.getElementById('save-admin-preferences').addEventListener('click', () => {
-    const preferences = {
-      orderNotifications: document.getElementById('admin-order-notifications').checked,
-      messageNotifications: document.getElementById('admin-message-notifications').checked,
-      appearance: document.getElementById('admin-appearance').value
-    };
-    AweSum.write('awesum_admin_preferences', preferences);
-    document.body.classList.toggle('compact-settings', preferences.appearance === 'compact');
-    AweSum.showMessage('Admin preferences saved.');
-  });
-  document.getElementById('open-customer-settings').addEventListener('click', () => {
-    document.querySelector('[data-page="sellers"]').click();
-  });
-
-  // Navigation
-  const navItems = document.querySelectorAll('.nav-item');
-  const pages = document.querySelectorAll('.page');
-  navItems.forEach(item => {
-    item.addEventListener('click', () => {
-      navItems.forEach(n => n.classList.remove('active'));
-      item.classList.add('active');
-      pages.forEach(p => p.classList.remove('active'));
-      document.getElementById('page-' + item.dataset.page).classList.add('active');
+        await A.api('order-status', { method: 'PUT', body: JSON.stringify({ id: cur.id, status }) });
+        cur.status = status; toast('Order ' + cur.id + ' is now “' + status + '”.');
+        d.body.innerHTML = orderDrawerBody(cur); const ch = $('#drawerChip', d.el); if (ch) ch.innerHTML = orderChip(status);
+        updateOrdersView(); updateBadges(); if (S.route.page === 'dashboard') renderPage();
+      } catch (err) { toast(err.message, 'err'); }
     });
   });
+  S.detail = d;
+}
 
-  // Orders Queue review modal
-  const overlay = document.getElementById('modal-overlay');
-  const modalItem = document.getElementById('modal-item');
-  let activeCard = null;
-
-  document.querySelectorAll('.review-btn').forEach(btn => {
-    if (btn.style.visibility === 'hidden') return;
-    btn.addEventListener('click', () => {
-      activeCard = btn.closest('.order-card');
-      modalItem.textContent = btn.dataset.item;
-      overlay.classList.add('open');
-    });
-  });
-
-  function closeModal(){
-    overlay.classList.remove('open');
-    activeCard = null;
+/* ================= quotes ================= */
+const QUOTE_FILTERS = [
+  { id: 'all', label: 'All', test: () => true },
+  { id: 'action', label: 'Needs action', attn: true, test: quoteNeedsAction },
+  { id: 'sent', label: 'With customer', test: q => q.status === 'Draft Sent' },
+  { id: 'approved', label: 'Approved', test: q => q.status === 'Approved' || !!q.orderReference },
+  { id: 'closed', label: 'Rejected', test: q => q.status === 'Rejected' }
+];
+function quotesFiltered() {
+  const f = QUOTE_FILTERS.find(x => x.id === S.filters.quotes) || QUOTE_FILTERS[0]; const q = lc(S.search.quotes);
+  return S.quotes.filter(f.test).filter(x => !q || [x.id, x.customer, x.email, x.category, x.description, x.status].some(v => lc(v).includes(q)))
+    .sort((a, b) => (parseDate(b.createdAt) || 0) - (parseDate(a.createdAt) || 0));
+}
+function quotesListHtml() {
+  const list = quotesFiltered();
+  if (!S.quotes.length) return emptyState('quotes', 'No quote requests yet', 'Custom quote requests from customers will appear here.');
+  if (!list.length) return emptyState('search', 'No quotes match', 'Try a different search or filter.');
+  return '<div class="qgrid">' + list.map(q => '<a class="qcard" href="#quotes/' + enc(q.id) + '"><div class="qthumb">' + (q.designImage ? '<img src="' + imgSrc(q.designImage) + '" alt="" loading="lazy">' : icon('quotes')) + '</div><div class="qbody"><div class="qtop"><b>' + esc(q.id) + '</b>' + quoteChip(q.status) + '</div><div class="qmeta">' + esc(q.customer || '') + ' · ' + esc(q.category) + ' × ' + esc(q.quantity) + '</div><div class="qdesc">' + esc(q.description) + '</div><div class="qfoot"><span>' + (q.quotedPrice != null ? '<b style="color:var(--text)">' + money(q.quotedPrice) + '</b> excl. VAT' : 'No price yet') + '</span><span>' + (q.orderReference ? '<span class="tag tag-orange">Order ' + esc(q.orderReference) + '</span>' : esc(ago(q.createdAt))) + '</span></div></div></a>').join('') + '</div>';
+}
+function quoteChipsHtml() { const counts = {}; QUOTE_FILTERS.forEach(f => counts[f.id] = S.quotes.filter(f.test).length); return filterChips(QUOTE_FILTERS, S.filters.quotes, 'quotes', counts); }
+PAGES.quotes = {
+  keys: ['quotes'],
+  sub() { return S.loaded.quotes && !S.errors.quotes ? S.quotes.length + ' request' + (S.quotes.length === 1 ? '' : 's') + ' · ' + needs.quotes() + ' need action' : ''; },
+  html() { return gate(this.keys, () => '<div class="toolbar">' + searchBox('searchQuotes', 'Search by reference, customer, product…', S.search.quotes) + '<div class="filters" id="chipsBox">' + quoteChipsHtml() + '</div></div><div id="listBox">' + quotesListHtml() + '</div>'); }
+};
+function updateQuotesView() { const c = $('#chipsBox'), l = $('#listBox'); if (c) c.innerHTML = quoteChipsHtml(); if (l) l.innerHTML = quotesListHtml(); }
+const QUOTE_HINTS = {
+  'Draft Sent': 'The customer is emailed and can accept the design and price, or ask for changes.',
+  'Reviewed': 'Marks the request as seen. Nothing is sent to the customer.',
+  'Needs Revision': 'Marks that the design must be reworked before it is sent again.',
+  'Approved': 'Normally set by the customer when they accept. Use only to correct a record.',
+  'Accepted': 'Records that the quote was accepted.',
+  'Rejected': 'Declines the request. Add a short reason in your response.'
+};
+function quoteModalBody(q) {
+  const locked = !!q.orderReference; const cust = customerByEmail(q.email);
+  const fb = q.clientDecision ? '<div class="box" style="margin-top:14px"><div class="sect-title">Customer feedback</div><p>' + (q.clientDecision === 'approved' ? chip('Customer approved the design', 'green') : chip('Customer asked for changes', 'orange')) + '</p>' +
+    (q.clientReason ? '<p style="margin-top:10px"><b>Why:</b> ' + esc(q.clientReason) + '</p>' : '') + (q.clientChanges ? '<p style="margin-top:8px"><b>Requested changes:</b> ' + esc(q.clientChanges) + '</p>' : '') +
+    (q.clientIdeaImage ? '<p style="margin:10px 0 6px"><b>Their reference image</b></p><button type="button" class="thumb-btn" data-zoom="' + imgSrc(q.clientIdeaImage) + '"><img src="' + imgSrc(q.clientIdeaImage) + '" alt="Customer reference"></button>' : '') + '</div>' : '';
+  const startStatus = QUOTE_ACTION.includes(q.status) ? 'Draft Sent' : (q.status || 'Draft Sent');   // a quote waiting on you is normally answered by sending a (revised) draft
+  const opts = ['Draft Sent', 'Reviewed', 'Needs Revision', 'Approved', 'Accepted', 'Rejected'];
+  return '<div class="two-col"><div><div class="sect-title">Request</div><dl class="kv"><dt>Customer</dt><dd><b>' + esc(q.customer || '') + '</b><br><a class="link-btn" href="mailto:' + esc(q.email || '') + '">' + esc(q.email || '') + '</a></dd><dt>Product</dt><dd>' + esc(q.category) + '</dd><dt>Quantity</dt><dd>' + esc(q.quantity) + '</dd><dt>Submitted</dt><dd>' + esc(fmtDateTime(q.createdAt)) + '</dd><dt>Description</dt><dd style="white-space:pre-wrap">' + esc(q.description) + '</dd><dt>Notes</dt><dd style="white-space:pre-wrap">' + esc(q.notes || 'None provided') + '</dd></dl>' +
+    '<div style="margin-top:16px"><div class="sect-title">Customer design</div>' + (q.designImage ? '<button type="button" class="thumb-btn" data-zoom="' + imgSrc(q.designImage) + '"><img src="' + imgSrc(q.designImage) + '" alt="Customer design upload"></button>' : '<p class="muted">The customer did not upload a design.</p>') + '</div>' + fb +
+    (cust ? '<div style="margin-top:14px"><button type="button" class="btn btn-ghost btn-sm" data-compose="' + esc(cust.id) + '">' + icon('send') + 'Message customer</button></div>' : '') + '</div>' +
+    '<div><div class="sect-title">Your response</div>' +
+    (locked ? '<div class="alert alert-info" style="margin-bottom:14px">' + icon('shield') + '<span class="grow">The customer accepted this quote and order <a class="link-btn" href="#orders/' + enc(q.orderReference) + '">' + esc(q.orderReference) + '</a> exists (' + esc(q.orderStatus || 'Payment pending') + '). The price is locked. Follow it on the Orders page.</span></div>' : '') +
+    '<form id="quoteForm" novalidate><div class="field"><label class="lbl" for="qResp">Message to customer</label><textarea id="qResp" placeholder="Write your response…" ' + (locked ? 'disabled' : '') + '>' + esc(q.response || '') + '</textarea></div>' +
+    '<div class="field"><label class="lbl" for="qPrice">Price (excluding VAT)</label><div class="input-affix"><span>R</span><input type="number" id="qPrice" min="0" step="0.01" inputmode="decimal" placeholder="e.g. 1250.00" value="' + (q.quotedPrice != null ? esc(q.quotedPrice) : '') + '" ' + (locked ? 'disabled' : '') + '></div><div class="calc" id="qCalc"></div></div>' +
+    '<div class="field"><label class="lbl">Design draft</label>' + (locked ? (q.draftImage ? '<button type="button" class="thumb-btn" data-zoom="' + imgSrc(q.draftImage) + '"><img src="' + imgSrc(q.draftImage) + '" alt="Sent draft"></button>' : '<p class="muted">No draft was sent.</p>') : dropzoneHtml('The customer sees this draft together with your price')) + '</div>' +
+    '<div class="field"><label class="lbl" for="qStatus">Status</label><select id="qStatus" ' + (locked ? 'disabled' : '') + '>' + opts.map(s => '<option value="' + esc(s) + '"' + (s === startStatus ? ' selected' : '') + '>' + esc(QLABEL[s] ? s + ' (' + QLABEL[s].toLowerCase() + ')' : s) + '</option>').join('') + '</select><p class="help" id="qHint"></p></div></form></div></div>';
+}
+function quoteFooter(q) {
+  const locked = !!q.orderReference;
+  return '<button type="button" class="btn btn-soft-danger left" data-delete-quote>' + icon('trash') + 'Delete</button><button type="button" class="btn btn-ghost" data-dlg-close>Close</button>' + (locked ? '' : '<button type="button" class="btn btn-primary" id="qSave">' + icon('send') + '<span id="qSaveLbl">Send to customer</span></button>');
+}
+function openQuote(id) {
+  const q = S.quotes.find(x => x.id === id);
+  if (!q) { toast('That quote could not be found. It may have been deleted.', 'err'); location.hash = '#quotes'; return; }
+  const d = openDialog({ size: 'lg', title: esc(q.id) + ' <span style="margin-left:6px;vertical-align:2px">' + quoteChip(q.status) + '</span>', sub: 'Quote request from ' + esc(q.customer || 'customer'), body: quoteModalBody(q), footer: quoteFooter(q), onClose: (r) => { if (r !== 'route') location.hash = '#quotes'; } });
+  d.kind = 'quotes'; d.id = id;
+  let draft = q.draftImage || ''; let touchedImage = false;
+  const price = $('#qPrice', d.el), status = $('#qStatus', d.el), resp = $('#qResp', d.el);
+  function sync() {
+    const p = num(price && price.value); const vat = Math.round(p * VAT * 100) / 100;
+    const calc = $('#qCalc', d.el); if (calc) calc.innerHTML = p > 0 ? '<span>VAT (15%): <b>' + money(vat) + '</b></span><span>Customer pays: <b>' + money(p + vat) + '</b></span>' : '<span>VAT (15%) is added at checkout.</span>';
+    const lbl = $('#qSaveLbl', d.el); if (lbl && status) lbl.textContent = status.value === 'Draft Sent' ? 'Send to customer' : 'Save changes';
+    const hint = $('#qHint', d.el); if (hint && status) hint.textContent = QUOTE_HINTS[status.value] || '';
   }
-
-  document.getElementById('btn-proceed').addEventListener('click', () => {
-    if (activeCard){
-      const badge = activeCard.querySelector('.badge');
-      badge.textContent = 'Accepted';
-      badge.className = 'badge accepted';
-      activeCard.querySelector('.review-btn').style.visibility = 'hidden';
-    }
-    closeModal();
-  });
-
-  document.getElementById('btn-reject').addEventListener('click', () => {
-    if (activeCard){
-      const badge = activeCard.querySelector('.badge');
-      badge.textContent = 'Rejected';
-      badge.className = 'badge rejected';
-      activeCard.querySelector('.review-btn').style.visibility = 'hidden';
-    }
-    closeModal();
-  });
-
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) closeModal();
-  });
-
-  // Marketplace form: image upload label + submit toast
-  const uploadInput = document.getElementById('prod-image');
-  const uploadText = document.getElementById('upload-text');
-  uploadInput.addEventListener('change', () => {
-    if (uploadInput.files.length){
-      uploadText.textContent = uploadInput.files[0].name;
-    }
-  });
-
-  const form = document.getElementById('marketplace-form');
-  const toast = document.getElementById('toast');
-  const adminProducts = document.getElementById('admin-products');
-  let productImagePromise = Promise.resolve('');
-  uploadInput.addEventListener('change', () => {
-    const file = uploadInput.files[0];
-    if (!file) { productImagePromise = Promise.resolve(''); return; }
-    uploadText.textContent = file.name;
-    if (!file.type.startsWith('image/') || file.size > 15 * 1024 * 1024) {
-      productImagePromise = Promise.resolve('');
-      AweSum.showMessage('Please choose an image smaller than 15MB.', 'error');
+  if (price) price.addEventListener('input', sync); if (status) status.addEventListener('change', sync); sync();
+  if (!q.orderReference) bindDropzone(d.el, (url) => { draft = url; touchedImage = true; }, q.draftImage || '');
+  d.el.addEventListener('click', async (e) => {
+    const z = e.target.closest('[data-zoom]'); if (z) { lightbox(z.dataset.zoom); return; }
+    const comp = e.target.closest('[data-compose]'); if (comp) { openCompose(comp.dataset.compose); return; }
+    if (e.target.closest('[data-delete-quote]')) {
+      const warn = q.orderReference ? ' An order (' + q.orderReference + ') was created from it; the order itself is not deleted.' : '';
+      if (!(await confirmDialog({ title: 'Delete this quote request?', message: 'Quote ' + q.id + ' from ' + (q.customer || 'the customer') + ' will be permanently removed.' + warn, confirmText: 'Delete quote', danger: true }))) return;
+      try { await A.api('quote', { method: 'DELETE', body: JSON.stringify({ id: q.id }) }); S.quotes = S.quotes.filter(x => x.id !== q.id); toast('Quote ' + q.id + ' deleted.'); d.close('route'); S.detail = null; location.hash = '#quotes'; updateQuotesView(); updateBadges(); }
+      catch (err) { toast(err.message, 'err'); }
       return;
     }
-    productImagePromise = AweSum.imageToDataUrl(file).catch(error => { AweSum.showMessage(error.message, 'error'); return ''; });
+    const save = e.target.closest('#qSave'); if (!save) return;
+    const p = price.value.trim();
+    if (status.value === 'Draft Sent' && !(Number(p) > 0)) { toast('Please enter the price before sending the quote to the customer.', 'err'); price.focus(); return; }
+    await busy(save, async () => {
+      try {
+        await A.api('quote-status', { method: 'PUT', body: JSON.stringify({ id: q.id, status: status.value, response: resp.value.trim(), draftImage: draft, price: p }) });
+        S.quotes = await LOADERS.quotes(); S.errors.quotes = null;
+        toast(status.value === 'Draft Sent' ? 'Quote sent. ' + (q.customer || 'The customer') + ' has been emailed.' : 'Quote ' + q.id + ' updated.');
+        d.close('route'); S.detail = null; location.hash = '#quotes'; updateQuotesView(); updateBadges(); if (S.route.page === 'dashboard') renderPage();
+      } catch (err) { toast(err.message, 'err'); }
+    });
   });
-  let adminProductList = [];
-  function renderAdminProducts(products){
-    if (Array.isArray(products)) adminProductList = products;
-    adminProducts.innerHTML = adminProductList.length ? '' : '<p class="placeholder">No products have been added yet.</p>';
-    adminProductList.forEach(product => { const productId = product.id || product.name; const card = document.createElement('div'); card.className = 'order-card'; card.innerHTML = '<div class="order-info"><span class="order-customer">' + AweSum.escapeHtml(product.name) + '</span><span class="order-meta">' + AweSum.escapeHtml(product.category) + ' · R ' + Math.round(product.price).toLocaleString('en-ZA') + '</span></div><button type="button" class="review-btn" data-remove-product="' + AweSum.escapeHtml(productId) + '">Remove</button>'; adminProducts.appendChild(card); });
-  }
-  // Show the saved copy instantly; the fresh list from the server replaces it a moment later.
-  renderAdminProducts(AweSum.read(AweSum.keys.products, []));
-  async function refreshAdminProducts(){
-    const result = await AweSum.api('products');
-    const list = result.products || [];
-    AweSum.write(AweSum.keys.products, list);
-    renderAdminProducts(list);
-  }
-  adminProducts.addEventListener('click', async event => {
-    const productId = event.target.dataset.removeProduct;
-    if (!productId) return;
-    if (!confirm('Remove this product from the marketplace?')) return;
-    try { await AweSum.api('products', { method: 'DELETE', body: JSON.stringify({ id: productId }) }); } catch (error) { AweSum.showMessage(error.message, 'error'); return; }
-    const remaining = adminProductList.filter(product => String(product.id || product.name) !== productId);
-    AweSum.write(AweSum.keys.products, remaining);
-    renderAdminProducts(remaining);
-    toast.textContent = 'Product removed from marketplace';
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2200);
+  S.detail = d;
+}
+function copyText(text, okMsg) {
+  const done = () => toast(okMsg || 'Copied.');
+  if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(text).then(done, () => fallbackCopy(text, done)); } else fallbackCopy(text, done);
+}
+function fallbackCopy(text, done) { const t = document.createElement('textarea'); t.value = text; t.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); done(); } catch (e) { toast('Could not copy automatically. Please select the text and copy it.', 'err'); } t.remove(); }
+
+/* ================= messages (inbox) ================= */
+const isMobile = () => window.matchMedia('(max-width:980px)').matches;
+function buildConvs() {
+  const map = {};
+  S.messages.forEach(m => { const k = convKey(m); (map[k] = map[k] || { key: k, msgs: [], guest: !m.userId }).msgs.push(m); });
+  return Object.values(map).map(c => {
+    c.msgs.sort((a, b) => (parseDate(a.createdAt) || 0) - (parseDate(b.createdAt) || 0));
+    const cust = c.msgs.find(m => m.senderRole !== 'admin'); const first = c.msgs[0];
+    c.userId = c.guest ? null : first.userId; c.email = (cust || first).email;
+    c.name = c.guest ? ((cust && cust.name) || c.email) : ((customerById(c.userId) || {}).name || (cust && cust.name) || c.email);
+    c.pending = c.msgs.filter(m => m.senderRole !== 'admin' && !m.reply).length;
+    let last = 0, prev = '';
+    c.msgs.forEach(m => {
+      const t1 = parseDate(m.createdAt) || 0; if (t1 >= last) { last = t1; prev = (m.senderRole === 'admin' ? 'You: ' : '') + m.text; }
+      if (m.reply) { const t2 = parseDate(m.repliedAt || m.createdAt) || 0; if (t2 >= last) { last = t2; prev = 'You: ' + m.reply; } }
+    });
+    c.last = last; c.preview = prev; return c;
+  }).sort((a, b) => b.last - a.last);
+}
+function selectedConv(convs) { const id = S.route.id; if (id) return convs.find(c => c.key === id) || null; return isMobile() ? null : (convs[0] || null); }
+function convListHtml(list, sel) {
+  if (!list.length) return '<div class="empty" style="padding:36px 16px"><p>No conversations match your search.</p></div>';
+  return list.map(c => '<a class="conv ' + (sel && sel.key === c.key ? 'active' : '') + (c.pending ? ' unread' : '') + '" href="#messages/' + enc(c.key) + '">' + avatar(c.name) + '<span class="conv-main"><span class="conv-top"><b>' + esc(c.name) + '</b><span>' + esc(ago(new Date(c.last))) + '</span></span><span class="conv-prev" style="display:block">' + esc(c.preview) + '</span></span>' + (c.pending ? '<span class="dot" title="Needs a reply"></span>' : '') + '</a>').join('');
+}
+function dayLabel(d) {
+  if (!d) return ''; const sod = x => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime(); const diff = Math.round((sod(new Date()) - sod(d)) / 86400000);
+  return diff === 0 ? 'Today' : diff === 1 ? 'Yesterday' : d.toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+function threadEntries(c) {
+  const e = [];
+  c.msgs.forEach(m => {
+    if (m.senderRole === 'admin') e.push({ side: 'us', text: m.text, date: parseDate(m.createdAt), id: m.id, own: true });
+    else { e.push({ side: 'them', text: m.text, date: parseDate(m.createdAt), id: m.id, msg: m }); if (m.reply) e.push({ side: 'us', text: m.reply, date: parseDate(m.repliedAt || m.createdAt), id: m.id, reply: true }); }
   });
-  form.addEventListener('submit', async (e) => {
+  return e.sort((a, b) => (a.date || 0) - (b.date || 0));
+}
+function replyBoxHtml(m, c) {
+  if (c.guest) return '<div class="reply-box"><p class="muted" style="margin-bottom:10px">' + icon('alert') + ' This visitor does not have an account, so they cannot see a reply on the site. Reply by email instead, then mark the message as handled.</p><div class="reply-actions"><button type="button" class="btn btn-ghost btn-sm" data-reply-cancel>Cancel</button><button type="button" class="btn btn-ghost btn-sm" data-mark-handled="' + esc(m.id) + '">Mark as handled</button><a class="btn btn-primary btn-sm" href="mailto:' + esc(c.email) + '?subject=' + enc('Re: your message to AweSum Brands') + '">' + icon('mail') + 'Reply by email</a></div></div>';
+  return '<div class="reply-box"><label class="sr-only" for="replyText">Your reply</label><textarea id="replyText" data-draft placeholder="Write a reply to ' + esc(c.name.split(' ')[0]) + '… (Ctrl+Enter to send)" autofocus></textarea><div class="reply-actions"><button type="button" class="btn btn-ghost btn-sm" data-reply-cancel>Cancel</button><button type="button" class="btn btn-primary btn-sm" data-reply-send="' + esc(m.id) + '">' + icon('send') + 'Send reply</button></div></div>';
+}
+function threadHtml(c) {
+  if (!c) return '<div class="thread-empty"><div class="ei">' + icon('messages') + '</div><b>Select a conversation</b><p>Choose a customer on the left to read and reply.</p></div>';
+  let last = '';
+  const body = threadEntries(c).map(en => {
+    const dl = dayLabel(en.date); let h = ''; if (dl && dl !== last) { h += '<div class="daysep">' + esc(dl) + '</div>'; last = dl; }
+    const btns = (en.side === 'them' && !en.msg.reply ? '<button type="button" data-reply-open="' + esc(en.id) + '">Reply</button>' : '') + ((en.side === 'them' || en.own) ? '<button type="button" class="del" data-delete-message="' + esc(en.id) + '">Delete</button>' : '');
+    h += '<div class="bub-row ' + en.side + '">' + (en.side === 'them' ? avatar(c.name, 'sm') : '') + '<div><div class="bub">' + esc(en.text) + '</div><div class="bub-meta"><span>' + esc(timeOf(en.date)) + (en.reply ? ' · reply' : '') + '</span>' + btns + '</div></div></div>';
+    if (en.side === 'them' && S.replyOpen === en.id) h += replyBoxHtml(en.msg, c);
+    return h;
+  }).join('');
+  const composer = c.guest ? '<div class="composer"><div class="alert alert-info">' + icon('mail') + '<span class="grow">Guest visitor: no account on the site. Contact them by email.</span><a class="btn btn-ghost btn-sm" href="mailto:' + esc(c.email) + '">Email ' + esc(c.name.split(' ')[0]) + '</a></div></div>' :
+    '<div class="composer"><form id="composeForm" data-user="' + esc(c.userId) + '"><label class="sr-only" for="composeText">New message</label><textarea id="composeText" data-draft rows="1" placeholder="Send a new message to ' + esc(c.name.split(' ')[0]) + '…"></textarea><button type="submit" class="btn btn-primary">' + icon('send') + 'Send</button></form></div>';
+  return '<header class="thread-head"><button type="button" class="icon-btn back-btn" data-msg-back aria-label="Back to conversations">' + icon('back') + '</button>' + avatar(c.name) + '<div class="grow"><b>' + esc(c.name) + '</b><small>' + esc(c.email) + '</small></div>' + (c.guest ? '<span class="tag">Guest</span>' : '') + (c.pending ? chip(c.pending + ' to answer', 'orange') : chip('All answered', 'green')) + '</header><div class="thread" id="threadScroll">' + body + '</div>' + composer;
+}
+function inboxClass() { return 'inbox' + (S.route.id ? ' show-thread' : ''); }
+PAGES.messages = {
+  keys: ['messages', 'customers'],
+  sub() { if (!S.loaded.messages || S.errors.messages) return ''; const n = buildConvs().length; return n + ' conversation' + (n === 1 ? '' : 's') + ' · ' + needs.messages() + ' waiting for a reply'; },
+  html() {
+    return gate(this.keys, () => {
+      if (!S.messages.length) return '<div class="card">' + emptyState('inbox', 'No messages yet', 'Messages from customers and website visitors will appear here.') + '</div>';
+      const convs = buildConvs(); const q = lc(S.search.messages); const sel = selectedConv(convs);
+      const list = convs.filter(c => !q || [c.name, c.email, c.preview].some(v => lc(v).includes(q)));
+      return '<div class="' + inboxClass() + '" id="inbox"><aside class="conv-pane"><div class="conv-search">' + searchBox('searchConvs', 'Search messages…', S.search.messages) + '</div><div class="conv-list" id="convList">' + convListHtml(list, sel) + '</div></aside><section class="thread-pane" id="threadPane">' + threadHtml(sel) + '</section></div>';
+    });
+  },
+  after() { const t = $('#threadScroll'); if (t) t.scrollTop = t.scrollHeight; }
+};
+function renderInbox(keepScroll) {
+  const box = $('#inbox'); if (!box) { if (S.route.page === 'messages') renderPage(); return; }
+  if (!S.messages.length) { renderPage(); return; }
+  const ts = $('#threadScroll'); const prevTop = ts ? ts.scrollTop : 0; const wasBottom = ts ? ts.scrollHeight - ts.scrollTop - ts.clientHeight < 80 : true;
+  const drafts = {}; $$('textarea[data-draft]', box).forEach(t => { drafts[t.id] = t.value; }); const focusId = document.activeElement && document.activeElement.id;
+  const convs = buildConvs(); const q = lc(S.search.messages); const sel = selectedConv(convs);
+  const list = convs.filter(c => !q || [c.name, c.email, c.preview].some(v => lc(v).includes(q)));
+  box.className = inboxClass(); $('#convList').innerHTML = convListHtml(list, sel); $('#threadPane').innerHTML = threadHtml(sel);
+  Object.keys(drafts).forEach(id => { const t = document.getElementById(id); if (t && drafts[id]) t.value = drafts[id]; if (t && id === focusId) t.focus(); });
+  const nt = $('#threadScroll'); if (nt) nt.scrollTop = (keepScroll && !wasBottom) ? prevTop : nt.scrollHeight;
+  $('#pageSub').textContent = PAGES.messages.sub();
+}
+async function reloadMessages() { S.messages = await LOADERS.messages(); S.errors.messages = null; renderInbox(); updateBadges(); }
+function openCompose(userId) {
+  const c = customerById(userId); if (!c) { toast('That customer could not be found.', 'err'); return; }
+  const d = openDialog({
+    size: 'sm', title: 'Message ' + esc(c.name), sub: esc(c.email),
+    body: '<form id="cmpForm"><div class="field"><label class="lbl" for="cmpText">Your message</label><textarea id="cmpText" placeholder="Write your message…" autofocus required></textarea><p class="help">They will see this on their Messages page when they sign in.</p></div></form>',
+    footer: '<button type="button" class="btn btn-ghost" data-dlg-close>Cancel</button><button type="submit" form="cmpForm" class="btn btn-primary">' + icon('send') + 'Send message</button>'
+  });
+  $('#cmpForm', d.el).addEventListener('submit', async (e) => {
+    e.preventDefault(); const text = $('#cmpText', d.el).value.trim(); if (!text) { toast('Please write a message first.', 'err'); return; }
+    await busy($('[type=submit]', d.el), async () => { try { await A.api('admin-message', { method: 'POST', body: JSON.stringify({ userId: c.id, text }) }); toast('Message sent to ' + c.name + '.'); d.close(); S.messages = await LOADERS.messages(); if (S.route.page === 'messages') renderInbox(); updateBadges(); } catch (err) { toast(err.message, 'err'); } });
+  });
+}
+
+/* ================= customers ================= */
+function customerStats(c) { const mine = S.orders.filter(o => lc(o.email) === lc(c.email)); return { n: mine.length, spend: mine.filter(o => PAID.includes(o.status)).reduce((s, o) => s + num(o.total), 0) }; }
+function customersListHtml() {
+  const q = lc(S.search.customers);
+  const list = S.customers.filter(c => !q || [c.name, c.email, c.company].some(v => lc(v).includes(q)));
+  if (!S.customers.length) return emptyState('customers', 'No customers yet', 'Accounts appear here when people sign up on your website.');
+  if (!list.length) return emptyState('search', 'No customers match', 'Try a different search.');
+  return '<div class="rows"><div class="row-head cols-customers"><span>Customer</span><span>Company</span><span>Orders</span><span>Paid total</span><span>Joined</span><span></span></div>' + list.map(c => { const st = customerStats(c);
+    return '<div class="row cols-customers hov"><span class="c c-cust c-person">' + avatar(c.name, 'sm') + '<span><b class="ell">' + esc(c.name) + (c.role === 'admin' ? ' <span class="tag tag-orange">Admin</span>' : '') + '</b><small><a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a></small></span></span><span class="c c-co ell">' + esc(c.company || '—') + '</span><span class="c c-orders">' + st.n + '</span><span class="c c-spend money">' + money(st.spend) + '</span><span class="c c-join">' + esc(fmtDate(c.created_at)) + '</span><span class="c c-act" style="display:flex;gap:6px;justify-content:flex-end"><button type="button" class="btn btn-ghost btn-sm" data-compose="' + esc(c.id) + '" aria-label="Message ' + esc(c.name) + '" title="Send a message">' + icon('send') + '</button><button type="button" class="btn btn-ghost btn-sm" data-reset="' + esc(c.id) + '" title="Create a password reset link">' + icon('key') + 'Reset password</button></span></div>'; }).join('') + '</div>';
+}
+PAGES.customers = {
+  keys: ['customers', 'orders'],
+  sub() { return S.loaded.customers && !S.errors.customers ? S.customers.length + ' account' + (S.customers.length === 1 ? '' : 's') : ''; },
+  html() { return gate(this.keys, () => '<div class="toolbar">' + searchBox('searchCustomers', 'Search by name, email, company…', S.search.customers) + '</div><div class="alert alert-info">' + icon('key') + '<span class="grow">Customer locked out? Use <b>Reset password</b>: we email them a one-hour link and show it to you so you can also send it on WhatsApp.</span></div><div id="listBox">' + customersListHtml() + '</div>'); }
+};
+function updateCustomersView() { const l = $('#listBox'); if (l) l.innerHTML = customersListHtml(); }
+async function resetPassword(c, btn) {
+  if (!(await confirmDialog({ title: 'Create a password reset link?', message: 'We will email a one-hour reset link to ' + c.email + '. You will also see the link here so you can send it yourself if the email does not arrive.', confirmText: 'Create link' }))) return;
+  await busy(btn, async () => {
+    try {
+      const r = await A.api('admin-reset-password', { method: 'POST', body: JSON.stringify({ userId: c.id }) });
+      const wa = 'https://wa.me/?text=' + enc('Hi ' + c.name.split(' ')[0] + ', here is your AweSum Brands password reset link (valid for 1 hour, one use): ' + r.link);
+      const d = openDialog({ size: 'sm', title: 'Reset link ready', sub: esc(c.name),
+        body: '<div class="alert ' + (r.emailSent ? 'alert-ok' : 'alert-warn') + '">' + icon(r.emailSent ? 'check' : 'alert') + '<span class="grow">' + (r.emailSent ? 'We emailed this link to <b>' + esc(r.email) + '</b>.' : 'The email could not be sent. Please send the link to the customer yourself.') + '</span></div><div class="field" style="margin-top:16px"><label class="lbl" for="resetLink">Reset link (valid for 1 hour, one use)</label><input type="text" id="resetLink" readonly value="' + esc(r.link) + '"></div>',
+        footer: '<a class="btn btn-ghost" target="_blank" rel="noopener" href="' + esc(wa) + '">Share on WhatsApp</a><button type="button" class="btn btn-primary" data-copy-link autofocus>' + icon('copy') + 'Copy link</button>' });
+      $('[data-copy-link]', d.el).addEventListener('click', () => copyText(r.link, 'Reset link copied.'));
+      const inp = $('#resetLink', d.el); inp.addEventListener('focus', () => inp.select());
+    } catch (err) { toast(err.message, 'err'); }
+  });
+}
+
+/* ================= marketplace (products) ================= */
+function productsGridHtml() {
+  const q = lc(S.search.products); const list = S.products.filter(p => !q || [p.name, p.category, p.description].some(v => lc(v).includes(q)));
+  if (!S.products.length) return '<div class="card">' + emptyState('products', 'No products yet', 'Add your first product and it will appear in the marketplace straight away.', '<button type="button" class="btn btn-primary" data-new="product" style="margin-top:12px">' + icon('plus') + 'Add product</button>') + '</div>';
+  if (!list.length) return emptyState('search', 'No products match', 'Try a different search.');
+  return '<div class="pgrid">' + list.map(p => '<article class="pcard"><div class="pimg">' + (p.image ? '<img src="' + imgSrc(p.image) + '" alt="' + esc(p.name) + '" loading="lazy">' : icon('image')) + '<span class="tag">' + esc(p.category) + '</span></div><div class="pinfo"><b>' + esc(p.name) + '</b><span class="price">' + money(p.price) + '</span><p>' + esc(p.description || 'No description') + '</p><div class="pact"><button type="button" class="btn btn-soft-danger btn-sm" data-remove-product="' + esc(p.id) + '">' + icon('trash') + 'Remove</button></div></div></article>').join('') + '</div>';
+}
+PAGES.products = {
+  keys: ['products'],
+  sub() { return S.loaded.products && !S.errors.products ? S.products.length + ' product' + (S.products.length === 1 ? '' : 's') + ' live in the marketplace' : ''; },
+  html() { return gate(this.keys, () => '<div class="toolbar">' + searchBox('searchProducts', 'Search products…', S.search.products) + '<span style="flex:1"></span><button type="button" class="btn btn-primary" data-new="product">' + icon('plus') + 'Add product</button></div><div id="listBox">' + productsGridHtml() + '</div>'); }
+};
+function openProductForm() {
+  let image = '';
+  const d = openDialog({
+    title: 'Add a product', sub: 'It appears in the marketplace as soon as you save.',
+    body: '<form id="prodForm" novalidate><div class="field"><label class="lbl" for="pName">Product name</label><input type="text" id="pName" maxlength="160" placeholder="e.g. Premium Business Cards" autofocus></div><div class="field-row"><div class="field"><label class="lbl" for="pPrice">Price (ZAR, excl. VAT)</label><div class="input-affix"><span>R</span><input type="number" id="pPrice" min="1" step="0.01" inputmode="decimal" placeholder="299"></div></div><div class="field"><label class="lbl" for="pCat">Category</label><select id="pCat">' + CATEGORIES.map(c => '<option>' + esc(c) + '</option>').join('') + '</select></div></div><div class="field"><label class="lbl" for="pDesc">Description</label><textarea id="pDesc" placeholder="Describe this product…"></textarea></div><div class="field"><label class="lbl">Product image</label>' + dropzoneHtml() + '</div></form>',
+    footer: '<button type="button" class="btn btn-ghost" data-dlg-close>Cancel</button><button type="submit" form="prodForm" class="btn btn-primary">' + icon('plus') + 'Add to marketplace</button>'
+  });
+  bindDropzone(d.el, (u) => { image = u; });
+  $('#prodForm', d.el).addEventListener('submit', async (e) => {
     e.preventDefault();
-    const image = await productImagePromise;
-    const product = { name: document.getElementById('prod-name').value.trim(), price: Number(document.getElementById('prod-price').value), category: document.getElementById('prod-category').value, description: document.getElementById('prod-desc').value.trim(), image };
-    try { const result = await AweSum.api('products', { method: 'POST', body: JSON.stringify(product) }); product.id = result.id; product.image = result.image || ''; } catch (error) { AweSum.showMessage(error.message, 'error'); return; }
-    try { await refreshAdminProducts(); } catch (error) {
-      const withNew = adminProductList.concat([product]);
-      AweSum.write(AweSum.keys.products, withNew);
-      renderAdminProducts(withNew);
-    }
-    toast.textContent = 'Product added to marketplace';
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2200);
-    form.reset();
-    uploadText.textContent = 'Click or drag to upload';
-    productImagePromise = Promise.resolve('');
+    const name = $('#pName', d.el).value.trim(), price = Number($('#pPrice', d.el).value);
+    if (!name) { toast('Please enter a product name.', 'err'); $('#pName', d.el).focus(); return; }
+    if (!(price >= 1)) { toast('Please enter a price of R1 or more.', 'err'); $('#pPrice', d.el).focus(); return; }
+    await busy($('[type=submit]', d.el), async () => {
+      try {
+        await A.api('products', { method: 'POST', body: JSON.stringify({ name, price, category: $('#pCat', d.el).value, description: $('#pDesc', d.el).value.trim(), image }) });
+        await load(['products']); d.close(); toast('“' + name + '” is now in the marketplace.'); if (S.route.page === 'products') { $('#listBox').innerHTML = productsGridHtml(); $('#pageSub').textContent = PAGES.products.sub(); }
+      } catch (err) { toast(err.message, 'err'); }
+    });
   });
+}
 
-  const advertForm = document.getElementById('advert-form');
-  const adminAdverts = document.getElementById('admin-adverts');
-  const statsForm = document.getElementById('stats-form');
-  const projectForm = document.getElementById('project-form');
-  const adminProjects = document.getElementById('admin-projects');
-  const projectImageFile = document.getElementById('project-image-file');
-  const projectUploadText = document.getElementById('project-upload-text');
-  const projectImageUrl = document.getElementById('project-image-url');
-  const defaultStats = [
-    { value: '2,400+', label: 'Happy Clients' },
-    { value: '18,000+', label: 'Projects Completed' },
-    { value: '3–5 Days', label: 'Turnaround Time' },
-    { value: '100%', label: 'Quality Guaranteed' }
-  ];
-
-  function populateStatsForm(saved) {
-    const stats = Array.isArray(saved) && saved.length === 4 ? saved : defaultStats;
-    for (let n = 1; n <= 4; n++) {
-      document.getElementById('stat-' + n + '-value').value = stats[n - 1].value;
-      document.getElementById('stat-' + n + '-label').value = stats[n - 1].label;
-    }
-  }
-
-  statsForm.addEventListener('submit', async event => {
-    event.preventDefault();
-    const stats = [1, 2, 3, 4].map(n => ({ value: document.getElementById('stat-' + n + '-value').value.trim(), label: document.getElementById('stat-' + n + '-label').value.trim() }));
-    try {
-      const result = await AweSum.api('stats', { method: 'PUT', body: JSON.stringify({ stats }) });
-      populateStatsForm(result.stats);
-      AweSum.showMessage('Homepage statistics updated.');
-    } catch (error) {
-      AweSum.showMessage(error.message, 'error');
-    }
+/* ================= adverts ================= */
+function advertsHtml() {
+  if (!S.adverts.length) return '<div class="card">' + emptyState('adverts', 'No adverts yet', 'Adverts appear on your homepage so you can promote specials and show your work.', '<button type="button" class="btn btn-primary" data-new="advert" style="margin-top:12px">' + icon('plus') + 'New advert</button>') + '</div>';
+  return '<div class="card">' + S.adverts.map(a => '<div class="ad-item"><span class="ad-ic ' + (a.mediaType === 'video' ? 'ic-violet' : 'ic-blue') + '">' + icon(a.mediaType === 'video' ? 'video' : 'image') + '</span><div class="ad-main"><b>' + esc(a.title) + ' ' + chip(a.mediaType === 'video' ? 'Video' : 'Image', 'slate') + '</b><p>' + esc(a.description) + '</p>' + (isHttp(a.mediaUrl) ? '<a href="' + esc(a.mediaUrl) + '" target="_blank" rel="noopener">View media ↗</a>' : '') + '</div><button type="button" class="btn btn-soft-danger btn-sm" data-remove-advert="' + esc(a.id) + '">' + icon('trash') + 'Remove</button></div>').join('') + '</div>';
+}
+PAGES.adverts = {
+  keys: ['adverts'],
+  sub() { return S.loaded.adverts && !S.errors.adverts ? S.adverts.length + ' live on the homepage' : ''; },
+  html() { return gate(this.keys, () => '<div class="toolbar"><span style="flex:1"></span><button type="button" class="btn btn-primary" data-new="advert">' + icon('plus') + 'New advert</button></div><div id="listBox">' + advertsHtml() + '</div>'); }
+};
+function openAdvertForm() {
+  const d = openDialog({
+    title: 'New advert', sub: 'Shown on your homepage right after you publish it.',
+    body: '<form id="adForm" novalidate><div class="field"><label class="lbl" for="aTitle">Title</label><input type="text" id="aTitle" maxlength="160" placeholder="e.g. 20% off branded t-shirts" autofocus></div><div class="field"><label class="lbl" for="aDesc">Message</label><textarea id="aDesc" placeholder="Tell customers about this special or project…"></textarea></div><div class="field-row"><div class="field"><label class="lbl" for="aType">Media type</label><select id="aType"><option value="image">Image</option><option value="video">Video</option></select></div><div class="field"><label class="lbl" for="aUrl">Link to the image or video</label><input type="url" id="aUrl" placeholder="https://…"></div></div><p class="help" style="margin-top:-6px">Paste a link that starts with https:// (for example from your website or YouTube/Drive hosting).</p></form>',
+    footer: '<button type="button" class="btn btn-ghost" data-dlg-close>Cancel</button><button type="submit" form="adForm" class="btn btn-primary">Publish advert</button>'
   });
+  $('#adForm', d.el).addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const advert = { title: $('#aTitle', d.el).value.trim(), description: $('#aDesc', d.el).value.trim(), mediaType: $('#aType', d.el).value, mediaUrl: $('#aUrl', d.el).value.trim() };
+    if (!advert.title || !advert.description) { toast('Please add a title and a message.', 'err'); return; }
+    if (!/^https:\/\//i.test(advert.mediaUrl) && !/^http:\/\//i.test(advert.mediaUrl)) { toast('The media link must start with https://', 'err'); $('#aUrl', d.el).focus(); return; }
+    await busy($('[type=submit]', d.el), async () => {
+      try { await A.api('adverts', { method: 'POST', body: JSON.stringify(advert) }); await load(['adverts']); d.close(); toast('Advert published.'); if (S.route.page === 'adverts') { $('#listBox').innerHTML = advertsHtml(); $('#pageSub').textContent = PAGES.adverts.sub(); } } catch (err) { toast(err.message, 'err'); }
+    });
+  });
+}
 
-  const customerList = document.getElementById('customer-list');
-  function renderCustomers(customers) {
-    customerList.innerHTML = customers.length ? '' : '<p class="placeholder">No customers have registered yet.</p>';
-    customers.forEach(customer => {
-      const card = document.createElement('div');
-      card.className = 'order-card';
-      card.innerHTML = '<div class="order-info"><span class="order-customer">' + AweSum.escapeHtml(customer.name) + (customer.role === 'admin' ? ' (admin)' : '') + '</span><span class="order-meta">' + AweSum.escapeHtml(customer.email) + (customer.company ? ' · ' + AweSum.escapeHtml(customer.company) : '') + ' · Joined ' + AweSum.escapeHtml(String(customer.created_at || '').slice(0, 10)) + '</span></div><button type="button" class="review-btn" data-reset-customer="' + AweSum.escapeHtml(customer.id) + '" data-reset-name="' + AweSum.escapeHtml(customer.name) + '">Reset password</button>';
-      customerList.appendChild(card);
+/* ================= homepage content ================= */
+const currentStats = () => Array.isArray(S.stats) && S.stats.length === 4 ? S.stats : DEFAULT_STATS;
+function statsPreview(stats) { return '<div class="stat-preview" id="statPreview">' + stats.map(s => '<div><b>' + esc(s.value) + '</b><span>' + esc(s.label) + '</span></div>').join('') + '</div>'; }
+function projectsHtml() {
+  if (!S.projects.length) return emptyState('image', 'No projects yet', 'Show off your best work. Projects appear in the gallery on your homepage.', '<button type="button" class="btn btn-primary" data-new="project" style="margin-top:12px">' + icon('plus') + 'Add project</button>');
+  return '<div class="card-body"><div class="pgrid">' + S.projects.map(p => '<article class="pcard"><div class="pimg">' + (p.image ? '<img src="' + imgSrc(p.image) + '" alt="' + esc(p.title) + '" loading="lazy">' : icon('image')) + '<span class="tag">' + esc(PROJECT_CATS[p.category] || p.category) + '</span></div><div class="pinfo"><b>' + esc(p.title) + '</b><div class="pact"><button type="button" class="btn btn-soft-danger btn-sm" data-remove-project="' + esc(p.id) + '">' + icon('trash') + 'Remove</button></div></div></article>').join('') + '</div></div>';
+}
+PAGES.homepage = {
+  keys: ['stats', 'projects'],
+  sub: () => 'Control what visitors see on your homepage',
+  html() {
+    return gate(this.keys, () => { const st = currentStats();
+      return '<section class="card"><div class="card-head"><div class="grow"><h2>Homepage statistics</h2><p>The four numbers shown in the strip on your homepage</p></div></div><div class="card-body">' +
+        (S.stats ? '' : '<div class="alert alert-warn" style="margin-bottom:16px">' + icon('alert') + '<span class="grow">The statistics strip is hidden on your homepage until you save your own figures.</span></div>') +
+        statsPreview(st) + '<form id="statsForm"><div class="stats-grid">' + st.map((s, i) => '<div class="stat-card"><div class="n">Stat ' + (i + 1) + '</div><label class="sr-only" for="sv' + i + '">Value ' + (i + 1) + '</label><input type="text" id="sv' + i + '" data-stat="value" maxlength="40" value="' + esc(s.value) + '" required placeholder="e.g. 2,400+"><label class="sr-only" for="sl' + i + '">Label ' + (i + 1) + '</label><input type="text" id="sl' + i + '" data-stat="label" maxlength="60" value="' + esc(s.label) + '" required placeholder="e.g. Happy Clients"></div>').join('') + '</div><div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap"><button type="submit" class="btn btn-primary">Save statistics</button><button type="button" class="btn btn-ghost" data-stats-default>Restore suggestions</button></div></form></div></section>' +
+        '<section class="card"><div class="card-head"><div class="grow"><h2>Previous projects</h2><p>The gallery of your work on the homepage</p></div><button type="button" class="btn btn-primary btn-sm" data-new="project">' + icon('plus') + 'Add project</button></div><div id="projectsBox">' + projectsHtml() + '</div></section>';
     });
   }
-  AweSum.api('customers').then(result => renderCustomers(result.customers || [])).catch(error => AweSum.showMessage(error.message, 'error'));
-  customerList.addEventListener('click', async event => {
-    const button = event.target.closest('[data-reset-customer]');
-    if (!button) return;
-    if (!confirm('Create a password reset link for ' + button.dataset.resetName + '? We will also email it to them.')) return;
-    button.disabled = true;
-    try {
-      const result = await AweSum.api('admin-reset-password', { method: 'POST', body: JSON.stringify({ userId: button.dataset.resetCustomer }) });
-      if (result.emailSent) AweSum.showMessage('Reset email sent to ' + result.email + '.'); else AweSum.showMessage('The email could not be sent. Copy the link and send it to the customer yourself.', 'error');
-      window.prompt('Reset link for ' + button.dataset.resetName + ' (valid for 1 hour, one use). Press Ctrl+C to copy it:', result.link);
-    } catch (error) {
-      AweSum.showMessage(error.message, 'error');
-    }
-    button.disabled = false;
+};
+function openProjectForm() {
+  let image = ''; let mode = 'upload';
+  const d = openDialog({
+    title: 'Add a project', sub: 'It appears in the homepage gallery.',
+    body: '<form id="projForm" novalidate><div class="field"><label class="lbl" for="jTitle">Project title</label><input type="text" id="jTitle" maxlength="160" placeholder="e.g. Brand Launch Campaign" autofocus></div><div class="field"><label class="lbl" for="jCat">Category</label><select id="jCat">' + Object.keys(PROJECT_CATS).map(k => '<option value="' + k + '">' + esc(PROJECT_CATS[k]) + '</option>').join('') + '</select></div><div class="field"><label class="lbl">Image</label><div class="seg" role="group" aria-label="Image source"><button type="button" data-mode="upload" aria-pressed="true">Upload</button><button type="button" data-mode="link" aria-pressed="false">Image link</button></div><div id="jUpload">' + dropzoneHtml() + '</div><div id="jLink" hidden><input type="url" id="jUrl" placeholder="https://example.com/project-image.jpg"></div></div></form>',
+    footer: '<button type="button" class="btn btn-ghost" data-dlg-close>Cancel</button><button type="submit" form="projForm" class="btn btn-primary">' + icon('plus') + 'Add to homepage</button>'
   });
+  bindDropzone(d.el, (u) => { image = u; });
+  d.el.addEventListener('click', (e) => { const b = e.target.closest('[data-mode]'); if (!b) return; mode = b.dataset.mode; $$('[data-mode]', d.el).forEach(x => x.setAttribute('aria-pressed', String(x === b))); $('#jUpload', d.el).hidden = mode !== 'upload'; $('#jLink', d.el).hidden = mode !== 'link'; });
+  $('#projForm', d.el).addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const title = $('#jTitle', d.el).value.trim(); const url = $('#jUrl', d.el).value.trim(); const img = mode === 'link' ? url : image;
+    if (!title) { toast('Please enter a project title.', 'err'); $('#jTitle', d.el).focus(); return; }
+    if (!img) { toast(mode === 'link' ? 'Please paste the image link.' : 'Please choose an image to upload.', 'err'); return; }
+    await busy($('[type=submit]', d.el), async () => {
+      try { await A.api('projects', { method: 'POST', body: JSON.stringify({ title, category: $('#jCat', d.el).value, image: img }) }); await load(['projects']); d.close(); toast('Project added to your homepage.'); const b = $('#projectsBox'); if (b) b.innerHTML = projectsHtml(); } catch (err) { toast(err.message, 'err'); }
+    });
+  });
+}
 
-  let adminProjectList = [];
-  const projectCategoryLabels = { 'business-cards': 'Business Cards', 'flyers': 'Flyers', 'banners': 'Banners', 't-shirts': 'T-Shirts', 'signage': 'Signage', 'caps': 'Caps', 'posters': 'Posters' };
-
-  function renderAdminProjects(projects) {
-    if (Array.isArray(projects)) adminProjectList = projects;
-    adminProjects.innerHTML = adminProjectList.length ? '' : '<p class="placeholder">No previous projects have been added yet.</p>';
-    adminProjectList.forEach(project => {
-      const card = document.createElement('div');
-      card.className = 'order-card';
-      card.innerHTML = '<div class="order-info"><span class="order-customer">' + AweSum.escapeHtml(project.title) + '</span><span class="order-meta">' + AweSum.escapeHtml(projectCategoryLabels[project.category] || project.category) + '</span></div><button type="button" class="review-btn" data-remove-project="' + AweSum.escapeHtml(project.id) + '">Remove</button>';
-      adminProjects.appendChild(card);
+/* ================= settings ================= */
+function toggleRow(key, title, text, on) { return '<label class="switch"><span class="grow"><b>' + esc(title) + '</b><small>' + esc(text) + '</small></span><span class="toggle"><input type="checkbox" data-pref="' + key + '"' + (on ? ' checked' : '') + '><i></i></span></label>'; }
+PAGES.settings = {
+  keys: ['content'],
+  sub: () => 'Business details, alerts and account',
+  html() {
+    return gate(this.keys, () => {
+      const c = Object.assign({}, DEFAULT_CONTENT, S.content || {}); const p = prefs(); const me = S.me || {};
+      const f = (id, label, val, attrs, tag) => '<div class="field"><label class="lbl" for="' + id + '">' + label + '</label>' + (tag === 'ta' ? '<textarea id="' + id + '" ' + attrs + '>' + esc(val) + '</textarea>' : '<input id="' + id + '" ' + attrs + ' value="' + esc(val) + '">') + '</div>';
+      return '<div class="settings"><section class="card"><div class="card-head"><div class="grow"><h2>Business details</h2><p>Shown in the footer and on your legal pages</p></div></div><div class="card-body"><form id="siteForm">' +
+        f('sTrading', 'Trading name', c.tradingName, 'type="text" maxlength="160" required') + f('sLegal', 'Legal name (optional)', c.legalName, 'type="text" maxlength="160"') +
+        '<div class="field-row">' + f('sEmail', 'Contact email', c.email, 'type="email" maxlength="255" required') + f('sPhone', 'Contact phone', c.phone, 'type="text" maxlength="40" required') + '</div>' +
+        f('sAddress', 'Business address', c.address, 'maxlength="500" required style="min-height:72px"', 'ta') +
+        '<div class="field-row">' + f('sReg', 'Registration number (optional)', c.registrationNumber, 'type="text" maxlength="100"') + f('sVat', 'VAT number (optional)', c.vatNumber, 'type="text" maxlength="100"') + '</div>' +
+        '<button type="submit" class="btn btn-primary">Save business details</button></form></div></section>' +
+        '<div class="stack"><section class="card"><div class="card-head"><div class="grow"><h2>My account</h2></div></div><div class="card-body"><div class="c-person" style="margin-bottom:16px">' + avatar(me.name, 'lg') + '<span><b>' + esc(me.name || 'Administrator') + '</b><br><span class="muted">' + esc(me.email || '') + '</span></span></div><div class="next-actions"><a class="btn btn-ghost" href="settings.html">' + icon('edit') + 'Edit my profile</a><a class="btn btn-ghost" href="change-password.html">' + icon('key') + 'Change password</a></div></div></section>' +
+        '<section class="card"><div class="card-head"><div class="grow"><h2>Alerts and display</h2><p>Saved on this device</p></div></div><div class="card-body">' +
+        '<p class="muted" style="margin-bottom:6px">While this page is open it checks for new activity every minute and tells you when something arrives.</p>' +
+        toggleRow('orderNotifications', 'New orders', 'Pop-up alert when a customer places an order', p.orderNotifications) + toggleRow('quoteNotifications', 'New quote requests', 'Pop-up alert when a quote is requested', p.quoteNotifications) + toggleRow('messageNotifications', 'New messages', 'Pop-up alert when a customer writes to you', p.messageNotifications) +
+        '<div class="field" style="margin-top:14px;margin-bottom:0"><label class="lbl" for="prefDensity">Display density</label><select id="prefDensity"><option value="comfortable"' + (p.appearance !== 'compact' ? ' selected' : '') + '>Comfortable</option><option value="compact"' + (p.appearance === 'compact' ? ' selected' : '') + '>Compact (fits more on screen)</option></select></div></div></section>' +
+        '<section class="card"><div class="card-head"><div class="grow"><h2>System check</h2><p>Confirms your database has everything the site needs</p></div></div><div class="card-body"><button type="button" class="btn btn-ghost" data-system-check>' + icon('shield') + 'Run system check</button><div id="checkOut"></div></div></section></div></div>';
     });
   }
+};
 
-  async function refreshAdminProjects() {
-    const result = await AweSum.api('projects');
-    renderAdminProjects(result.projects || []);
+/* ================= shell, routing, refresh ================= */
+const ROUTES = {
+  dashboard: { label: 'Dashboard', icon: 'dashboard', group: 'Overview' },
+  orders: { label: 'Orders', icon: 'orders', group: 'Sales', badge: 'orders' },
+  quotes: { label: 'Quotes', icon: 'quotes', badge: 'quotes' },
+  messages: { label: 'Messages', icon: 'messages', badge: 'messages' },
+  products: { label: 'Marketplace', icon: 'products', group: 'Catalogue' },
+  adverts: { label: 'Adverts', icon: 'adverts' },
+  homepage: { label: 'Homepage', icon: 'homepage' },
+  customers: { label: 'Customers', icon: 'customers', group: 'People' },
+  settings: { label: 'Settings', icon: 'settings', group: 'System' }
+};
+function buildShell() {
+  const me = S.me || {}; let nav = '';
+  Object.keys(ROUTES).forEach(k => { const r = ROUTES[k]; if (r.group) nav += '<div class="nav-group">' + r.group + '</div>'; nav += '<a class="nav-link" href="#' + k + '" data-route="' + k + '">' + icon(r.icon) + '<span>' + r.label + '</span>' + (r.badge ? '<span class="nav-badge" data-badge="' + r.badge + '" hidden></span>' : '') + '</a>'; });
+  $('#sidebar').innerHTML = '<div class="side-brand"><span class="logo-chip"><img src="images/logo.jpg" alt="AweSum Brands"></span><div><strong>AweSum Brands</strong><small>Admin panel</small></div></div><nav class="side-nav" aria-label="Admin sections">' + nav + '</nav>' +
+    '<div class="side-foot"><div class="me">' + avatar(me.name) + '<div><b>' + esc(me.name || 'Administrator') + '</b><small>' + esc(me.email || '') + '</small></div></div><div class="side-actions"><a class="btn btn-side" href="index.html" target="_blank" rel="noopener">' + icon('external') + 'View site</a><button type="button" class="btn btn-side" id="signOut">' + icon('logout') + 'Sign out</button></div></div>';
+  document.body.classList.toggle('compact', prefs().appearance === 'compact');
+}
+function updateBadges() {
+  $$('[data-badge]').forEach(b => { const n = needs[b.dataset.badge](); b.textContent = n > 99 ? '99+' : n; b.hidden = !n; });
+  const total = needs.orders() + needs.quotes() + needs.messages();
+  document.title = (total ? '(' + total + ') ' : '') + (ROUTES[S.route.page] ? ROUTES[S.route.page].label + ' · ' : '') + 'Admin · AweSum Brands';
+}
+function setActiveNav() { $$('.nav-link').forEach(a => { const on = a.dataset.route === S.route.page; a.classList.toggle('active', on); if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }); }
+function parseHash() { let h = ''; try { h = decodeURIComponent(location.hash.replace(/^#\/?/, '')); } catch (e) { h = ''; } const parts = h.split('/'); const page = ROUTES[parts[0]] ? parts[0] : 'dashboard'; return { page, id: parts.slice(1).join('/') }; }
+function renderPage() {
+  const page = S.route.page; const P = PAGES[page]; S.renderedPage = page;
+  $('#pageTitle').textContent = ROUTES[page].label;
+  view().innerHTML = P.html(); $('#pageSub').textContent = P.sub ? P.sub() : '';
+  if (P.after) P.after(); updateBadges();
+}
+function closeDetail() { if (S.detail) { const d = S.detail; S.detail = null; d.close('route'); } }
+function openDetail(page, id) { if (S.detail && S.detail.kind === page && S.detail.id === id) return; closeDetail(); if (page === 'orders') openOrder(id); else if (page === 'quotes') openQuote(id); }
+function closeNav() { document.body.classList.remove('nav-open'); }
+function route() {
+  const { page, id } = parseHash(); const changed = S.renderedPage !== page;
+  S.route = { page, id }; setActiveNav(); closeNav();
+  if (changed) { closeDetail(); renderPage(); window.scrollTo(0, 0); }
+  if (page === 'orders' || page === 'quotes') { if (id && S.loaded[page] && !S.errors[page]) openDetail(page, id); else closeDetail(); }
+  else { closeDetail(); if (page === 'messages' && !changed) renderInbox(); }
+  if (S.autoOpen === page) { const k = { products: openProductForm, adverts: openAdvertForm, homepage: openProjectForm }[page]; S.autoOpen = ''; if (k) setTimeout(k, 60); }
+  updateBadges();
+}
+const sigOf = () => JSON.stringify([S.orders.map(o => [o.id, o.status]), S.quotes.map(q => [q.id, q.status, q.quotedPrice]), S.messages.map(m => [m.id, !!m.reply])]);
+function notifyNew(before) {
+  const p = prefs(); const out = [];
+  if (p.orderNotifications) S.orders.filter(o => !before.o.has(o.id)).forEach(o => out.push(['New order ' + o.id + ' from ' + (o.customer || 'a customer') + ' (' + money(o.total) + ')', '#orders/' + enc(o.id)]));
+  if (p.quoteNotifications) S.quotes.filter(q => !before.q.has(q.id)).forEach(q => out.push(['New quote request ' + q.id + ' from ' + (q.customer || 'a customer'), '#quotes/' + enc(q.id)]));
+  if (p.messageNotifications) S.messages.filter(m => !before.m.has(m.id) && m.senderRole !== 'admin').forEach(m => out.push(['New message from ' + (m.name || 'a customer'), '#messages/' + enc(convKey(m))]));
+  out.slice(0, 3).forEach(o => toast(esc(o[0]) + ' · <a href="' + o[1] + '">Open</a>', 'info', { html: true, ttl: 9000 }));
+  if (out.length > 3) toast((out.length - 3) + ' more new item' + (out.length - 3 === 1 ? '' : 's') + ' need your attention.', 'info');
+}
+function softRender() { const p = S.route.page; if (p === 'orders') updateOrdersView(); else if (p === 'quotes') updateQuotesView(); else if (p === 'messages') renderInbox(true); else if (p === 'dashboard') renderPage(); else if (p === 'customers') updateCustomersView(); $('#pageSub').textContent = PAGES[p].sub ? PAGES[p].sub() : ''; }
+async function refresh(silent) {
+  if (S.refreshing) return; S.refreshing = true; const btn = $('#refreshBtn'); if (btn) btn.classList.add('busy');
+  const before = { o: new Set(S.orders.map(o => o.id)), q: new Set(S.quotes.map(q => q.id)), m: new Set(S.messages.map(m => m.id)) }; const old = sigOf();
+  try {
+    await load(['orders', 'quotes', 'messages']); S.lastUpdated = Date.now();
+    if (silent) notifyNew(before); else toast('Everything is up to date.', 'info');
+    updateBadges(); if (sigOf() !== old || !silent) softRender();
+  } finally { S.refreshing = false; if (btn) btn.classList.remove('busy'); }
+}
+
+/* ================= events ================= */
+document.addEventListener('click', async (e) => {
+  const t = e.target;
+  if (t.closest('#menuBtn')) { document.body.classList.toggle('nav-open'); return; }
+  if (t.closest('#scrim')) { closeNav(); return; }
+  if (t.closest('#refreshBtn')) { refresh(false); return; }
+  if (t.closest('#signOut')) { const b = t.closest('#signOut'); await busy(b, async () => { try { await A.api('logout', { method: 'POST' }); } catch (err) {} try { localStorage.removeItem(A.keys.session); } catch (err) {} location.href = 'index.html'; }); return; }
+  const inView = t.closest('#view'); if (!inView) return;
+  const kf = t.closest('[data-kpi-filter]'); if (kf) { const [g, f] = kf.dataset.kpiFilter.split(':'); S.filters[g] = f; return; }
+  const fc = t.closest('[data-filter]'); if (fc) { const [g, f] = fc.dataset.filter.split(':'); S.filters[g] = f; if (g === 'orders') updateOrdersView(); else updateQuotesView(); return; }
+  const rt = t.closest('[data-retry]'); if (rt) { await busy(rt, async () => { await load(rt.dataset.retry.split(',')); renderPage(); }); return; }
+  const nw = t.closest('[data-new]'); if (nw) { const k = nw.dataset.new; const page = { product: 'products', advert: 'adverts', project: 'homepage' }[k]; if (S.route.page === page) { e.preventDefault(); ({ product: openProductForm, advert: openAdvertForm, project: openProjectForm })[k](); } else { S.autoOpen = page; } return; }
+  const cp = t.closest('[data-compose]'); if (cp) { openCompose(cp.dataset.compose); return; }
+  const rs = t.closest('[data-reset]'); if (rs) { const c = customerById(rs.dataset.reset); if (c) resetPassword(c, rs); return; }
+  const rp = t.closest('[data-remove-product]'); if (rp) {
+    const p = S.products.find(x => String(x.id) === rp.dataset.removeProduct); if (!p) return;
+    if (!(await confirmDialog({ title: 'Remove this product?', message: '“' + p.name + '” will be removed from the marketplace. Customers will no longer be able to order it.', confirmText: 'Remove product', danger: true }))) return;
+    await busy(rp, async () => { try { await A.api('products', { method: 'DELETE', body: JSON.stringify({ id: p.id }) }); await load(['products']); $('#listBox').innerHTML = productsGridHtml(); $('#pageSub').textContent = PAGES.products.sub(); toast('“' + p.name + '” removed from the marketplace.'); } catch (err) { toast(err.message, 'err'); } }); return; }
+  const ra = t.closest('[data-remove-advert]'); if (ra) {
+    const a = S.adverts.find(x => String(x.id) === ra.dataset.removeAdvert); if (!a) return;
+    if (!(await confirmDialog({ title: 'Remove this advert?', message: '“' + a.title + '” will no longer be shown on your homepage.', confirmText: 'Remove advert', danger: true }))) return;
+    await busy(ra, async () => { try { await A.api('advert', { method: 'DELETE', body: JSON.stringify({ id: a.id }) }); await load(['adverts']); $('#listBox').innerHTML = advertsHtml(); $('#pageSub').textContent = PAGES.adverts.sub(); toast('Advert removed.'); } catch (err) { toast(err.message, 'err'); } }); return; }
+  const rj = t.closest('[data-remove-project]'); if (rj) {
+    const p = S.projects.find(x => String(x.id) === rj.dataset.removeProject); if (!p) return;
+    if (!(await confirmDialog({ title: 'Remove this project?', message: '“' + p.title + '” will be removed from the homepage gallery.', confirmText: 'Remove project', danger: true }))) return;
+    await busy(rj, async () => { try { await A.api('projects', { method: 'DELETE', body: JSON.stringify({ id: p.id }) }); await load(['projects']); $('#projectsBox').innerHTML = projectsHtml(); toast('Project removed.'); } catch (err) { toast(err.message, 'err'); } }); return; }
+  if (t.closest('[data-stats-default]')) { $$('#statsForm .stat-card').forEach((c, i) => { $('[data-stat=value]', c).value = DEFAULT_STATS[i].value; $('[data-stat=label]', c).value = DEFAULT_STATS[i].label; }); $('#statPreview').outerHTML = statsPreview(DEFAULT_STATS); toast('Suggestions filled in. Press “Save statistics” to publish them.', 'info'); return; }
+  const sc = t.closest('[data-system-check]'); if (sc) {
+    await busy(sc, async () => { const out = $('#checkOut'); try { const r = await A.api('schema-check'); const items = r.ok ? ['All required tables and columns are present.'] : r.missing;
+      out.innerHTML = '<div class="alert ' + (r.ok ? 'alert-ok' : 'alert-warn') + '" style="margin-top:14px">' + icon(r.ok ? 'check' : 'alert') + '<span class="grow">' + (r.ok ? 'Everything looks good.' : 'Some parts of the database are missing.') + '</span></div><ul class="check-list">' + items.map(i => '<li class="' + (r.ok ? 'ok' : 'bad') + '">' + icon(r.ok ? 'check' : 'alert') + '<span>' + esc(i) + '</span></li>').join('') + '</ul>' + (r.ok ? '' : '<p class="muted" style="margin-top:8px;font-size:13px">' + esc(r.note || '') + '</p>'); } catch (err) { out.innerHTML = '<div class="alert alert-error" style="margin-top:14px">' + icon('alert') + '<span class="grow">' + esc(err.message) + '</span></div>'; } }); return; }
+  /* inbox */
+  const ro = t.closest('[data-reply-open]'); if (ro) { S.replyOpen = ro.dataset.replyOpen; renderInbox(true); const ta = $('#replyText'); if (ta) ta.focus(); return; }
+  if (t.closest('[data-reply-cancel]')) { S.replyOpen = ''; renderInbox(true); return; }
+  if (t.closest('[data-msg-back]')) { location.hash = '#messages'; return; }
+  const rsend = t.closest('[data-reply-send]'); if (rsend) { await sendReply(rsend); return; }
+  const mh = t.closest('[data-mark-handled]'); if (mh) { await busy(mh, async () => { try { await A.api('message-reply', { method: 'PUT', body: JSON.stringify({ id: mh.dataset.markHandled, reply: 'Marked as handled (replied by email or phone).' }) }); S.replyOpen = ''; await reloadMessages(); toast('Marked as handled.'); } catch (err) { toast(err.message, 'err'); } }); return; }
+  const dm = t.closest('[data-delete-message]'); if (dm) {
+    if (!(await confirmDialog({ title: 'Delete this message?', message: 'The message and any reply to it will be permanently removed' + ' and the customer will no longer see them.', confirmText: 'Delete message', danger: true }))) return;
+    await busy(dm, async () => { try { await A.api('message', { method: 'DELETE', body: JSON.stringify({ id: dm.dataset.deleteMessage }) }); await reloadMessages(); toast('Message deleted.'); } catch (err) { toast(err.message, 'err'); } }); return; }
+});
+async function sendReply(btn) {
+  const ta = $('#replyText'); const text = ta ? ta.value.trim() : ''; if (!text) { toast('Please write your reply first.', 'err'); if (ta) ta.focus(); return; }
+  await busy(btn, async () => { try { await A.api('message-reply', { method: 'PUT', body: JSON.stringify({ id: btn.dataset.replySend, reply: text }) }); S.replyOpen = ''; await reloadMessages(); toast('Reply sent.'); } catch (err) { toast(err.message, 'err'); } });
+}
+document.addEventListener('input', (e) => {
+  const id = e.target.id; if (!e.target.closest('#view')) return;
+  if (id === 'searchOrders') { S.search.orders = e.target.value; updateOrdersView(); }
+  else if (id === 'searchQuotes') { S.search.quotes = e.target.value; updateQuotesView(); }
+  else if (id === 'searchCustomers') { S.search.customers = e.target.value; updateCustomersView(); }
+  else if (id === 'searchProducts') { S.search.products = e.target.value; $('#listBox').innerHTML = productsGridHtml(); }
+  else if (id === 'searchConvs') { S.search.messages = e.target.value; renderInbox(); }
+  else if (e.target.matches('[data-stat]')) { const vals = $$('#statsForm .stat-card').map(c => ({ value: $('[data-stat=value]', c).value, label: $('[data-stat=label]', c).value })); $('#statPreview').outerHTML = statsPreview(vals); }
+});
+document.addEventListener('keydown', (e) => {
+  if (e.target.id === 'replyText' && e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); const b = $('[data-reply-send]'); if (b) sendReply(b); }
+  else if (e.target.id === 'composeText' && e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); const f = $('#composeForm'); if (f) f.requestSubmit(); }
+  else if (e.key === '/' && !overlays.length && !/INPUT|TEXTAREA|SELECT/.test((e.target.tagName || ''))) { const s = $('#view input[type=search]'); if (s) { e.preventDefault(); s.focus(); } }
+});
+document.addEventListener('submit', async (e) => {
+  const f = e.target;
+  if (f.id === 'composeForm') {
+    e.preventDefault(); const ta = $('#composeText'); const text = ta.value.trim(); if (!text) return;
+    await busy($('[type=submit]', f), async () => { try { await A.api('admin-message', { method: 'POST', body: JSON.stringify({ userId: f.dataset.user, text }) }); ta.value = ''; await reloadMessages(); toast('Message sent.'); } catch (err) { toast(err.message, 'err'); } });
+  } else if (f.id === 'siteForm') {
+    e.preventDefault();
+    const content = { tradingName: $('#sTrading').value.trim(), legalName: $('#sLegal').value.trim(), email: $('#sEmail').value.trim(), phone: $('#sPhone').value.trim(), address: $('#sAddress').value.trim(), registrationNumber: $('#sReg').value.trim(), vatNumber: $('#sVat').value.trim() };
+    await busy($('[type=submit]', f), async () => { try { const r = await A.api('site-content', { method: 'PUT', body: JSON.stringify({ content }) }); S.content = r.content; toast('Business details saved. They are now live on your site.'); } catch (err) { toast(err.message, 'err'); } });
+  } else if (f.id === 'statsForm') {
+    e.preventDefault();
+    const stats = $$('#statsForm .stat-card').map(c => ({ value: $('[data-stat=value]', c).value.trim(), label: $('[data-stat=label]', c).value.trim() }));
+    await busy($('[type=submit]', f), async () => { try { const r = await A.api('stats', { method: 'PUT', body: JSON.stringify({ stats }) }); S.stats = r.stats; toast('Homepage statistics saved.'); renderPage(); } catch (err) { toast(err.message, 'err'); } });
   }
+});
+document.addEventListener('change', (e) => {
+  const t = e.target;
+  if (t.matches('[data-pref]')) { const p = prefs(); p[t.dataset.pref] = t.checked; A.write(PREF_KEY, p); toast(t.checked ? 'Alert turned on.' : 'Alert turned off.', 'info'); }
+  else if (t.id === 'prefDensity') { const p = prefs(); p.appearance = t.value; A.write(PREF_KEY, p); document.body.classList.toggle('compact', t.value === 'compact'); toast('Display density updated.', 'info'); }
+});
+window.addEventListener('hashchange', route);
+document.addEventListener('visibilitychange', () => { if (!document.hidden && S.lastUpdated && Date.now() - S.lastUpdated > 30000) refresh(true); });
 
-  projectImageFile.addEventListener('change', () => {
-    const file = projectImageFile.files[0];
-    if (!file) return;
-    if (!file.type.startsWith('image/') || file.size > 15 * 1024 * 1024) {
-      AweSum.showMessage('Please choose an image smaller than 15MB.', 'error');
-      projectImageFile.value = '';
-      return;
-    }
-    projectUploadText.textContent = file.name;
-  });
-
-  projectForm.addEventListener('submit', async event => {
-    event.preventDefault();
-    const title = document.getElementById('project-title').value.trim();
-    const category = document.getElementById('project-category').value;
-    const url = projectImageUrl.value.trim();
-    const file = projectImageFile.files[0];
-    if (!title || (!url && !file)) {
-      AweSum.showMessage('Please add a project title and image.', 'error');
-      return;
-    }
-    const submitButton = projectForm.querySelector('button[type="submit"]');
-    submitButton.disabled = true;
-    try {
-      const image = url || await AweSum.imageToDataUrl(file);
-      await AweSum.api('projects', { method: 'POST', body: JSON.stringify({ title, category, image }) });
-      await refreshAdminProjects();
-      projectForm.reset();
-      projectImageFile.value = '';
-      projectUploadText.textContent = 'Click to upload';
-      projectImageUrl.value = '';
-      AweSum.showMessage('Project added to homepage.');
-    } catch (error) {
-      AweSum.showMessage(error.message, 'error');
-    } finally {
-      submitButton.disabled = false;
-    }
-  });
-
-  adminProjects.addEventListener('click', async event => {
-    const button = event.target.closest('[data-remove-project]');
-    if (!button) return;
-    if (!confirm('Remove this project from the homepage?')) return;
-    try {
-      await AweSum.api('projects', { method: 'DELETE', body: JSON.stringify({ id: button.dataset.removeProject }) });
-      await refreshAdminProjects();
-      AweSum.showMessage('Project removed from homepage.');
-    } catch (error) {
-      AweSum.showMessage(error.message, 'error');
-    }
-  });
-
-  refreshAdminProjects().catch(error => AweSum.showMessage(error.message, 'error'));
-
-  function renderAdminAdverts(adverts) {
-    adminAdverts.innerHTML = adverts.length ? '' : '<p class="placeholder">No adverts have been published yet.</p>';
-    adverts.forEach(advert => { const card = document.createElement('div'); card.className = 'order-card'; card.innerHTML = '<div class="order-info"><span class="order-customer">' + AweSum.escapeHtml(advert.title) + '</span><span class="order-meta">' + AweSum.escapeHtml(advert.mediaType) + ' · ' + AweSum.escapeHtml(advert.description) + '</span></div><button type="button" class="review-btn" data-remove-advert="' + AweSum.escapeHtml(advert.id) + '">Remove</button>'; adminAdverts.appendChild(card); });
+/* ================= start ================= */
+async function boot() {
+  const bootEl = $('#boot');
+  try {
+    const sess = await A.api('session');
+    if (!sess.user || !sess.isAdmin) return;           // app.js sends visitors who are not admins to the sign-in page
+    S.me = sess.user; buildShell();
+    await load(['orders', 'quotes', 'messages', 'products', 'adverts', 'projects', 'customers', 'stats', 'content']);
+    S.lastUpdated = Date.now(); route(); bootEl.remove();
+    setInterval(() => { if (!document.hidden) refresh(true); }, 60000);
+  } catch (err) {
+    bootEl.innerHTML = '<div class="alert alert-error" style="max-width:420px">' + icon('alert') + '<span class="grow">' + esc(err.message || 'The admin page could not start.') + '</span></div><button type="button" class="btn btn-primary" onclick="location.reload()">Try again</button>';
   }
-  renderAdminAdverts(AweSum.read(AweSum.keys.adverts, []));
-  populateStatsForm();
-  AweSum.api('stats').then(result => populateStatsForm(result.stats)).catch(() => {});
-  adminAdverts.addEventListener('click', async event => {
-    const button = event.target.closest('[data-remove-advert]');
-    if (!button) return;
-    try {
-      await AweSum.api('advert', { method: 'DELETE', body: JSON.stringify({ id: button.dataset.removeAdvert }) });
-      const adverts = AweSum.read(AweSum.keys.adverts, []).filter(advert => String(advert.id) !== button.dataset.removeAdvert);
-      AweSum.write(AweSum.keys.adverts, adverts);
-      renderAdminAdverts(adverts);
-    } catch (error) { AweSum.showMessage(error.message, 'error'); }
-  });
-  advertForm.addEventListener('submit', async event => {
-    event.preventDefault();
-    const advert = { title: document.getElementById('advert-title').value.trim(), description: document.getElementById('advert-description').value.trim(), mediaType: document.getElementById('advert-type').value, mediaUrl: document.getElementById('advert-url').value.trim() };
-    try {
-      const result = await AweSum.api('adverts', { method: 'POST', body: JSON.stringify(advert) });
-      advert.id = result.id;
-      const adverts = [advert, ...AweSum.read(AweSum.keys.adverts, [])];
-      AweSum.write(AweSum.keys.adverts, adverts);
-      renderAdminAdverts(adverts);
-      advertForm.reset();
-    } catch (error) { AweSum.showMessage(error.message, 'error'); }
-  });
+}
+document.addEventListener('DOMContentLoaded', boot);
+})();
 </script>
-
 </body>
 </html>

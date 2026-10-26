@@ -164,35 +164,48 @@
   @media (max-width:640px){
     .field-row{ grid-template-columns:1fr; }
   }
+
+  /* ===== Responsive header (added): finger-sized tap areas + a bar that fits phones ===== */
+  .nav-row{ gap:12px; }
+  .nav-right{ min-width:0; }
+  .nav-toggle{ padding:10px; margin:-10px -10px -10px 0; line-height:0; cursor:pointer; border-radius:8px; }
+  .cart-link{ padding:11px; margin:-11px; }
+  .cart-link .cart-badge{ top:3px; right:1px; }
+  .nav-acct-m{ display:none; }
+  @media (max-width:980px){
+    nav.main-nav a{ display:block; padding:12px 0; }
+  }
+  @media (max-width:640px){
+    .wrap{ padding:0 16px; }
+    .nav-row{ gap:6px; }
+    .logo img{ height:36px !important; }
+    .nav-right{ gap:14px; }
+    .nav-right .btn-sm{ padding:11px 14px; font-size:13px; }
+    .login-link{ font-size:14px; padding:12px 4px; margin:-12px -4px; }
+    .nav-right .nav-acct{ display:none; }
+    .nav-acct-m{ display:block; }
+  }
+  /* ===== end responsive header ===== */
+  /* ===== Responsive quote page (added) ===== */
+  .field-row{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .field select, .field input, .field textarea{ max-width:100%; min-width:0; }
+  .q-footer-grid{ display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:40px; padding-bottom:48px; }
+  @media (max-width:980px){ .q-footer-grid{ grid-template-columns:1fr 1fr; gap:32px; } }
+  @media (max-width:640px){ .field-row{ grid-template-columns:minmax(0,1fr); } }
+  @media (max-width:560px){ .q-footer-grid{ grid-template-columns:minmax(0,1fr); gap:28px; padding-bottom:32px; } }
+  /* ===== end responsive quote page ===== */
+  /* ===== Responsive quantity stepper (added) ===== */
+  @media (max-width:980px){
+    .qty-stepper button, .qty-stepper input{ min-height:48px; }
+  }
+  /* ===== end responsive quantity stepper ===== */
 </style>
+<link rel="stylesheet" href="nav.css">
 </head>
 <body data-auth-required="user">
 
-<header>
-  <div class="wrap nav-row">
-    <a href="index.html" class="logo">
-      <img src="images/logo.jpg" alt="AweSum Brands logo" style="height:42px; width:auto; display:block;">
-    </a>
-    <nav class="main-nav">
-      <a href="index.html">Home</a>
-      <a href="marketplace.html">Marketplace</a>
-      <a href="quote.html" class="active">Custom Quote</a>
-      <a href="messages.html">Messages</a>
-      <a href="orders.html">Orders</a>
-    </nav>
-    <div class="nav-right">
-      <a href="cart.html" class="cart-link" aria-label="Cart">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-        <span class="cart-badge">3</span>
-      </a>
-      <a href="login.html" class="login-link">Login</a>
-      <a href="signup.html" class="btn btn-primary btn-sm">Sign Up</a>
-    </div>
-    <button class="nav-toggle" aria-label="Menu">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-    </button>
-  </div>
-</header>
+<header class="sn" id="siteNav" data-active="quote"></header>
+<script src="nav.js"></script>
 
 <section class="page-hero">
   <div class="wrap">
@@ -265,7 +278,7 @@
 
 <footer style="background:var(--navy); padding:72px 0 28px;">
   <div class="wrap">
-    <div style="display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:40px; padding-bottom:48px;">
+    <div class="q-footer-grid">
       <div>
         <a href="index.html" class="logo">
           <span class="logo-mark">
@@ -473,13 +486,6 @@
 
   AweSum.api('quotes').then(result => renderQuoteHistory(result.quotes || [])).catch(error => { quoteHistory.innerHTML = ''; AweSum.showMessage(error.message, 'error'); });
 
-  const navToggle = document.querySelector('.nav-toggle');
-  const mainNav = document.querySelector('.main-nav');
-  navToggle.addEventListener('click', () => {
-    const isOpen = mainNav.style.display === 'flex';
-    mainNav.style.display = isOpen ? 'none' : 'flex';
-    mainNav.style.cssText += isOpen ? '' : 'flex-direction:column; position:absolute; top:76px; left:0; right:0; background:#0B1B33; padding:24px 24px; gap:20px; border-bottom:1px solid rgba(255,255,255,0.12);';
-  });
 </script>
 <script src="business-info.js"></script>
 </body>
